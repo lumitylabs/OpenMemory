@@ -1,0 +1,27 @@
+# Custom files and directories to ignore
+**/*.gguf
+**/*.db
+**/*.db-journal
+**/*.sqlite-journal
+**/*.sqlite3-journal
+**/*.wal
+**/*.shm
+**/*.pyc
+/client/temp/
+/client/data/
+/client/config.json
+/client/model/chroma/
+/client/model/last_processed_record.json
+/client/model/last_synced_record.json
+
+# React specific
+node_modules/
+/build/
+/npm-debug.log
+/yarn-error.log
+
+# Electron specific
+/dist/
+/electron-packager/
+/electron-builder-out/
+/*.log

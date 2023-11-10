@@ -1,0 +1,118 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::-webkit-scrollbar {
+  width: 4px;
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b4b4b;
+  border-radius: 50px;
+  height: 30px;
+  max-height: 30px;
+}
+
+::-webkit-scrollbar-track-piece {
+  display: none;
+}
+
+.scrollbarnone::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel {
+  scroll-behavior: smooth;
+}
+
+.antalissing {
+  box-shadow: 0 0 1px 0px white inset, 0 0 1px 0px white;
+}
+
+/* Remove blue highlight on mobile links */
+* {
+  -webkit-tap-highlight-color: transparent;
+  
+}
+body{
+  background: #1B1B1B;
+}
+
+.custom-shadow {
+  @apply shadow-none;
+  box-shadow: 0 2px 12px 1px rgba(255, 255, 255, 0.25);
+}
+
+.no-shadow {
+  @apply shadow-none;
+  box-shadow: 0 2px 12px 1px rgba(255, 255, 255, 0.0);
+}
+
+.custom-shadow-image {
+  @apply shadow-none;
+  box-shadow: 0 4px 12px 4px rgba(255, 255, 255, 0.06);
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.looping-gradient {
+  background-size: 200% 200%;
+  animation: gradientAnimation 1s ease infinite;
+}
+
+
+.word-animation {
+  display: inline-block;
+  transform: translateY(20px); 
+  opacity: 0;
+  color: #BD7CFF; 
+  animation: wordFadeIn 1s forwards, colorChange 1s 0.5s forwards;
+}
+
+@keyframes wordFadeIn {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes colorChange {
+  to {
+    color: #B3B3B3;
+  }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.fade-in-wrapper {
+  animation: fadeIn 1s ease-in-out;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

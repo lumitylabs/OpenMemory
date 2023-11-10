@@ -1,0 +1,2 @@
+compile it on x64 Native Tools Command Prompt for VS 2022 with:
+cl.exe /EHsc main.cpp ole32.lib
