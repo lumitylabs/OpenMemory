@@ -64,8 +64,9 @@ function PendingProcessing() {
 }
 
 function UpdateMemories() {
+  const { processData } = useContext(DeviceContext);
   return (
-    <div className="text-xs bg-[#D458C8] text-white p-2 pl-3 pr-3 rounded-full inline-flex justify-center items-center h-[40px] cursor-pointer">
+    <div className="text-xs bg-[#D458C8] text-white p-2 pl-3 pr-3 rounded-full inline-flex justify-center items-center h-[40px] cursor-pointer" onClick={()=>processData()}>
       UPDATE MEMORIES
     </div>
   )

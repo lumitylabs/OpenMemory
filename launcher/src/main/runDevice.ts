@@ -24,7 +24,7 @@ export const runDevice = async (device, path) => {
       const stopShortcut = config['stop_shortcut'];
 
       globalShortcut.register(stopShortcut, () => {
-
+        
         devices.forEach(device => {
           
           if (!devicesStopped) {

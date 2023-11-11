@@ -12,6 +12,7 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', {
       startDevice: (device, path) => ipcRenderer.send('start-device', device, path),
+      processData: () => ipcRenderer.send('process-data'),
       stopDevice: (device) => ipcRenderer.send('stop-device', device),
       onStatusUpdate: (callback) => ipcRenderer.on('status-update', callback),
       removeStatusUpdateListener: () => ipcRenderer.removeAllListeners('status-update')

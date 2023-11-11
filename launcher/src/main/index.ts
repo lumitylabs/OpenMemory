@@ -6,6 +6,7 @@ import icon from '../../resources/icon.png?asset'
 import { runDevice } from './runDevice';
 import { ipcMain } from 'electron';
 import { startPythonProcess, stopPythonProcess } from './PythonProcess';
+import { processData } from './processData';
 
 export var deviceCapture = {};
 export var deviceStatus = {};
@@ -37,13 +38,16 @@ function createWindow(): void {
     startPythonProcess(device, path);
     console.log("start-device" + device)
     event.reply('status-update', device, deviceStatus[device]);
-    
   });
   
   ipcMain.on('stop-device', (event, device) => {
     console.log("stop-device" + device)
     stopPythonProcess(device);
     event.reply('status-update', device, deviceStatus[device]);
+  });
+
+  ipcMain.on('process-data', (event) => {
+    processData();
   });
 
 
