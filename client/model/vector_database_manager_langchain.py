@@ -6,7 +6,7 @@ import os
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 current_directory = os.path.dirname(os.path.abspath(__file__))
 last_synced_record_path = os.path.join(current_directory,"last_synced_record.json")
-persist_directory = os.path.join(current_directory, "/chroma")
+persist_directory = os.path.join(current_directory, "chroma")
 
 def init_last_synced_record():
     try:
@@ -67,13 +67,13 @@ def update_chromadb_from_sqlite(db_manager, last_synced_record):
 
         documents.append(document)
         metadatas.append(metadata)
-        print(document)
+        #print(document)
         ids.append(id)
 
     # Add to ChromaDB
     if documents:
         langchain_chroma._collection.add(documents=documents, metadatas=metadatas, ids=[str(id) for id in ids])
-        print(max(ids))
+        #print(max(ids))
         # Update last synced ID
         last_synced_record["audio_transcriptions"] = max(ids)
 

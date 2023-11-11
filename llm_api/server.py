@@ -17,6 +17,7 @@ from typing import Sequence, Optional
 from langchain.llms import LlamaCpp
 from langchain.schema.runnable import RunnableLambda
 from langchain.text_splitter import TokenTextSplitter
+import os
 
 template = """GPT4 User: {question}<|end_of_turn|>GPT4 Assistant:"""
 prompt = PromptTemplate(template=template, input_variables=["question"])
@@ -26,7 +27,8 @@ n_gpu_layers = 50
 n_batch = 2048 
 
 
-
+current_directory = os.path.dirname(os.path.abspath(__file__))
+llm_path = os.path.join(current_directory,"model/openchat_3.5.Q5_K_M.gguf")
 
 
 app = FastAPI()
@@ -46,7 +48,7 @@ app.add_middleware(
 def inferContextP(data: Annotated[str, Form()]):
 
     llm = LlamaCpp(
-    model_path="./model/openchat_3.5.Q5_K_M.gguf",
+    model_path=llm_path,
     n_gpu_layers=n_gpu_layers,
     n_batch=n_batch,
     temperature=0.7,
@@ -72,7 +74,7 @@ def metadataSummary(data: Annotated[str, Form()]):
     n_batch = 4096
 
     llm = LlamaCpp(
-        model_path="./model/openchat_3.5.Q5_K_M.gguf",
+        model_path=llm_path,
         n_gpu_layers=n_gpu_layers,
         n_batch=n_batch,
         temperature=0.5,

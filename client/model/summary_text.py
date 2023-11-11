@@ -9,12 +9,13 @@ import numpy as np
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
+last_processed_record_path = os.path.join(current_directory,"last_processed_record.json")
 template_path = os.path.join(current_directory, "template.txt")
 tokenizer_path = os.path.join(current_directory, "tokenizer.model")
 tokenizer = ExLlamaTokenizer(tokenizer_path)
 embedding_function = SentenceTransformerEmbeddings(model_name="intfloat/multilingual-e5-large", model_kwargs = {'device': 'cuda'})
 
-last_processed_record_path = os.path.join(current_directory,"last_processed_record.json")
+
 
 def init_last_processed_record():
     try:
@@ -106,7 +107,7 @@ def process_aggregated_content(aggregated_content, db_manager, date_str, time_st
         try:
             response = requests.post("http://127.0.0.1:8004/metadata-summary", data=payload)
             api_result = response.json()
-            print(api_result)
+            #print(api_result)
             
             title = api_result.get("text_title")
             description = api_result.get("summary")
@@ -120,10 +121,10 @@ def process_aggregated_content(aggregated_content, db_manager, date_str, time_st
             db_manager.insert_activity(title, description, tags, reminders, date_str, time_str)
             return
         except Exception as e:
-            print(e)
+            #print(e)
             continue
-    print(response.text)
-    print("Skipping the batch as API result did not contain expected format even after 3 retries.")
+    #print(response.text)
+    #print("Skipping the batch as API result did not contain expected format even after 3 retries.")
 
 def update_last_processed_record(last_processed_record):
     with open(last_processed_record_path, 'w') as f:

@@ -4,6 +4,7 @@ import { startPythonProcess, stopPythonProcess } from './PythonProcess'
 import { deviceStatus, deviceCapture, devices, mainWindow } from '.'
 let devicesStopped = false
 import { spawn } from 'child_process'
+import { join } from 'path'
 
 export const processData = async () => {
   try {
@@ -28,8 +29,10 @@ export const processData = async () => {
       });
     });
 
-    // Após a conclusão do dataProcessor, inicie o servidor
-    let server = spawn('python', ['../llm_api/server.py']);
+    let server = spawn('python', ['../llm_api/start_server.py']);
+
+    // wait 10 secs
+    await new Promise(resolve => setTimeout(resolve, 10000));
 
     server.stdout.on('data', (data) => {
       console.log(`stdout: ${data}`);
@@ -53,11 +56,30 @@ export const processData = async () => {
     });
     summary_text.on('close', (code) => {
       console.log(`summary_text process ended with code: ${code}`);
+      server.kill();
       resolve();
     });
   });
+  await new Promise<void>((resolve, reject) => {
+    let vector_database_manager = spawn('python', ['../client/model/vector_database_manager_langchain.py']);
+    vector_database_manager.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+    }
+    );
+    vector_database_manager.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`);
+    });
+    vector_database_manager.on('close', (code) => {
+      console.log(`vector_database_manager process ended with code: ${code}`);
+      resolve();
+    });
+});
 
-  
+
+
+
+
+
 
 
 
