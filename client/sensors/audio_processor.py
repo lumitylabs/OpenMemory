@@ -53,7 +53,6 @@ class AudioProcessor:
                         
                         audio_chunk = np.load(file_path)
                         transcribed_text = self.process_audio(audio_chunk)
-                        print(transcribed_text)
                         if transcribed_text != "":
                             self.save_to_db(date_str_new_format, time_str, transcribed_text, type, proc)
                         
@@ -77,7 +76,7 @@ class AudioProcessor:
             n_std_thresh_stationary=5,
             use_torch=True)
         segments, info = self.model_whisper.transcribe(low_noise, vad_filter=True)
-        print("prob:" + info.language_probability.__str__())
+        #print("prob:" + info.language_probability.__str__())
         if info.language_probability < min_probability:
             return ""
         #text = "".join(word.word for segment in segments for word in segment.words)

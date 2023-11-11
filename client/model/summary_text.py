@@ -14,12 +14,14 @@ tokenizer_path = os.path.join(current_directory, "tokenizer.model")
 tokenizer = ExLlamaTokenizer(tokenizer_path)
 embedding_function = SentenceTransformerEmbeddings(model_name="intfloat/multilingual-e5-large", model_kwargs = {'device': 'cuda'})
 
+last_processed_record_path = os.path.join(current_directory,"last_processed_record.json")
+
 def init_last_processed_record():
     try:
-        with open('last_processed_record.json', 'r') as f:
+        with open(last_processed_record_path, 'r') as f:
             return json.load(f)
     except FileNotFoundError:
-        with open('last_processed_record.json', 'w') as f:
+        with open(last_processed_record_path, 'w') as f:
             json.dump({"audio_transcriptions": -1}, f)
         return {"audio_transcriptions": -1}
 
@@ -124,7 +126,7 @@ def process_aggregated_content(aggregated_content, db_manager, date_str, time_st
     print("Skipping the batch as API result did not contain expected format even after 3 retries.")
 
 def update_last_processed_record(last_processed_record):
-    with open('last_processed_record.json', 'w') as f:
+    with open(last_processed_record_path, 'w') as f:
         json.dump(last_processed_record, f)
 
 last_processed_record = init_last_processed_record()

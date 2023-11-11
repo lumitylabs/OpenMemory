@@ -2,21 +2,25 @@ import json
 
 from database_manager import DatabaseManager
 from langchain.vectorstores import Chroma
+import os
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+current_directory = os.path.dirname(os.path.abspath(__file__))
+last_synced_record_path = os.path.join(current_directory,"last_synced_record.json")
+persist_directory = os.path.join(current_directory, "/chroma")
 
 def init_last_synced_record():
     try:
-        with open('last_synced_record.json', 'r') as f:
+        with open(last_synced_record_path, 'r') as f:
             return json.load(f)
     except FileNotFoundError:
-        with open('last_synced_record.json', 'w') as f:
+        with open(last_synced_record_path, 'w') as f:
             json.dump({"audio_transcriptions": 0}, f)
         return {"audio_transcriptions": 0}
     
 
 # Initialize ChromaDB client
 import chromadb
-persist_directory = './chroma'
+
 persistent_client = chromadb.PersistentClient(persist_directory)
 
 collection_name = "audio_transcriptions"
@@ -74,7 +78,7 @@ def update_chromadb_from_sqlite(db_manager, last_synced_record):
         last_synced_record["audio_transcriptions"] = max(ids)
 
         # Save to JSON file
-        with open('last_synced_record.json', 'w') as f:
+        with open(last_synced_record_path, 'w') as f:
             json.dump(last_synced_record, f)
 
 # Usage
