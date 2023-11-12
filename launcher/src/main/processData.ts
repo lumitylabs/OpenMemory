@@ -8,6 +8,7 @@ import { join } from 'path'
 
 export const processData = async () => {
   try {
+    mainWindow.webContents.send('process-data-update', 'Running data processing...');
     await new Promise<void>((resolve, reject) => {
       let dataProcessor = spawn('python', ['../client/sensors/audio_processor.py']);
 
@@ -28,7 +29,7 @@ export const processData = async () => {
         reject(err);
       });
     });
-
+    mainWindow.webContents.send('process-data-update', 'Creating memories...');
     let server = spawn('python', ['../llm_api/start_server.py']);
 
     // wait 10 secs
@@ -60,6 +61,7 @@ export const processData = async () => {
       resolve();
     });
   });
+  mainWindow.webContents.send('process-data-update', 'Creating vectors...');
   await new Promise<void>((resolve, reject) => {
     let vector_database_manager = spawn('python', ['../client/model/vector_database_manager_langchain.py']);
     vector_database_manager.stdout.on('data', (data) => {
@@ -74,14 +76,7 @@ export const processData = async () => {
       resolve();
     });
 });
-
-
-
-
-
-
-
-
+mainWindow.webContents.send('process-data-update', 'Done');
 
   } catch (err) {
     console.log(err)

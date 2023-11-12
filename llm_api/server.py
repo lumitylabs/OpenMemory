@@ -23,12 +23,24 @@ template = """GPT4 User: {question}<|end_of_turn|>GPT4 Assistant:"""
 prompt = PromptTemplate(template=template, input_variables=["question"])
 
 callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
-n_gpu_layers = 50 
-n_batch = 2048 
-
+n_gpu_layers = 4096
+n_batch = 4096
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 llm_path = os.path.join(current_directory,"model/openchat_3.5.Q5_K_M.gguf")
+
+llm = LlamaCpp(
+        model_path=llm_path,
+        n_gpu_layers=n_gpu_layers,
+        n_batch=n_batch,
+        temperature=0.5,
+        top_p = 0.1,
+        top_k=20,
+        # callback_manager=callback_manager,
+        n_ctx=4096,
+        max_tokens=500,
+        verbose=False,  # Verbose is required to pass to the callback manager
+    )
 
 
 app = FastAPI()
@@ -47,45 +59,15 @@ app.add_middleware(
 @app.post('/inference')
 def inferContextP(data: Annotated[str, Form()]):
 
-    llm = LlamaCpp(
-    model_path=llm_path,
-    n_gpu_layers=n_gpu_layers,
-    n_batch=n_batch,
-    temperature=0.7,
-    top_p=0.1,
-    top_k=20,
-    typical_p=0,
-    repetition_penalty=1.17,
-    #callback_manager=callback_manager,
-    n_ctx=4096,
-    max_tokens=500,
-    verbose=False,  # Verbose is required to pass to the callback manager
-    )
-
     llm_chain = LLMChain(prompt=prompt, llm=llm, verbose=False)
-    print(data)
+    #print(data)
     answer = llm_chain.run(data)
     return answer
 
 @app.post('/metadata-summary')
 def metadataSummary(data: Annotated[str, Form()]):
-    print(data)
-    n_gpu_layers = 4096
-    n_batch = 4096
+    #print(data)
 
-    llm = LlamaCpp(
-        model_path=llm_path,
-        n_gpu_layers=n_gpu_layers,
-        n_batch=n_batch,
-        temperature=0.5,
-        top_p = 0.1,
-        top_k=20,
-        # callback_manager=callback_manager,
-        n_ctx=4096,
-        max_tokens=500,
-        verbose=False,  # Verbose is required to pass to the callback manager
-    )
-    
 
 
     class Metadata(BaseModel):
@@ -180,7 +162,7 @@ def metadataSummary(data: Annotated[str, Form()]):
         for row in matrix:
             flat_str += row + ","
         flat_str += "]"
-        print(flat_str)
+        #print(flat_str)
         return flat_str
     
     def combine_data(outputs):

@@ -15,7 +15,9 @@ if (process.contextIsolated) {
       processData: () => ipcRenderer.send('process-data'),
       stopDevice: (device) => ipcRenderer.send('stop-device', device),
       onStatusUpdate: (callback) => ipcRenderer.on('status-update', callback),
-      removeStatusUpdateListener: () => ipcRenderer.removeAllListeners('status-update')
+      onProcessDataUpdate: (callback) => ipcRenderer.on('process-data-update', callback),
+      removeStatusUpdateListener: () => ipcRenderer.removeAllListeners('status-update'),
+      removeProcessDataUpdateListener: () => ipcRenderer.removeAllListeners('process-data-update')
     });
     contextBridge.exposeInMainWorld('api', api)
     contextBridge.exposeInMainWorld('myShell', shell)
@@ -27,5 +29,4 @@ if (process.contextIsolated) {
   window.electron = electronAPI
   // @ts-ignore (define in dts)
   window.api = api
-
 }
