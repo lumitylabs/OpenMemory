@@ -1,5 +1,5 @@
 import { app, shell, BrowserWindow } from 'electron'
-import { exec } from 'child_process';
+
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -12,8 +12,7 @@ export var deviceCapture = {};
 export var deviceStatus = {};
 export let mainWindow: BrowserWindow;
 export const devices = ['record_microfone', 'record_system', 'record_screenshot'];
-
-
+export let python_env = "miniconda/envs/openmemory_env/python.exe"
 
 function createWindow(): void {
   // Create the browser window.
@@ -46,10 +45,11 @@ function createWindow(): void {
     event.reply('status-update', device, deviceStatus[device]);
   });
 
-  ipcMain.on('process-data', (event) => {
+  ipcMain.on('process-data', () => {
     processData();
   });
 
+  mainWindow.webContents.openDevTools();
 
   mainWindow.on('ready-to-show', () => {
     runDevice('record_microfone', '../client/sensors/microphone_audio_capture.py');

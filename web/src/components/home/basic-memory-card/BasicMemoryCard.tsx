@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MulticolorComponent from "../../general/manager/MulticolorComponent";
 import { CardDescription } from "./CardDescription";
 import { CardHeader } from "./CardHeader";

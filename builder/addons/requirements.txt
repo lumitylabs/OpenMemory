@@ -1,0 +1,17 @@
+Pillow==10.0.1
+PyAudio==0.2.14
+numpy==1.26.1
+psutil==5.9.6
+mss==9.0.1
+scikit-image==0.22.0
+opencv-python==4.8.1.78
+pywin32==306
+faster-whisper==0.9.0
+noisereduce==3.0.0
+langchain==0.0.334
+chromadb==0.4.17
+sentencepiece==0.1.99
+sentence-transformers==2.2.2
+python-multipart==0.0.6
+tiktoken==0.5.1
+Flask==3.0.0

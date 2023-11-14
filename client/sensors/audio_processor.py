@@ -23,7 +23,7 @@ os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 logging.basicConfig(level=logging.INFO)
 min_probability = 0.7
 class AudioProcessor:
-    def __init__(self, model_size="large-v3", device="cuda"):
+    def __init__(self, model_size="large-v2", device="cuda"):
         self.type = type
         self.model_whisper = WhisperModel(model_size, device=device)
         #self.model_whisper.feature_extractor.mel_filters = self.model_whisper.feature_extractor.get_mel_filters(self.model_whisper.feature_extractor.sampling_rate, self.model_whisper.feature_extractor.n_fft, n_mels=128)

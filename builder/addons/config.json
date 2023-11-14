@@ -1,0 +1,6 @@
+{
+    "stop_shortcut":"Ctrl+Shift+P",
+    "record_microfone":true,
+    "record_system":true,
+    "record_screenshot":true
+}

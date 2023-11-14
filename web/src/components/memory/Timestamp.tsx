@@ -1,4 +1,4 @@
-import React from "react";
+
 import { relativeTime } from "../../utils/utils";
 
 export const Timestamp = ({ timestamp }: { timestamp: string | number }) => (

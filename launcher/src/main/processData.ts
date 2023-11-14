@@ -1,27 +1,31 @@
-import { globalShortcut } from 'electron'
-import fs from 'fs'
-import { startPythonProcess, stopPythonProcess } from './PythonProcess'
-import { deviceStatus, deviceCapture, devices, mainWindow } from '.'
-let devicesStopped = false
+
+import {  mainWindow, python_env } from '.'
+
 import { spawn } from 'child_process'
-import { join } from 'path'
+import fs from 'fs'
+const logFile = 'logs.log';
+
+function logToFile(message) {
+  fs.appendFileSync(logFile, `${new Date().toISOString()}: ${message}\n`);
+}
+
 
 export const processData = async () => {
   try {
     mainWindow.webContents.send('process-data-update', 'Running data processing...');
     await new Promise<void>((resolve, reject) => {
-      let dataProcessor = spawn('python', ['../client/sensors/audio_processor.py']);
+      let dataProcessor = spawn(python_env, ['../client/sensors/audio_processor.py']);
 
       dataProcessor.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
+        logToFile(`stdout: ${data}`);
       });
 
       dataProcessor.stderr.on('data', (data) => {
-        console.error(`stderr: ${data}`);
+        logToFile(`stderr: ${data}`);
       });
 
       dataProcessor.on('close', (code) => {
-        console.log(`dataProcessor ended with code: ${code}`);
+        logToFile(`dataProcessor ended with code: ${code}`);
         resolve();
       });
 
@@ -30,55 +34,55 @@ export const processData = async () => {
       });
     });
     mainWindow.webContents.send('process-data-update', 'Creating memories...');
-    let server = spawn('python', ['../llm_api/start_server.py']);
+    let server = spawn(python_env, ['../llm_api/start_server.py']);
 
     // wait 10 secs
     await new Promise(resolve => setTimeout(resolve, 10000));
 
     server.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`);
+      logToFile(`stdout: ${data}`);
     });
 
     server.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`);
+      logToFile(`stderr: ${data}`);
     });
 
     server.on('close', (code) => {
-      console.log(`server process ended with code: ${code}`);
+      logToFile(`server process ended with code: ${code}`);
     });
-    await new Promise<void>((resolve, reject) => {
-    let summary_text = spawn('python', ['../client/model/summary_text.py']);
+    await new Promise<void>((resolve, _) => {
+    let summary_text = spawn(python_env, ['../client/model/summary_text.py']);
     summary_text.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`);
+      logToFile(`stdout: ${data}`);
     }
     );
     summary_text.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`);
+      logToFile(`stderr: ${data}`);
     });
     summary_text.on('close', (code) => {
-      console.log(`summary_text process ended with code: ${code}`);
+      logToFile(`summary_text process ended with code: ${code}`);
       server.kill();
       resolve();
     });
   });
   mainWindow.webContents.send('process-data-update', 'Creating vectors...');
-  await new Promise<void>((resolve, reject) => {
-    let vector_database_manager = spawn('python', ['../client/model/vector_database_manager_langchain.py']);
+  await new Promise<void>((resolve, _) => {
+    let vector_database_manager = spawn(python_env, ['../client/model/vector_database_manager_langchain.py']);
     vector_database_manager.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`);
+      logToFile(`stdout: ${data}`);
     }
     );
     vector_database_manager.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`);
+      logToFile(`stderr: ${data}`);
     });
     vector_database_manager.on('close', (code) => {
-      console.log(`vector_database_manager process ended with code: ${code}`);
+      logToFile(`vector_database_manager process ended with code: ${code}`);
       resolve();
     });
 });
 mainWindow.webContents.send('process-data-update', 'Done');
 
   } catch (err) {
-    console.log(err)
+    logToFile(err)
   }
 }

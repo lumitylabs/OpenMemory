@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
 
 const { startDevice, stopDevice, onStatusUpdate, removeStatusUpdateListener, processData, onProcessDataUpdate, removeProcessDataUpdateListener } = window.electron;
 
@@ -30,7 +30,7 @@ export const DeviceProvider = ({ children }) => {
   const [processDataUpdate, setProcessDataUpdate] = useState("");
 
   useEffect(() => {
-    const updateStatus = (event, device, status) => {
+    const updateStatus = (_, device, status) => {
       setDeviceStatus(prev => ({...prev, [device]: status}));
     };
 
@@ -42,7 +42,7 @@ export const DeviceProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    const updateStatus = (event, status) => {
+    const updateStatus = (_, status) => {
       setProcessDataUpdate(status)
     };
 

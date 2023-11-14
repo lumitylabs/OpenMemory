@@ -1,4 +1,3 @@
-import { electron } from 'process'
 import './index.css'
 import { DeviceContext } from './DeviceContext'
 import { useContext } from 'react'
@@ -26,8 +25,9 @@ function ViewMemoriesButton() {
   )
 }
 
+
 function Sensors() {
-  const { deviceStatus, startDevice, stopDevice } = useContext(DeviceContext)
+  const { deviceStatus } = useContext(DeviceContext)
 
   return (
     <div className="flex flex-col gap-2">
@@ -100,7 +100,7 @@ function LastProcessing() {
 }
 
 function App() {
-  const { deviceStatus, startDevice, stopDevice } = useContext(DeviceContext)
+  const { startDevice, stopDevice } = useContext(DeviceContext)
 
   return (
     <div className="flex flex-col p-4 gap-3 text-sm">

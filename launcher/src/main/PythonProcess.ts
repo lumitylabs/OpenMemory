@@ -1,25 +1,32 @@
 import { spawn } from 'child_process';
-import { deviceStatus, deviceCapture, mainWindow} from '.';
+import { deviceStatus, deviceCapture, mainWindow, python_env} from '.';
+import fs from 'fs'
+const logFile = 'logs.log';
+
+function logToFile(message) {
+  fs.appendFileSync(logFile, `${new Date().toISOString()}: ${message}\n`);
+}
+
 
 export const startPythonProcess = (device, path) => {
 
     deviceStatus[device] = true;
-    deviceCapture[device] = spawn('python', [path]);
+    deviceCapture[device] = spawn(python_env, [path]);
     mainWindow.webContents.send('status-update', device, true);
   
     deviceCapture[device].stdout.on('data', (data) => {
-      console.log(`${device} stdout: ${data}`);
+      logToFile(`${device} stdout: ${data}`);
     });
   
     deviceCapture[device].stderr.on('data', (data) => {
-      console.error(`${device} stderr: ${data}`);
+      logToFile(`${device} stderr: ${data}`);
       deviceStatus[device] = false;
       mainWindow.webContents.send('status-update', device, false);
 
     });
   
     deviceCapture[device].on('close', (code) => {
-      console.log(`${device} process ended with code: ${code}`);
+      logToFile(`${device} process ended with code: ${code}`);
       deviceStatus[device] = false;
       mainWindow.webContents.send('status-update', device, false);
   

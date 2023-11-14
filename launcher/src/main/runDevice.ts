@@ -1,7 +1,7 @@
 import { globalShortcut } from 'electron'
 import fs from 'fs'
 import { startPythonProcess, stopPythonProcess } from './PythonProcess'
-import { deviceStatus, deviceCapture, devices, mainWindow } from '.'
+import { deviceStatus, devices } from '.'
 let devicesStopped = false;
 
 export const runDevice = async (device, path) => {

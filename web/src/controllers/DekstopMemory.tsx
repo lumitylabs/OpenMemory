@@ -1,4 +1,4 @@
-import React from "react";
+
 import { InfoMemoryCard } from "../components/home/info-memory-card/InfoMemoryCard";
 
 function DekstopMemory(props:{imgBase:string, memory:any}) {

@@ -9,13 +9,11 @@ import { searchAndFilterData } from "../hooks/searchAndFilterData";
 import { loadFilteredMemories } from "../hooks/loadFilteredMemories";
 import { loadMoreFilteredMemories } from "../hooks/loadMoreFilteredMemories";
 import { DataPickerModal } from "../components/home/search-bar/DataPickerModal";
-import { InfoMemoryCard } from "../components/home/info-memory-card/InfoMemoryCard";
 import { FullSearchBar } from "../components/home/search-bar/FullSearchBar";
 import ImgComponent from "../components/general/manager/img-manager/ImgComponent";
 import { generativeSearch } from "../hooks/generativeSearch";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import { GenerativeAnswer } from "../components/general/GenerativeAnswer";
-import MulticolorComponent from "../components/general/manager/MulticolorComponent";
 import { MemoryCard } from "./MemoryCard";
 
 // Constants

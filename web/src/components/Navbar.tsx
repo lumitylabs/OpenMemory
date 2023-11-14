@@ -1,4 +1,3 @@
-import React from "react";
 import ImgComponent from "./general/manager/img-manager/ImgComponent";
 
 const Navbar: React.FC = () => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ChatMessage from "./ChatMessage";
 
 type ChatMessageType = {

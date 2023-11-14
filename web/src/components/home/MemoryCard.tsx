@@ -1,4 +1,3 @@
-import React from "react";
 import { Tags } from "../memory/Tags";
 import { Reminders } from "../memory/Reminders";
 import { Timestamp } from "../memory/Timestamp";

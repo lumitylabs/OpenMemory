@@ -1,6 +1,4 @@
-import React, { useState } from "react";
 import { InfoMemoryCard } from "../components/home/info-memory-card/InfoMemoryCard";
-import ImgComponent from "../components/general/manager/img-manager/ImgComponent";
 import MulticolorComponent from "../components/general/manager/MulticolorComponent";
 
 function MobileMemory(props: { imgBase: string; memory: any; setShowInfo: any; showInfo: any; }) {

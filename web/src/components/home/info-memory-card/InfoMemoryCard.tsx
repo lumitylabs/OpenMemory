@@ -1,4 +1,3 @@
-import MulticolorComponent from "../../general/manager/MulticolorComponent";
 import { InfoMemoryCardButton } from "./InfoMemoryCardButton";
 import { InfoMemoryCardDescription } from "./InfoMemoryCardDescription";
 import { QuotationMarks } from "./QuotationMarks";
