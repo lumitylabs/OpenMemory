@@ -12,13 +12,19 @@ function SensorStatus(props: { name: any; status: any }) {
   )
 }
 
-const openMemories = () => {}
+
 
 function ViewMemoriesButton() {
+  const { startWebServer, webServerUpdate } = useContext(DeviceContext)
+  const isRunning = (webServerUpdate === '' || webServerUpdate === 'Done') ? false : true
   return (
     <div
-      className="text-xs bg-gradient-to-r from-[#C75CCB] to-[#5378D6] text-white p-2 pl-3 pr-3 rounded-full inline-flex justify-center items-center h-[40px] cursor-pointer select-none"
-      onClick={openMemories}
+      className={`text-xs  ${
+        isRunning ? 'bg-[#818181]' : 'bg-gradient-to-r from-[#C75CCB] to-[#5378D6]'
+      }
+       text-white p-2 pl-3 pr-3 rounded-full inline-flex justify-center items-center h-[40px] select-none`}
+      onClick={isRunning ? () => {} : () => startWebServer()}
+      style={{ cursor: isRunning ? 'default' : 'pointer'}}
     >
       VIEW MEMORIES
     </div>

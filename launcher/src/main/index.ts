@@ -7,6 +7,7 @@ import { runDevice } from './runDevice';
 import { ipcMain } from 'electron';
 import { startPythonProcess, stopPythonProcess } from './PythonProcess';
 import { processData } from './processData';
+import { runWebServer } from './runWebServer';
 
 export var deviceCapture = {};
 export var deviceStatus = {};
@@ -49,7 +50,10 @@ function createWindow(): void {
     processData();
   });
 
-  mainWindow.webContents.openDevTools();
+  ipcMain.on('start-web-server', () => {
+    runWebServer();
+  });
+
 
   mainWindow.on('ready-to-show', () => {
     runDevice('record_microfone', '../client/sensors/microphone_audio_capture.py');
@@ -90,7 +94,6 @@ app.whenReady().then(() => {
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
-
   })
 
   createWindow()

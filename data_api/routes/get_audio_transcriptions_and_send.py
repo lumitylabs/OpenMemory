@@ -25,7 +25,7 @@ tokenizer_path = os.path.join(current_directory, "tokenizer.model")
 tokenizer = ExLlamaTokenizer(tokenizer_path)
 
 prompt_template = ""
-with open('prompt_template.txt', 'r') as file:
+with open(template_path, 'r') as file:
     prompt_template = file.read()
 
 

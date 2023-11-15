@@ -1,3 +1,9 @@
+setlocal
+pushd %CD%
+cd ../launcher
+call npm run build
+popd
+
 set "SOURCE_DIR=.."
 set "DEST_DIR=./build"
 if not exist "%DEST_DIR%" mkdir "%DEST_DIR%"
