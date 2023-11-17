@@ -1,4 +1,4 @@
-import pyaudio
+import pyaudiowpatch as pyaudio
 import numpy as np
 import os
 import time
@@ -11,19 +11,20 @@ exe_path = os.path.join(current_dir, "../get_audio_procid.exe")
 
 
 class AudioCapture:
-    def __init__(self, device_index, type, threshold=450, buffer_size=1024, rate=16000):
+    def __init__(self, target_device: dict, type, threshold=450, buffer_size=1024):
         self.p = pyaudio.PyAudio()
-        self.stream = self.p.open(format=pyaudio.paInt16, channels=1, rate=rate, 
-                                  input=True, frames_per_buffer=buffer_size, input_device_index=device_index)
+        self.stream = self.p.open(format=pyaudio.paInt16, channels=target_device["maxInputChannels"], rate=int(target_device["defaultSampleRate"]), 
+                                  input=True, frames_per_buffer=buffer_size, input_device_index=target_device["index"])
         self.threshold = threshold
         self.buffer_size = buffer_size
-        self.rate = rate
         self.accumulated_audio = np.array([], dtype=np.float32)
         self.time_below_threshold = 0
         self.recording = False
         self.elapsed_time = 0
         self.type = type
         self.keep_running = True
+        self.channels = target_device["maxInputChannels"]
+        self.rate = int(target_device["defaultSampleRate"])
 
     def record(self):
         print("Started recording...")
@@ -88,11 +89,13 @@ class AudioCapture:
             os.makedirs(folder_path)
 
         filename = timestamp
+        
 
         current_process_names = set(self.get_process_names().split(','))
         all_process_names = self.initial_process_names.union(current_process_names)
         concatenated_process_names = ','.join(all_process_names)
-
+        filename += f'-{self.rate}'
+        filename += f'-{self.channels}'
         if self.type == 'system':
             filename += f"-({concatenated_process_names})"
         else:

@@ -48,35 +48,35 @@ export const runWebServer = async () => {
           })
     }
 
-    if(!isLLMAPIRunning){
-      mainWindow.webContents.send('web-server-update', 'Starting llmAPI...');
-        await new Promise<void>((resolve, reject) => {
-            let llmAPI = spawn(python_env, ['../llm_api/start_server.py'])
-            isLLMAPIRunning = true
+    // if(!isLLMAPIRunning){
+    //   mainWindow.webContents.send('web-server-update', 'Starting llmAPI...');
+    //     await new Promise<void>((resolve, reject) => {
+    //         let llmAPI = spawn(python_env, ['../llm_api/start_server.py'])
+    //         isLLMAPIRunning = true
       
-            llmAPI.stdout.on('data', (data) => {
-              logToFile(`stdout: ${data}`)
-              resolve()
-            })
+    //         llmAPI.stdout.on('data', (data) => {
+    //           logToFile(`stdout: ${data}`)
+    //           resolve()
+    //         })
       
-            llmAPI.stderr.on('data', (data) => {
-              logToFile(`stderr: ${data}`)
-              isLLMAPIRunning = false
-              resolve()
-            })
+    //         llmAPI.stderr.on('data', (data) => {
+    //           logToFile(`stderr: ${data}`)
+    //           isLLMAPIRunning = false
+    //           resolve()
+    //         })
       
-            llmAPI.on('close', (code) => {
-              logToFile(`llmAPI ended with code: ${code}`)
-              isLLMAPIRunning = false
-              resolve()
-            })
+    //         llmAPI.on('close', (code) => {
+    //           logToFile(`llmAPI ended with code: ${code}`)
+    //           isLLMAPIRunning = false
+    //           resolve()
+    //         })
       
-            llmAPI.on('error', (err) => {
-              isLLMAPIRunning = false
-              reject(err)
-            })
-          })
-    }
+    //         llmAPI.on('error', (err) => {
+    //           isLLMAPIRunning = false
+    //           reject(err)
+    //         })
+    //       })
+    // }
 
     if(!isWebServerRunning){
       mainWindow.webContents.send('web-server-update', 'Starting web server...');

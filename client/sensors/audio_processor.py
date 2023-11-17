@@ -6,6 +6,7 @@ from faster_whisper import WhisperModel
 import logging
 import sys
 import noisereduce as nr
+import librosa
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(current_directory)
 
@@ -33,7 +34,7 @@ class AudioProcessor:
         self.processed_files = set()
 
     def process_and_delete(self, types):
-        #while True:
+        # while True:
         try:
             for type in types:
                 folder_path = os.path.join(current_dir, f"../temp/audio/{type}")
@@ -43,16 +44,20 @@ class AudioProcessor:
                     for filename in new_files:
                         file_path = os.path.join(folder_path, filename)
                         
-                        # Extract date_str, time_str, and proc from the filename
-                        date_str = filename[0:8]
+                        # Extract date_str, time_str, rate, channels, and proc from the filename
+                        parts = filename.split('-')
+                        date_str = parts[0][0:8]
                         date_time_obj = datetime.strptime(date_str, '%Y%m%d')
                         date_str_new_format = date_time_obj.strftime('%m%d%Y')
-                        time_str = filename[8:14]
+                        time_str = parts[0][8:14]
                         time_str = time_str[:2] + ':' + time_str[2:4] + ':' + time_str[4:]
-                        proc = filename.split('-(')[1].split(')')[0]
-                        
+                        rate = parts[1]
+                        channels = parts[2]
+                        proc = parts[3].split('(')[1].split(')')[0]
+
+
                         audio_chunk = np.load(file_path)
-                        transcribed_text = self.process_audio(audio_chunk)
+                        transcribed_text = self.process_audio(audio_chunk, rate, channels)
                         if transcribed_text != "":
                             self.save_to_db(date_str_new_format, time_str, transcribed_text, type, proc)
                         
@@ -65,7 +70,8 @@ class AudioProcessor:
         except Exception as e:
             logging.error(f"An error occurred: {e}")
     
-    def process_audio(self, audio_chunk):
+    def process_audio(self, audio_chunk, rate, channels):
+        audio_chunk = librosa.resample(audio_chunk, orig_sr=int(rate)*int(channels), target_sr=16000)
         low_noise = nr.reduce_noise(y=audio_chunk, sr=16000,
             prop_decrease=1, 
             time_constant_s=6, 
@@ -82,15 +88,6 @@ class AudioProcessor:
         #text = "".join(word.word for segment in segments for word in segment.words)
         text = "".join(segment.text for segment in segments)
         return text
-
-    def save_to_file(self, text, type):
-        date_str = datetime.now().strftime("%m%d%Y")
-        dir_path = os.path.join(current_dir, f"../data/audio/{type}")
-        dt_string = datetime.now().strftime("%H:%M:%S")
-        if not os.path.exists(dir_path):
-            os.makedirs(dir_path)
-        with open(f"{dir_path}/{date_str}.srt", "a", encoding='utf-8') as f:
-            f.write(f"{dt_string}|{type}|{text}\n")
 
     def save_to_db(self, date_str, time_str, text, type, proc):
         db_manager.insert_audio_transcription(date_str, time_str, type, text, proc)

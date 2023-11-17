@@ -1,25 +1,29 @@
 from intermediate_audio_capture import AudioCapture
-import pyaudio
-
+import pyaudiowpatch as pyaudio
 
 from config_manager import read_config, update_config
 
+def get_default_wasapi_device(p_audio: pyaudio.PyAudio):        
+        
+        try: # Get default WASAPI info
+            wasapi_info = p_audio.get_host_api_info_by_type(pyaudio.paWASAPI)
+        except OSError:
+            raise print("Looks like WASAPI is not available on the system")
+            
+        # Get default WASAPI speakers
+        sys_default_speakers = p_audio.get_device_info_by_index(wasapi_info["defaultOutputDevice"])
+        
+        if not sys_default_speakers["isLoopbackDevice"]:
+            for loopback in p_audio.get_loopback_device_info_generator():
+                if sys_default_speakers["name"] in loopback["name"]:
+                    return loopback
+                    break
+            else:
+                raise print("Default loopback output device not found.\n\nRun `python -m pyaudiowpatch` to check available devices")
+            
+
 if __name__ == "__main__":
     p = pyaudio.PyAudio()
-    
-    # Load existing device index from config
-    config = read_config()
-    device_index = config.get('device_index')
-    
-    # If device index doesn't exist in config, ask the user
-    if device_index is None:
-        for i in range(p.get_device_count()):
-            dev = p.get_device_info_by_index(i)
-            print("Index:", i, "Name:", dev['name'])
-        device_index = int(input("Enter the device index for system audio: "))
-        
-        # Update the config file
-        update_config('device_index', device_index)
-    
-    audio_capture = AudioCapture(device_index=device_index, type="system")
+    target_device = get_default_wasapi_device(p)
+    audio_capture = AudioCapture(target_device=target_device, type="system")
     audio_capture.record()
