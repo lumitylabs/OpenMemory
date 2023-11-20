@@ -11,6 +11,6 @@ export const searchAndFilterData = async (search:any, state:any, selectedProcess
       `http://127.0.0.1:8000/vector_search/?search=${searchQuery}&start_time=${startTime}&end_time=${endTime}&process=${process}`
     );
     const data = response.data; // assuming this is where your data array is
-    const timestamps = data.map((item:any) => item.metadata.timestamp);
+    const timestamps = data.map((item:any) => item.metadata.start_timestamp);
     setFilteredTimestamps(timestamps);
   };

@@ -12,7 +12,7 @@ call electron-packager "../launcher" openmemory --platform=win32 --arch=x64 --ou
 copy .\addons\install.bat .\build\openmemory-win32-x64\
 copy .\addons\requirements.txt .\build\openmemory-win32-x64\
 copy .\addons\config.json .\build\openmemory-win32-x64\
-copy .\addons\start.bat .\build\
+copy .\addons\setup.bat .\build\
 
 :: Salvando o diretório atual
 set "CURRENT_DIR=%CD%"

@@ -65,6 +65,7 @@ export const processData = async () => {
       resolve();
     });
   });
+  server.kill();
   mainWindow.webContents.send('process-data-update', 'Creating vectors...');
   await new Promise<void>((resolve, _) => {
     let vector_database_manager = spawn(python_env, ['../client/model/vector_database_manager_langchain.py']);

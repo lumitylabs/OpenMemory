@@ -16,7 +16,7 @@
 /launcher/miniconda
 /build
 /builder/build
-
+/miniconda
 # React specific
 node_modules/
 /build/

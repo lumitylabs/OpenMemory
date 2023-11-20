@@ -10,7 +10,7 @@ def load_vector_database():
     global langchain_chroma
     persist_directory = '../client/model/chroma'
     persistent_client = chromadb.PersistentClient(persist_directory)
-    collection_name = "audio_transcriptions"
+    collection_name = "raw_ideas"
     langchain_chroma = Chroma(
         client=persistent_client,
         collection_name=collection_name,

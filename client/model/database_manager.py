@@ -52,6 +52,23 @@ class DatabaseManager:
             """)
         with self.conn:
             self.conn.execute("""
+                CREATE TABLE IF NOT EXISTS raw_ideas (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    content TEXT,
+                    start_timestamp INTEGER,
+                    end_timestamp INTEGER
+                );
+            """)
+
+            self.conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_raw_ideas_start_timestamp ON raw_ideas (start_timestamp);
+            """)
+            self.conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_raw_ideas_end_timestamp ON raw_ideas (end_timestamp);
+            """)
+
+        with self.conn:
+            self.conn.execute("""
                 CREATE INDEX IF NOT EXISTS idx_audio_transcriptions_timestamp ON audio_transcriptions (timestamp);
             """)
             self.conn.execute("""
@@ -61,13 +78,19 @@ class DatabaseManager:
                 CREATE INDEX IF NOT EXISTS idx_activities_timestamp ON activities (timestamp);
             """)
 
-    def insert_activity(self, title, description, tags, reminders, date_str, time_str):
-        timestamp = datetime.strptime(f"{date_str} {time_str}", "%m%d%Y %H:%M:%S").timestamp()
+    def insert_raw_idea(self, content, start_timestamp, end_timestamp):
+        with self.conn:
+            self.conn.execute("""
+                INSERT INTO raw_ideas (content, start_timestamp, end_timestamp)
+                VALUES (?, ?, ?);
+            """, (content, start_timestamp, end_timestamp))
+            
+    def insert_activity(self, title, description, tags, reminders, date_str, time_str, timestamp):
         with self.conn:
             self.conn.execute("""
                 INSERT INTO activities (title, description, tags, reminders, date_str, time_str, timestamp)
                 VALUES (?, ?, ?, ?, ?, ?, ?);
-            """, (title, description, tags, reminders, date_str, time_str, int(timestamp)))
+            """, (title, description, tags, reminders, date_str, time_str, timestamp))
 
     def insert_audio_transcription(self, date_str, time_str, type, content, processes):
         timestamp = datetime.strptime(f"{date_str} {time_str}", "%m%d%Y %H:%M:%S").timestamp()

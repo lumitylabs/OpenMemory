@@ -26,6 +26,14 @@ class AudioTranscriptions(Base):
     timestamp = Column(Integer, index=True)
     processes = Column(String)
 
+class RawIdeas(Base):
+    __tablename__ = 'raw_ideas'
+    id = Column(Integer, primary_key=True, index=True)
+    content = Column(String)
+    start_timestamp = Column(Integer, index=True)
+    end_timestamp = Column(Integer, index=True)
+
+
 
 class ScreenCapture(Base):
     __tablename__ = 'screencapture'

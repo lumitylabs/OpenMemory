@@ -10,7 +10,7 @@ function logToFile(message) {
 }
 
 var isDataAPIRunning = false
-var isLLMAPIRunning = false
+//var isLLMAPIRunning = false
 var isWebServerRunning = false
 
 export const runWebServer = async () => {

@@ -9,7 +9,7 @@ SET EnvironmentName=openmemory_env
 SET RequirementsFile=requirements.txt
 SET OpenMemoryExe=openmemory.exe
 SET OpenChatModelFile=..\llm_api\model\openchat_3.5.Q5_K_M.gguf
-SET OpenChatModelURL=https://huggingface.co/TheBloke/openchat_3.5-GGUF/resolve/main/openchat_3.5.Q5_K_M.gguf?download=true
+SET OpenChatModelURL=https://huggingface.co/TheBloke/neural-chat-7B-v3-1-GGUF/resolve/main/neural-chat-7b-v3-1.Q4_K_M.gguf?download=true
 
 :: Define Conda executable path
 SET CondaExecutable=%CD%\%ProjectFolder%\condabin\conda.bat
@@ -63,7 +63,7 @@ IF EXIST %RequirementsFile% (
 echo Installing llama-cpp-python...
 pip install llama-cpp-python --prefer-binary --extra-index-url=https://jllllll.github.io/llama-cpp-python-cuBLAS-wheels/AVX2/cu118
 echo Installing PyTorch...
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
 GOTO run
 
