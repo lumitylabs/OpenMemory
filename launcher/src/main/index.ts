@@ -13,7 +13,7 @@ export var deviceCapture = {};
 export var deviceStatus = {};
 export let mainWindow: BrowserWindow;
 export const devices = ['record_microfone', 'record_system', 'record_screenshot'];
-export let python_env = "miniconda/envs/openmemory_env/python.exe"
+export let python_env = "python_embedding/python.exe"
 
 function createWindow(): void {
   // Create the browser window.

@@ -2,34 +2,24 @@
 SETLOCAL ENABLEDELAYEDEXPANSION
 
 :: Define variables
-SET MinicondaInstaller=Miniconda3-py311_23.9.0-0-Windows-x86_64.exe
-SET MinicondaURL=https://repo.anaconda.com/miniconda/%MinicondaInstaller%
-SET ProjectFolder=miniconda
-SET EnvironmentName=openmemory_env
-SET RequirementsFile=requirements.txt
+SET PythonExecutable=python_embedding\python.exe
 SET OpenMemoryExe=openmemory.exe
-SET OpenChatModelFile=..\llm_api\model\openchat_3.5.Q5_K_M.gguf
+SET OpenMemoryExePath=%CD%\%OpenMemoryExe%
+SET OpenMemoryLinkPath=%CD%\..\openmemory.lnk
+SET OpenMemoryDesktopLinkPath=%USERPROFILE%\Desktop\openmemory.lnk
+SET OpenChatModelFile=..\llm_api\model\neural-chat-7b-v3-1.Q4_K_M.gguf
 SET OpenChatModelURL=https://huggingface.co/TheBloke/neural-chat-7B-v3-1-GGUF/resolve/main/neural-chat-7b-v3-1.Q4_K_M.gguf?download=true
 
-:: Define Conda executable path
-SET CondaExecutable=%CD%\%ProjectFolder%\condabin\conda.bat
+:: Check if Python is installed
+IF NOT EXIST "%PythonExecutable%" (
+    echo Python executable not found in python_embedding folder.
+    goto endScript
+)
 
-:: Check if Miniconda is installed
-IF NOT EXIST "%CondaExecutable%" GOTO installMiniconda
-
-:: Check if the environment exists
-CALL "%CondaExecutable%" env list | findstr /C:"%EnvironmentName%" >nul 2>&1
-IF %ERRORLEVEL% NEQ 0 GOTO createEnvironment
-
-:: Activate the environment and check if packages are installed
-CALL "%CondaExecutable%" activate %EnvironmentName%
-pip list | findstr /C:"torch" >nul 2>&1
-IF %ERRORLEVEL% NEQ 0 GOTO installPackages
-
-pip list | findstr /C:"llama-cpp-python" >nul 2>&1
-IF %ERRORLEVEL% NEQ 0 GOTO installPackages
-
-
+:: Install required packages
+echo Installing required packages...
+"%PythonExecutable%" -m pip install llama-cpp-python --prefer-binary --extra-index-url=https://jllllll.github.io/llama-cpp-python-cuBLAS-wheels/AVX2/cu118
+"%PythonExecutable%" -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
 :run
 :: Check if OpenChat model file exists
@@ -37,35 +27,32 @@ IF NOT EXIST "%OpenChatModelFile%" (
     echo OpenChat model file not found. Downloading...
     call curl -Lk "%OpenChatModelURL%" > "%OpenChatModelFile%" || ( echo. && echo Openchat failed to download. && goto endScript )
 )
-:: Run openmemory.exe if all conditions are met
+
+:: Create shortcuts for openmemory.exe if it exists
 IF EXIST %OpenMemoryExe% (
+    echo Set oWS = WScript.CreateObject^("WScript.Shell"^) > create_shortcut.vbs
+    echo sLinkFile = "%OpenMemoryLinkPath%" >> create_shortcut.vbs
+    echo Set oLink = oWS.CreateShortcut^(sLinkFile^) >> create_shortcut.vbs
+    echo oLink.TargetPath = "%OpenMemoryExePath%" >> create_shortcut.vbs
+    echo oLink.WorkingDirectory = "%CD%" >> create_shortcut.vbs
+    echo oLink.Save >> create_shortcut.vbs
+
+    echo Set oWS = WScript.CreateObject^("WScript.Shell"^) > create_desktop_shortcut.vbs
+    echo sLinkFile = "%OpenMemoryDesktopLinkPath%" >> create_desktop_shortcut.vbs
+    echo Set oLink = oWS.CreateShortcut^(sLinkFile^) >> create_desktop_shortcut.vbs
+    echo oLink.TargetPath = "%OpenMemoryExePath%" >> create_desktop_shortcut.vbs
+    echo oLink.WorkingDirectory = "%CD%" >> create_desktop_shortcut.vbs
+    echo oLink.Save >> create_desktop_shortcut.vbs
+
+    cscript //nologo create_shortcut.vbs
+    cscript //nologo create_desktop_shortcut.vbs
+
+    del create_shortcut.vbs
+    del create_desktop_shortcut.vbs
+
     CMD /C START "" %OpenMemoryExe%
     GOTO endScript
 )
-
-:installMiniconda
-echo Downloading and Installing Miniconda...
-call curl -Lk "%MinicondaURL%" > "%MinicondaInstaller%" || ( echo. && echo Miniconda failed to download. && goto endScript )
-start /wait "" %MinicondaInstaller% /InstallationType=JustMe /RegisterPython=0 /S /D=%CD%\%ProjectFolder%
-GOTO createEnvironment
-
-:createEnvironment
-echo Creating conda environment...
-CALL "%CondaExecutable%" create -y -n %EnvironmentName% python=3.11
-GOTO installPackages
-
-:installPackages
-CALL "%CondaExecutable%" activate %EnvironmentName%
-IF EXIST %RequirementsFile% (
-    echo Installing from requirements.txt...
-    pip install -r %RequirementsFile%
-)
-echo Installing llama-cpp-python...
-pip install llama-cpp-python --prefer-binary --extra-index-url=https://jllllll.github.io/llama-cpp-python-cuBLAS-wheels/AVX2/cu118
-echo Installing PyTorch...
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-
-GOTO run
 
 :endScript
 echo Script execution complete.

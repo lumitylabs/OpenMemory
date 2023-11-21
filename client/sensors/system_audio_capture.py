@@ -1,3 +1,9 @@
+import sys
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+if script_dir not in sys.path:
+    sys.path.append(script_dir)
+    
 from intermediate_audio_capture import AudioCapture
 import pyaudiowpatch as pyaudio
 

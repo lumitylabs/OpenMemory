@@ -17,3 +17,5 @@ tiktoken==0.5.1
 Flask==3.0.0
 PyAudioWPatch==0.2.12.6
 pydantic==1.10.10
+pycaw==20230407
+docarray==0.32.1

@@ -5,9 +5,20 @@ import time
 from datetime import datetime
 import subprocess
 import psutil
+from pycaw.pycaw import AudioUtilities
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
-exe_path = os.path.join(current_dir, "../get_audio_procid.exe")
+
+def get_audio_emitting_processes():
+    sessions = AudioUtilities.GetAllSessions()
+    for session in sessions:
+        if session.Process and session.State == 1:
+            volume = session.SimpleAudioVolume.GetMasterVolume()
+            if volume > 0:
+                try:
+                    return(f"Process ID emitting audio: {session.ProcessId}")
+                except Exception as e:
+                    return(f"Process ID emitting audio: {session.ProcessId}, unable to retrieve process name. Error: {e}")
 
 
 class AudioCapture:
@@ -65,7 +76,7 @@ class AudioCapture:
             self.stream.close()
 
     def get_process_names(self):
-        process_output = subprocess.check_output(exe_path).decode()
+        process_output = get_audio_emitting_processes()
         lines = process_output.strip().split('\n')
         process_ids = []
 
