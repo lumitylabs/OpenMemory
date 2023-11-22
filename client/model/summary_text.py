@@ -8,31 +8,23 @@ import requests
 import sqlite3
 from database_manager import DatabaseManager
 import os
-from tokenizer import ExLlamaTokenizer
 import datetime
 import numpy as np
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+import argparse
+
+# Análise de argumentos
+parser = argparse.ArgumentParser(description='Process summary text.')
+parser.add_argument('--memory_id', type=int, help='Memory ID to process', default=None)
+args = parser.parse_args()
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-last_processed_record_path = os.path.join(current_directory,"last_processed_record.json")
-tokenizer_path = os.path.join(current_directory, "tokenizer.model")
-tokenizer = ExLlamaTokenizer(tokenizer_path)
 embedding_function = SentenceTransformerEmbeddings(model_name="intfloat/multilingual-e5-large", model_kwargs = {'device': 'cuda'})
 
-def init_last_processed_record():
-    try:
-        with open(last_processed_record_path, 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        initial_timestamp = '0'  # Valor inicial em formato Unix timestamp
-        with open(last_processed_record_path, 'w') as f:
-            json.dump({"audio_transcriptions_timestamp": initial_timestamp}, f)
-        return {"audio_transcriptions_timestamp": initial_timestamp}
 
 
 
-def aggregate_and_process(db_manager, last_processed_record):
-    last_processed_timestamp = last_processed_record.get("audio_transcriptions_timestamp")
+def aggregate_and_process(db_manager, memory_id=None):
     aggregated_content = ''
     last_timestamp = None
     start_timestamp = None
@@ -40,10 +32,22 @@ def aggregate_and_process(db_manager, last_processed_record):
     start_date_str = None
     start_time_str = None
 
+    query = "SELECT * FROM audio_transcriptions WHERE processed = FALSE"
+    params = []
+
+    if memory_id is not None:
+        query += " AND memory_id = ?"
+        params.append(memory_id)
+
+    query += " ORDER BY timestamp;"
+
     with db_manager.conn:
-        cursor = db_manager.conn.execute("SELECT * FROM audio_transcriptions WHERE timestamp > ? ORDER BY timestamp;", (last_processed_timestamp,))
+        cursor = db_manager.conn.execute(query, tuple(params))
+        ids_to_update = []
         for record in cursor:
-            id, date_str, time_str, type, content, timestamp, processes = record
+            
+            id, memory_id, date_str, time_str, type, content, timestamp, processes, processed = record
+            ids_to_update.append(id)
             record_timestamp = timestamp
 
             if start_timestamp is None:
@@ -62,9 +66,7 @@ def aggregate_and_process(db_manager, last_processed_record):
                 aggregated_content += f"\nAudio from {processes}:{content}"
             else:
                 end_timestamp = last_timestamp
-                process_aggregated_content(aggregated_content, db_manager, start_date_str, start_time_str, start_timestamp, end_timestamp)
-                last_processed_record["audio_transcriptions_timestamp"] = str(int(timestamp))
-                update_last_processed_record(last_processed_record)
+                process_aggregated_content(aggregated_content, db_manager, start_date_str, start_time_str, start_timestamp, end_timestamp, memory_id, ids_to_update)
 
                 start_timestamp = record_timestamp
                 start_date_str = date_str
@@ -75,9 +77,7 @@ def aggregate_and_process(db_manager, last_processed_record):
 
         if aggregated_content:
             end_timestamp = last_timestamp
-            process_aggregated_content(aggregated_content, db_manager, start_date_str, start_time_str, start_timestamp, end_timestamp)
-            last_processed_record["audio_transcriptions_timestamp"] = str(int(timestamp))
-            update_last_processed_record(last_processed_record)
+            process_aggregated_content(aggregated_content, db_manager, start_date_str, start_time_str, start_timestamp, end_timestamp, memory_id, ids_to_update)
 
 def is_topic_similar(topic1, topic2):
     text1 = embedding_function.embed_query(topic1)
@@ -86,7 +86,7 @@ def is_topic_similar(topic1, topic2):
     threshold = 0.85
     return similarity > threshold
 
-def process_aggregated_content(aggregated_content, db_manager, date_str, time_str, start_timestamp, end_timestamp):
+def process_aggregated_content(aggregated_content, db_manager, date_str, time_str, start_timestamp, end_timestamp, memory_id, ids_to_update):
     payload = {'data': aggregated_content}
 
     for _ in range(3):
@@ -105,19 +105,22 @@ def process_aggregated_content(aggregated_content, db_manager, date_str, time_st
             unix_start_timestamp = start_timestamp
             unix_end_timestamp = end_timestamp
             
-            db_manager.insert_activity(title, description, tags, reminders, date_str, time_str, unix_start_timestamp)
+            db_manager.insert_activity(memory_id, title, description, tags, reminders, date_str, time_str, unix_start_timestamp)
             # Convertendo para timestamp Unix antes de salvar
             
-            db_manager.insert_raw_idea(aggregated_content, unix_start_timestamp, unix_end_timestamp)
+            db_manager.insert_raw_idea(memory_id, aggregated_content, unix_start_timestamp, unix_end_timestamp)
+            update_processed_records(db_manager, ids_to_update)
+            ids_to_update.clear()
             return
         except Exception as e:
             print(e)
+            ids_to_update.clear()
             continue
 
-def update_last_processed_record(last_processed_record):
-    with open(last_processed_record_path, 'w') as f:
-        json.dump(last_processed_record, f)
+def update_processed_records(db_manager, ids):
+    placeholders = ', '.join(['?'] * len(ids))
+    query = f"UPDATE audio_transcriptions SET processed = TRUE WHERE id IN ({placeholders})"
+    db_manager.conn.execute(query, ids)
 
-last_processed_record = init_last_processed_record()
 db_manager = DatabaseManager()
-aggregate_and_process(db_manager, last_processed_record)
+aggregate_and_process(db_manager, args.memory_id)

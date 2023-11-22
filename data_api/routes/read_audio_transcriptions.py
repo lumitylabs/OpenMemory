@@ -1,5 +1,5 @@
-from databases import db
-from models import Activity, ScreenCapture
+from model.databases import db
+from model.models import Activity, ScreenCapture
 from fastapi import APIRouter
 from sqlalchemy import desc
 

@@ -7,6 +7,7 @@ import logging
 import sys
 import noisereduce as nr
 import librosa
+import argparse
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(current_directory)
 
@@ -33,7 +34,7 @@ class AudioProcessor:
         self.folder_path = f"temp/audio/{self.type}"
         self.processed_files = set()
 
-    def process_and_delete(self, types):
+    def process_and_delete(self, types, memory_id=None):
         # while True:
         try:
             for type in types:
@@ -54,12 +55,15 @@ class AudioProcessor:
                         rate = parts[1]
                         channels = parts[2]
                         proc = parts[3].split('(')[1].split(')')[0]
-
+                        mem_id = parts[4].replace(".npy","")
+                        if memory_id is not None and mem_id != memory_id:
+                            print("skip:" + mem_id)
+                            continue
 
                         audio_chunk = np.load(file_path)
                         transcribed_text = self.process_audio(audio_chunk, rate, channels)
                         if transcribed_text != "":
-                            self.save_to_db(date_str_new_format, time_str, transcribed_text, type, proc)
+                            self.save_to_db(mem_id, date_str_new_format, time_str, transcribed_text, type, proc)
                         
                         os.remove(file_path)
                         processed_files.add(filename)
@@ -89,10 +93,14 @@ class AudioProcessor:
         text = "".join(segment.text for segment in segments)
         return text
 
-    def save_to_db(self, date_str, time_str, text, type, proc):
-        db_manager.insert_audio_transcription(date_str, time_str, type, text, proc)
+    def save_to_db(self, mem_id, date_str, time_str, text, type, proc):
+        db_manager.insert_audio_transcription(mem_id, date_str, time_str, type, text, proc)
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Process audio files.')
+    parser.add_argument('--memory_id', nargs='?', default=None, help='Memory ID to filter files.')
+    args = parser.parse_args()
+
     types = ["system", "microfone"]
     processor = AudioProcessor()
-    processor.process_and_delete(types)
+    processor.process_and_delete(types, memory_id=args.memory_id)

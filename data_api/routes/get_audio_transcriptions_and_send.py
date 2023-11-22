@@ -1,28 +1,21 @@
 
 
-from models import AudioTranscriptions, RawIdeas
+from model.models import RawIdeas
 import os
 from datetime import datetime
-import textwrap
-import requests
-from io import StringIO
-from .tokenizer import ExLlamaTokenizer
-from fastapi import APIRouter
-from databases import db, embedding_function
+from fastapi import APIRouter, Query
+from model.databases import db, embedding_function
 from sqlalchemy import and_
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 from langchain.llms import LlamaCpp
 from langchain.schema import Document
 from langchain.vectorstores import DocArrayInMemorySearch
-from langchain.chains.question_answering import load_qa_chain
 
 app = APIRouter()
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 template_path = os.path.join(current_directory, "prompt_template.txt")
-tokenizer_path = os.path.join(current_directory, "tokenizer.model")
-tokenizer = ExLlamaTokenizer(tokenizer_path)
 
 prompt_template = ""
 with open(template_path, 'r') as file:
@@ -30,37 +23,32 @@ with open(template_path, 'r') as file:
 
 
 @app.get("/getAudioTranscriptionsAndSend/")
-async def get_audio_transcriptions_and_send(timestamps: str, question: str):
+async def get_audio_transcriptions_and_send(timestamps: str, question: str, memory_id: int = Query(None)):
     timestamps_int = [int(t) for t in timestamps.split(",")]
-
     formatted_data = []
 
     for timestamp in timestamps_int:
-        # Busca registros na tabela RawIdeas com start_timestamp igual ao timestamp atual
-        raw_idea = db.query(RawIdeas.content).filter(
-            RawIdeas.start_timestamp == timestamp
-        ).first()
+        query = db.query(RawIdeas.content).filter(RawIdeas.start_timestamp == timestamp)
+
+        # Apply memory_id filter if it's provided
+        if memory_id is not None:
+            query = query.filter(RawIdeas.memory_id == memory_id)
+
+        raw_idea = query.first()
 
         if raw_idea is not None:
-            human_readable_timestamp = datetime.fromtimestamp(
-                timestamp).strftime('%B %d, %Y %H:%M')
+            human_readable_timestamp = datetime.fromtimestamp(timestamp).strftime('%B %d, %Y %H:%M')
 
-            # Formata e adiciona o conteúdo à lista de dados formatados
             content = raw_idea.content
             while len(content) > 6000:
-                # Encontra um ponto seguro para quebrar o texto
                 break_point = content.rfind(" ", 0, 6000)
-                if break_point == -1: # Não encontrou um espaço, usa o limite
+                if break_point == -1: 
                     break_point = 6000
-
-                # Adiciona a parte do texto até o ponto de quebra
+                
                 formatted_line = f"Memory at {human_readable_timestamp}\nIdea: {content[:break_point]}\n"
                 formatted_data.append(formatted_line)
-
-                # Resto do texto para a próxima iteração
                 content = content[break_point:].lstrip()
 
-            # Adiciona o texto restante
             formatted_line = f"Memory at {human_readable_timestamp}\nIdea: {content}\n"
             formatted_data.append(formatted_line)
 
@@ -178,7 +166,21 @@ Summaries:
                                      "question_prompt": question_prompt_template, "combine_prompt": combine_prompt_template})
 
     result = qa.run(question)
-    return result
+#     question_formatted = f"""### System:
+#     You are an assistant that helps users answer questions with bright insights
+# ### User:
+# {question}
+# ### Assistant:
+# """
+#     ai_answer = llm(question_formatted)
+
+#     response = f"""Based on your ideas:
+# {result}
+
+# Response without context:
+# {ai_answer}
+# """
+    return result.replace("\n ", "\n")
 
     # response = requests.post('http://127.0.0.1:8004/inference', data={"data": textwrap.dedent(prompt)})
     # return response.text

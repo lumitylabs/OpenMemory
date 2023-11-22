@@ -11,18 +11,22 @@ current_dir = os.path.dirname(os.path.realpath(__file__))
 
 def get_audio_emitting_processes():
     sessions = AudioUtilities.GetAllSessions()
+    emitting_processes = []
     for session in sessions:
-        if session.Process and session.State == 1:
+        if session.Process and session.State == 1:  # Verifica se o processo está ativo
             volume = session.SimpleAudioVolume.GetMasterVolume()
-            if volume > 0:
+            if volume > 0:  # Verifica se o volume está acima de 0
                 try:
-                    return(f"Process ID emitting audio: {session.ProcessId}")
+                    process_name = psutil.Process(session.ProcessId).name()
+                    emitting_processes.append(f"{process_name} (PID: {session.ProcessId})".replace('.exe',""))
                 except Exception as e:
-                    return(f"Process ID emitting audio: {session.ProcessId}, unable to retrieve process name. Error: {e}")
+                    emitting_processes.append(f"Process ID: {session.ProcessId}, unable to retrieve name. Error: {e}")
+    
+    return emitting_processes
 
 
 class AudioCapture:
-    def __init__(self, target_device: dict, type, threshold=450, buffer_size=1024):
+    def __init__(self, target_device: dict, type, memory_id, threshold=450, buffer_size=1024):
         self.p = pyaudio.PyAudio()
         self.stream = self.p.open(format=pyaudio.paInt16, channels=target_device["maxInputChannels"], rate=int(target_device["defaultSampleRate"]), 
                                   input=True, frames_per_buffer=buffer_size, input_device_index=target_device["index"])
@@ -33,6 +37,7 @@ class AudioCapture:
         self.recording = False
         self.elapsed_time = 0
         self.type = type
+        self.memory_id = memory_id
         self.keep_running = True
         self.channels = target_device["maxInputChannels"]
         self.rate = int(target_device["defaultSampleRate"])
@@ -77,20 +82,20 @@ class AudioCapture:
 
     def get_process_names(self):
         process_output = get_audio_emitting_processes()
-        lines = process_output.strip().split('\n')
-        process_ids = []
+        process_names = []
 
-        for line in lines:
-            if ':' in line:
-                maybe_pid = line.split(':')[-1].strip()
-                if maybe_pid.isdigit():
-                    process_ids.append(int(maybe_pid))
+        for process_info in process_output:
+            parts = process_info.split(' (PID: ')
+            blacklist = ["python", "svchost"]
+            if len(parts) == 2 and parts[0] not in blacklist:
+                process_name = parts[0]
+                process_names.append(process_name)
 
-        if not process_ids:
+        if not process_names:
             return 'system' if not self.initial_process_names else ','.join(self.initial_process_names)
 
-        process_names = [psutil.Process(pid).name().replace('.exe', '') for pid in process_ids]
         return ','.join(process_names)
+
 
     def save_audio(self):
         print("Saving audio...")  
@@ -111,7 +116,7 @@ class AudioCapture:
             filename += f"-({concatenated_process_names})"
         else:
             filename += f"-({self.type})"
-
+        filename += f"-{self.memory_id}"
         file_path = os.path.join(folder_path, f"{filename}.npy")
         np.save(file_path, self.accumulated_audio)
         self.accumulated_audio = np.array([], dtype=np.float32)

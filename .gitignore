@@ -14,7 +14,7 @@
 /client/model/chroma/
 /client/model/last_processed_record.json
 /client/model/last_synced_record.json
-/launcher/miniconda
+/launcher/python_embedding/
 /build
 /builder/build
 /miniconda
