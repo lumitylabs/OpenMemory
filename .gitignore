@@ -8,6 +8,7 @@
 **/*.shm
 **/*.pyc
 **/*.7z
+**/*.zip
 /client/temp/
 /client/data/
 /client/config.json
