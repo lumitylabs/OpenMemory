@@ -65,13 +65,10 @@ async def import_memory(file: UploadFile = File(...), db: AsyncSession = Depends
 
             file_extension = os.path.splitext(original_path)[1]
             timestamp = screencapture_data.get("timestamp")
-            new_file_name = f"{new_memory_id}_{timestamp}{file_extension}"
-
-            # Final path for the file
-            final_path = os.path.join('..', 'client', 'data', 'screencapture', new_file_name)
+            new_file_name = f"{new_memory_id}/{timestamp}{file_extension}"
             
             screencapture = ScreenCapture(**screencapture_data)
-            screencapture.path = final_path
+            screencapture.path = new_file_name
             screencapture.memory_id = new_memory_id
             session.add(screencapture)
 
