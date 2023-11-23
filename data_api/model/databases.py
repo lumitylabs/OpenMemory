@@ -6,7 +6,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-
+import sys
+import subprocess
 
 
 async def get_db():
@@ -24,6 +25,9 @@ def load_vector_database():
         embedding_function=embedding_function,
 )
     
+databaseManager = "../client/model/initialize_database_manager.py"
+command = f"{sys.executable} {databaseManager}"
+process = subprocess.Popen(command)
 DATABASE_URL = "sqlite+aiosqlite:///../client/model/database.db"
 async_engine = create_async_engine(DATABASE_URL)
 AsyncSessionLocal = sessionmaker(bind=async_engine, class_=AsyncSession)
