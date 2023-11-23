@@ -29,3 +29,4 @@ node_modules/
 /electron-packager/
 /electron-builder-out/
 /*.log
+
