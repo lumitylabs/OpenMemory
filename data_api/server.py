@@ -22,6 +22,11 @@ import routes.processors.process_memory
 import routes.export_memory
 import routes.import_memory
 import routes.delete_memory
+import routes.memories
+import routes.set_sensor
+import routes.select_memory
+import routes.load_config
+
 app = FastAPI()
 origins = [
     "*",
@@ -44,6 +49,7 @@ app.include_router(routes.create_memory.app)
 app.include_router(routes.export_memory.app)
 app.include_router(routes.import_memory.app)
 app.include_router(routes.delete_memory.app)
+app.include_router(routes.memories.app)
 app.include_router(routes.vector_search.app)
 app.include_router(routes.sensors.start_sensor.app)
 app.include_router(routes.sensors.stop_sensor.app)
@@ -51,3 +57,6 @@ app.include_router(routes.sensors.stop_all.app)
 app.include_router(routes.sensors.running_sensors.app)
 app.include_router(routes.processors.process_all.app)
 app.include_router(routes.processors.process_memory.app)
+app.include_router(routes.set_sensor.app)
+app.include_router(routes.select_memory.app)
+app.include_router(routes.load_config.app)
