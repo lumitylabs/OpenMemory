@@ -4,16 +4,21 @@ from sqlalchemy.orm import relationship
 from pydantic import BaseModel
 from typing import List
 from sqlalchemy import DDL
-from .databases import engine
+from sqlalchemy.inspection import inspect
 
 Base = declarative_base()
 
-class Memory(Base):
+class BaseMixin:
+    def to_dict(self):
+        # Retorna um dicionário com todos os campos mapeáveis para um modelo SQLAlchemy.
+        return {c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs}
+    
+class Memory(BaseMixin, Base):
     __tablename__ = 'memory'
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
 
-class Activity(Base):
+class Activity(BaseMixin,Base):
     __tablename__ = 'activities'
     id = Column(Integer, primary_key=True, index=True)
     memory_id = Column(Integer, ForeignKey('memory.id'))
@@ -27,7 +32,7 @@ class Activity(Base):
     processed = Column(Boolean, default=False, index=True)
     memory = relationship("Memory")
 
-class AudioTranscriptions(Base):
+class AudioTranscriptions(BaseMixin,Base):
     __tablename__ = 'audio_transcriptions'
     id = Column(Integer, primary_key=True, index=True)
     memory_id = Column(Integer, ForeignKey('memory.id'))
@@ -40,7 +45,7 @@ class AudioTranscriptions(Base):
     processed = Column(Boolean, default=False, index=True)
     memory = relationship("Memory")
 
-class RawIdeas(Base):
+class RawIdeas(BaseMixin,Base):
     __tablename__ = 'raw_ideas'
     id = Column(Integer, primary_key=True, index=True)
     memory_id = Column(Integer, ForeignKey('memory.id'))
@@ -50,7 +55,7 @@ class RawIdeas(Base):
     processed = Column(Boolean, default=False, index=True)
     memory = relationship("Memory")
 
-class ScreenCapture(Base):
+class ScreenCapture(BaseMixin,Base):
     __tablename__ = 'screencapture'
     timestamp = Column(Float, primary_key=True, index=True)
     memory_id = Column(Integer, ForeignKey('memory.id'))
@@ -63,9 +68,4 @@ class VectorSearchResults(BaseModel):
     documents: List[str]
     distances: List[float]
 
-# Create an index if it doesn't exist
-create_index = DDL("CREATE INDEX IF NOT EXISTS idx_timestamp ON audio_transcriptions (timestamp)")
 
-# Execute the DDL instruction
-with engine.begin() as conn:
-    conn.execute(create_index)

@@ -7,6 +7,10 @@ import numpy as np
 from skimage.metrics import structural_similarity as ssim
 import cv2
 import sys
+import argparse  # Import argparse for command-line parsing
+script_dir = os.path.dirname(os.path.abspath(__file__))
+if script_dir not in sys.path:
+    sys.path.append(script_dir)
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(current_directory)
 sys.path.append(parent_directory)
@@ -38,7 +42,7 @@ def capture_screenshot():
         img = Image.frombytes("RGB", screenshot.size, screenshot.bgra, "raw", "BGRX")
         return img
 
-def save_screenshot(img):
+def save_screenshot(img, memory_id):
     global prev_file_path, prev_end_date
 
     base_height = 720
@@ -74,13 +78,16 @@ def save_screenshot(img):
             db_manager.update_screencapture(prev_end_date, f"{date_str}/{timestamp}.webp", end_date)
             os.remove(prev_file_path)
         else:
-            db_manager.insert_screencapture(timestamp, f"{date_str}/{timestamp}.webp", start_date, end_date, process_name)
+            db_manager.insert_screencapture(memory_id, timestamp, f"{date_str}/{timestamp}.webp", start_date, end_date, process_name)
 
     prev_file_path = file_path
     prev_end_date = end_date
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Screen Capture Script")
+    parser.add_argument("--memory_id", type=str, help="Memory ID for screen capture", default="0")
+    args = parser.parse_args()
     while True:
         img = capture_screenshot()
-        save_screenshot(img)
+        save_screenshot(img, args.memory_id)
         time.sleep(60)

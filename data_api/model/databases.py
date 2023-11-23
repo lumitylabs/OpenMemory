@@ -3,8 +3,15 @@ from langchain.vectorstores import Chroma
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
 
 
+
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
 
 def load_vector_database():
     global langchain_chroma
@@ -17,10 +24,10 @@ def load_vector_database():
         embedding_function=embedding_function,
 )
     
-DATABASE_URL = "sqlite:///../client/model/database.db"
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-db = SessionLocal()
+DATABASE_URL = "sqlite+aiosqlite:///../client/model/database.db"
+async_engine = create_async_engine(DATABASE_URL)
+AsyncSessionLocal = sessionmaker(bind=async_engine, class_=AsyncSession)
+
 langchain_chroma = None
 embedding_function = SentenceTransformerEmbeddings(model_name="intfloat/multilingual-e5-large", model_kwargs = {'device': 'cuda'})
 load_vector_database()

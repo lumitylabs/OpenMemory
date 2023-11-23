@@ -4,14 +4,18 @@ from model.models import RawIdeas
 import os
 from datetime import datetime
 from fastapi import APIRouter, Query
-from model.databases import db, embedding_function
+from model.databases import AsyncSessionLocal, get_db, embedding_function
 from sqlalchemy import and_
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 from langchain.llms import LlamaCpp
 from langchain.schema import Document
 from langchain.vectorstores import DocArrayInMemorySearch
-
+from fastapi import Depends
+from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from model.models import RawIdeas
 app = APIRouter()
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -23,34 +27,38 @@ with open(template_path, 'r') as file:
 
 
 @app.get("/getAudioTranscriptionsAndSend/")
-async def get_audio_transcriptions_and_send(timestamps: str, question: str, memory_id: int = Query(None)):
+async def get_audio_transcriptions_and_send(timestamps: str, question: str, memory_id: int = Query(None), db: AsyncSession = Depends(get_db)):
     timestamps_int = [int(t) for t in timestamps.split(",")]
     formatted_data = []
 
-    for timestamp in timestamps_int:
-        query = db.query(RawIdeas.content).filter(RawIdeas.start_timestamp == timestamp)
+    async with db as session:
+        for timestamp in timestamps_int:
+            # Constructing the select statement for RawIdeas
+            raw_ideas_stmt = select(RawIdeas).filter(RawIdeas.start_timestamp == timestamp)
 
-        # Apply memory_id filter if it's provided
-        if memory_id is not None:
-            query = query.filter(RawIdeas.memory_id == memory_id)
+            if memory_id is not None:
+                raw_ideas_stmt = raw_ideas_stmt.filter(RawIdeas.memory_id == memory_id)
 
-        raw_idea = query.first()
+            result = await session.execute(raw_ideas_stmt)
+            raw_idea = result.scalars().first()
 
-        if raw_idea is not None:
-            human_readable_timestamp = datetime.fromtimestamp(timestamp).strftime('%B %d, %Y %H:%M')
+            if raw_idea is not None:
+                content = raw_idea.content  # Now raw_idea should have a 'content' attribute
+                human_readable_timestamp = datetime.fromtimestamp(timestamp).strftime('%B %d, %Y %H:%M')
 
-            content = raw_idea.content
-            while len(content) > 6000:
-                break_point = content.rfind(" ", 0, 6000)
-                if break_point == -1: 
-                    break_point = 6000
-                
-                formatted_line = f"Memory at {human_readable_timestamp}\nIdea: {content[:break_point]}\n"
+
+                content = raw_idea.content
+                while len(content) > 6000:
+                    break_point = content.rfind(" ", 0, 6000)
+                    if break_point == -1: 
+                        break_point = 6000
+                    
+                    formatted_line = f"Memory at {human_readable_timestamp}\nIdea: {content[:break_point]}\n"
+                    formatted_data.append(formatted_line)
+                    content = content[break_point:].lstrip()
+
+                formatted_line = f"Memory at {human_readable_timestamp}\nIdea: {content}\n"
                 formatted_data.append(formatted_line)
-                content = content[break_point:].lstrip()
-
-            formatted_line = f"Memory at {human_readable_timestamp}\nIdea: {content}\n"
-            formatted_data.append(formatted_line)
 
     documents = [Document(page_content=s) for s in formatted_data]
 

@@ -102,6 +102,13 @@ class DatabaseManager:
             """)
 
     # Insert methods with memory_id
+    def insert_memory(self, name):
+        with self.conn:
+            self.conn.execute("""
+                INSERT INTO raw_ideas (name)
+                VALUES (?);
+            """, (name))
+
     def insert_raw_idea(self, memory_id, content, start_timestamp, end_timestamp):
         with self.conn:
             self.conn.execute("""
