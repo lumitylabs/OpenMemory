@@ -21,6 +21,7 @@ import routes.processors.process_all
 import routes.processors.process_memory
 import routes.export_memory
 import routes.import_memory
+import routes.delete_memory
 app = FastAPI()
 origins = [
     "*",
@@ -42,6 +43,7 @@ app.include_router(routes.read_filtered_audio_transcriptions.app)
 app.include_router(routes.create_memory.app)
 app.include_router(routes.export_memory.app)
 app.include_router(routes.import_memory.app)
+app.include_router(routes.delete_memory.app)
 app.include_router(routes.vector_search.app)
 app.include_router(routes.sensors.start_sensor.app)
 app.include_router(routes.sensors.stop_sensor.app)
