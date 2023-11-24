@@ -16,6 +16,8 @@ import routes.sensors.start_sensor
 import routes.sensors.stop_sensor
 import routes.sensors.stop_all
 import routes.sensors.running_sensors
+import routes.sensors.start_capture
+import routes.sensors.stop_capture
 import routes.vector_search
 import routes.processors.process_all
 import routes.processors.process_memory
@@ -56,6 +58,8 @@ app.include_router(routes.sensors.start_sensor.app)
 app.include_router(routes.sensors.stop_sensor.app)
 app.include_router(routes.sensors.stop_all.app)
 app.include_router(routes.sensors.running_sensors.app)
+app.include_router(routes.sensors.start_capture.app)
+app.include_router(routes.sensors.stop_capture.app)
 app.include_router(routes.processors.process_all.app)
 app.include_router(routes.processors.process_memory.app)
 app.include_router(routes.processors.process_vector_database.app)
