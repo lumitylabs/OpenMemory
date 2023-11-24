@@ -26,6 +26,7 @@ import routes.memories
 import routes.set_sensor
 import routes.select_memory
 import routes.load_config
+import routes.processors.process_vector_database
 
 app = FastAPI()
 origins = [
@@ -57,6 +58,7 @@ app.include_router(routes.sensors.stop_all.app)
 app.include_router(routes.sensors.running_sensors.app)
 app.include_router(routes.processors.process_all.app)
 app.include_router(routes.processors.process_memory.app)
+app.include_router(routes.processors.process_vector_database.app)
 app.include_router(routes.set_sensor.app)
 app.include_router(routes.select_memory.app)
 app.include_router(routes.load_config.app)
