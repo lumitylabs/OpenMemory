@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, globalShortcut } from 'electron'
 
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -61,6 +61,10 @@ function createWindow(): void {
   ipcMain.on('minimize-app', () => {
     console.log("minimize-app")
     mainWindow.minimize();
+  });
+
+  ipcMain.on('toggle-capture', () => {
+    mainWindow.webContents.send('toggle-capture')
   });
   
   ipcMain.on('close-app', () => {
@@ -148,6 +152,7 @@ app.on('before-quit', stopServer);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    globalShortcut.unregisterAll()
     stopServer();
     app.quit()
   }

@@ -12,7 +12,9 @@ const {
   onDataApiMessageUpdate,
   removeProcessDataUpdateListener,
   removeWebServerUpdateListener,
-  removeDataApiMessageUpdateListener
+  removeDataApiMessageUpdateListener,
+  onToggleCapture,
+  removeToggleCaptureListener
 } = window.electron
 
 interface DeviceContextType {
@@ -24,6 +26,7 @@ interface DeviceContextType {
   processDataUpdate: String
   webServerUpdate: String
   dataServerUpdate: String
+  isCapturing: boolean
 }
 
 export const DeviceContext = createContext<DeviceContextType>({
@@ -40,16 +43,30 @@ export const DeviceContext = createContext<DeviceContextType>({
   startWebServer: () => {
     throw new Error('processData function must be overridden')
   },
+  isCapturing: false,
   processDataUpdate: '',
   webServerUpdate: '',
   dataServerUpdate: ''
 })
 
 export const DeviceProvider = ({ children }) => {
+  const [isCapturing, setIsCapturing] = useState(false)
   const [deviceStatus, setDeviceStatus] = useState({})
   const [processDataUpdate, setProcessDataUpdate] = useState('')
   const [webServerUpdate, setWebServerUpdate] = useState('')
   const [dataServerUpdate, setDataServerUpdate] = useState('')
+
+  useEffect(() => {
+    const toggleCapture = () => {
+      setIsCapturing(prev => !prev);
+    }
+
+    onToggleCapture(toggleCapture);
+
+    return () => {
+      removeToggleCaptureListener();
+    }
+  }, [])
 
   useEffect(() => {
     const updateStatus = (_, device, status) => {
@@ -109,7 +126,8 @@ export const DeviceProvider = ({ children }) => {
         startWebServer,
         processDataUpdate,
         webServerUpdate,
-        dataServerUpdate
+        dataServerUpdate,
+        isCapturing
       }}
     >
       {children}

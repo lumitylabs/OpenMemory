@@ -1,11 +1,11 @@
 import './index.css'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import MulticolorComponent from './components/manager/MulticolorComponent'
 import { DeviceContext } from './DeviceContext'
 import { useContext } from 'react'
 import axios from 'axios'
-import { is } from '@electron-toolkit/utils'
+
 
 const KeyBG = (props: { text: string }) => {
   return (
@@ -123,6 +123,7 @@ const Application = () => {
   const [memoryName, setMemoryName] = useState('Default Memory')
   const [processing, setProcessing] = useState(false)
   const [capturing, setCapturing] = useState(false)
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     axios.get('http://localhost:8000/load_config').then((response) => {
@@ -139,17 +140,26 @@ const Application = () => {
   }
 
   const handleCapture = () => {
+    setCapturing(!capturing);
     if (!capturing) {
-      axios.post('http://localhost:8000/start_capture')
+      axios.post('http://localhost:8000/start_capture');
     } else {
-      axios.post('http://localhost:8000/stop_capture')
+      axios.post('http://localhost:8000/stop_capture');
     }
-    setCapturing(!capturing)
-  }
+  };
 
-  const { startWebServer, webServerUpdate  } = useContext(DeviceContext)
+  const { startWebServer, webServerUpdate, isCapturing  } = useContext(DeviceContext)
   const isRunning = (webServerUpdate === '' || webServerUpdate === 'Done') ? false : true
-  console.log(webServerUpdate);
+  useEffect(() => {
+    console.log('isCapturing', isCapturing)
+    if(isCapturing){
+      window.api.send('toggle-capture', {})
+      handleCapture();
+    }
+    
+    
+  }, [isCapturing]);
+
   return (
     <div>
       <div id="title-bar" className="text-[#FFFFFF] flex flex-col select-none">
