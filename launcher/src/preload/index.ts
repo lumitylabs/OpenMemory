@@ -13,14 +13,17 @@ if (process.contextIsolated) {
       
       startDevice: (device, path) => ipcRenderer.send('start-device', device, path),
       processData: () => ipcRenderer.send('process-data'),
+      startDataServer: () => ipcRenderer.send('start-data-server'),
       startWebServer: () => ipcRenderer.send('start-web-server'),
       stopDevice: (device) => ipcRenderer.send('stop-device', device),
       onStatusUpdate: (callback) => ipcRenderer.on('status-update', callback),
       onProcessDataUpdate: (callback) => ipcRenderer.on('process-data-update', callback),
       onWebServerUpdate: (callback) => ipcRenderer.on('web-server-update', callback),
+      onDataApiMessageUpdate: (callback) => ipcRenderer.on('data-api-message', callback),
       removeStatusUpdateListener: () => ipcRenderer.removeAllListeners('status-update'),
       removeProcessDataUpdateListener: () => ipcRenderer.removeAllListeners('process-data-update'),
-      removeWebServerUpdateListener: () => ipcRenderer.removeAllListeners('web-server-update')
+      removeWebServerUpdateListener: () => ipcRenderer.removeAllListeners('web-server-update'),
+      removeDataApiMessageUpdateListener: () => ipcRenderer.removeAllListeners('data-api-message')
     });
     contextBridge.exposeInMainWorld('api', {
       send: (channel: string, data: any) => {

@@ -5,7 +5,7 @@ from model.load_or_create_config import load_or_create_config
 
 from model.sensor_config import SensorConfig
 app = APIRouter()
-config_file = "config.json"
+config_file = "data_config.json"
 
 @app.get("/load_config/")
 async def load_config():

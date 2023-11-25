@@ -1,7 +1,7 @@
 import json
 from model.sensor_config import SensorConfig
 
-config_file = "config.json"
+config_file = "data_config.json"
 
 def load_or_create_config():
     try:

@@ -25,7 +25,7 @@ async def set_sensor(data: SensorData):
         print(data)
         print(data.state)
         if data.state:
-            await start_sensor(data.sensor_name,config['selected_memory'])
+            await start_sensor(data.sensor_name,config['selected_memory']['id'])
         else:
             await stop_sensor(data.sensor_name)
 

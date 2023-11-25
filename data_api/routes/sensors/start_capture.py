@@ -14,7 +14,7 @@ async def start_capture():
     config = await load_config()
     for sensor_name in config['sensors'].keys():
         if(config['sensors'][sensor_name]):
-            await start_sensor(sensor_name, config['selected_memory'])
+            await start_sensor(sensor_name, config['selected_memory']['id'])
     
     module_globals.is_capturing = True
     print(module_globals.is_capturing)
