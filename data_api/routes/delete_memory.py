@@ -9,7 +9,7 @@ import shutil
 import aiofiles
 import asyncio
 from fastapi import HTTPException
-
+from sqlalchemy import text
 app = APIRouter()
 
 @app.delete("/delete_memory/{memory_id}")
@@ -19,7 +19,8 @@ async def delete_memory(memory_id: int, db: AsyncSession = Depends(get_db)):
         if not memory:
             raise HTTPException(status_code=404, detail="Memory not found")
 
-        screencaptures = await session.execute("SELECT path FROM screencapture WHERE memory_id = :memory_id", {'memory_id': memory_id})
+        screencaptures = await session.execute(text("SELECT path FROM screencapture WHERE memory_id = :memory_id"), {'memory_id': memory_id})
+
         paths = [result[0] for result in screencaptures]
 
         for path in paths:
@@ -32,11 +33,11 @@ async def delete_memory(memory_id: int, db: AsyncSession = Depends(get_db)):
             # Excluir a pasta e seu conteúdo
             shutil.rmtree(folder_path)
 
-        await session.execute("DELETE FROM audio_transcriptions WHERE memory_id = :memory_id", {'memory_id': memory_id})
-        await session.execute("DELETE FROM screencapture WHERE memory_id = :memory_id", {'memory_id': memory_id})
-        await session.execute("DELETE FROM raw_ideas WHERE memory_id = :memory_id", {'memory_id': memory_id})
-        await session.execute("DELETE FROM activities WHERE memory_id = :memory_id", {'memory_id': memory_id})
-        await session.execute("DELETE FROM memory WHERE id = :memory_id", {'memory_id': memory_id})
+        await session.execute(text("DELETE FROM audio_transcriptions WHERE memory_id = :memory_id"), {'memory_id': memory_id})
+        await session.execute(text("DELETE FROM screencapture WHERE memory_id = :memory_id"), {'memory_id': memory_id})
+        await session.execute(text("DELETE FROM raw_ideas WHERE memory_id = :memory_id"), {'memory_id': memory_id})
+        await session.execute(text("DELETE FROM activities WHERE memory_id = :memory_id"), {'memory_id': memory_id})
+        await session.execute(text("DELETE FROM memory WHERE id = :memory_id"), {'memory_id': memory_id})
         await session.commit()
 
         return {"message": "Memory and associated data deleted successfully"}
