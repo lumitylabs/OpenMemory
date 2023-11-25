@@ -19,12 +19,14 @@ function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 350,
-    height: 400,
+    height: 520,
     show: false,
     resizable: false,
     maximizable: false,
     fullscreenable: false,
     autoHideMenuBar: true,
+    icon: icon,
+    frame: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       contextIsolation: true,
@@ -33,6 +35,15 @@ function createWindow(): void {
     }
   })
   
+  ipcMain.on('minimize-app', () => {
+    console.log("minimize-app")
+    mainWindow.minimize();
+  });
+  
+  ipcMain.on('close-app', () => {
+    mainWindow.close();
+  });
+
   ipcMain.on('start-device', (event, device, path) => {
     mainWindow.setTitle("DONE")
     startPythonProcess(device, path);

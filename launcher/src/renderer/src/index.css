@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Mada:wght@400;500;600;700;800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@400;500;600;700;800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap");
@@ -42,7 +42,7 @@
     
   }
   body{
-    background: #1B1B1B;
+    background: #000000;
   }
   
   .custom-shadow {
@@ -116,4 +116,63 @@
   .scrollbar-hide {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
+  }
+  
+  #title-bar {
+    -webkit-app-region: drag;
+
+  }
+  
+  #window-controls {
+    -webkit-app-region: no-drag;
+    display: flex;
+    align-items: center;
+  }
+  
+  .button {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  
+  #close-btn {
+    background-color: red;
+  }
+  
+  #minimize-btn {
+    background-color: yellow;
+  }
+
+  .magicbutton {
+    background: linear-gradient(90deg,#9BCFED,#E393FF,#BCCFD6,#9BCFED);
+    background-size: 400%;
+
+
+  }
+
+  .magicbutton:hover {
+    animation: ani 7s linear infinite;
+    border: none;
+  }
+
+  .magicbutton:hover::before {
+    filter: blur(20px);
+  }
+
+  button:active {
+    background: linear-gradient(32deg,#9BCFED,#E393FF,#BCCFD6,#9BCFED);
+  }
+
+  @keyframes ani {
+    0% {
+      background-position: 0%;
+    }
+  
+    100% {
+      background-position: 400%;
+    }
   }
