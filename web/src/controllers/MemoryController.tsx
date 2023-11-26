@@ -22,9 +22,10 @@ const MAX_MEMORIES_COUNT = 200;
 
 function MemoryController() {
   const [memories, setMemories] = useState<any>([]);
+  const [searchDone, setSearchDone] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [filteredTimestamps, setFilteredTimestamps] = useState<number[]>([]);
-  const stringProcesses = ["all"];
+  const stringProcesses = ["All Memories"];
   const [selectedProcess, setSelectedProcess] = useState<string>("all");
   const [search, setSearch] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
@@ -45,6 +46,7 @@ function MemoryController() {
       selectedProcess,
       setFilteredTimestamps
     );
+    setSearchDone(true);
   };
 
   const fetchMoreData = async () => {
@@ -105,7 +107,7 @@ function MemoryController() {
   var imgBase = "http://localhost:8000/screencaptures/";
 
   return (
-    <div className="flex justify-center items-center flex-col">
+    <div className="overflow-auto p-9">
       {/* Modal para seleção de data */}
       <DataPickerModal
         showModal={showModal}
@@ -115,7 +117,6 @@ function MemoryController() {
         setState={setState}
       ></DataPickerModal>
 
-      <div className="text-white text-4xl font-Saira mb-20 ">Memories</div>
       <FullSearchBar
         setSearch={setSearch}
         stringProcesses={stringProcesses}
@@ -125,10 +126,11 @@ function MemoryController() {
         state={state[0]}
         handleSearch={handleSearch}
       ></FullSearchBar>
+
       {generativeAnswer !== null ? (
         generativeAnswer == "Loading..." ? (
-          <div className="bg-[#2C2C2C] border border-[#A3A3A3] rounded-xl p-10 mb-[120px]">
-            <div className="inline-flex items-center gap-3 text-2xl font-semibold tracking-[-0.05em]">
+          <div className="bg-[#000] border border-[#444444] rounded-[27px] p-9 mb-[81px]">
+            <div className="inline-flex items-center gap-3 text-2xl font-Mada font-semibold tracking-tight">
               <motion.div
                 initial={{ scale: 1 }}
                 animate={{ scale: [1, 1.04, 1] }}
@@ -136,20 +138,20 @@ function MemoryController() {
               >
                 <ImgComponent name="BlueBrain" type="brain-logo" />
               </motion.div>
-              <div className="bg-clip-text text-transparent bg-gradient-to-l from-[#CA76FF] to-[#23BDFF] looping-gradient">
+              <div className="font-Muda bg-clip-text text-transparent bg-gradient-to-l from-[#CA76FF] to-[#23BDFF] looping-gradient">
                 Generating...
               </div>
             </div>
-            <div className="text-[#B3B3B3] 2xl:w-[1000px] lg:w-[500px] iphone5:w-[300px] w-[190px] mt-3 overflow-y-auto overflow-scroll-y max-h-[300px]">
+            <div className="font-Muda font-semibold text-[#B3B3B3] 2xl:w-[1000px] lg:w-[500px] iphone5:w-[300px] w-[190px] mt-3 overflow-y-auto overflow-scroll-y max-h-[300px]">
               {generativeAnswer}
             </div>
           </div>
         ) : (
-          <div className="bg-[#2C2C2C] border border-[#A3A3A3] rounded-xl p-10 mb-[120px] ">
-            <div className="inline-flex items-center gap-3 text-2xl font-semibold  tracking-[-0.05em]">
+          <div className="bg-[#000] border border-[#444444] rounded-[27px] p-9 mb-[81px] ">
+            <div className="inline-flex items-center gap-3 text-2xl font-Mada font-semibold  tracking-tight">
               <ImgComponent name="BlueBrain" type="brain-logo"></ImgComponent>
               <div className="fade-in-wrapper">
-                <div className="bg-clip-text text-transparent bg-gradient-to-l from-[#CA76FF] to-[#23BDFF]">
+                <div className="font-Muda bg-clip-text text-transparent bg-gradient-to-l from-[#CA76FF] to-[#23BDFF]">
                   Generative AI Memory
                 </div>
               </div>
@@ -163,6 +165,10 @@ function MemoryController() {
         ""
       )}
 
+      <h1 className="font-Mada font-extrabold flex w-full text-[60px] text-[#333232] select-none">
+        {searchDone ? "Related Idea" : "Latest Ideas"}
+      </h1>
+
       <InfiniteScroll
         dataLength={memories.length}
         next={
@@ -173,8 +179,8 @@ function MemoryController() {
         hasMore={hasMore}
         loader={<h4>Loading...</h4>}
         endMessage={
-          <p className="text-white ml-12">
-            <b>Yay! You have seen it all</b>
+          <p className="flex font-Muda font-semibold justify-center text-[#333333] ml-12 select-none">
+            <span>Yay! You have seen it all.</span>
           </p>
         }
       >

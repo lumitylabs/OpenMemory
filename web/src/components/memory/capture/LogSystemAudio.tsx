@@ -1,5 +1,5 @@
 import { convertTimestampToHoursMinutes } from "../../../utils/utils";
-import MulticolorComponent from "../../general/manager/MulticolorComponent";
+import MulticolorComponent from "../../general/manager/svg-manager/MulticolorComponent";
 
 export function LogSystemAudio(props: any) {
   return (
@@ -16,7 +16,8 @@ export function LogSystemAudio(props: any) {
             baseColor={""}
             selectedColor={""}
             isSelected={false}
-            classParameters={""} />
+            classParameters={""}
+          />
           {props.item.processes.replace(",", ", ")}
         </div>
         {props.item.content}

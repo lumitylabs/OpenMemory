@@ -1,13 +1,19 @@
-import ImgComponent from "../../general/manager/img-manager/ImgComponent";
+import MulticolorComponent from "../../general/manager/svg-manager/MulticolorComponent";
 
 export function InfoMemoryCardButton(props: any) {
   return (
-    <div
-      className="text-white border-2 iphone5:w-[90px] xl:w-[100px] flex justify-center p-1 rounded-full custom-shadow select-none cursor-pointer gap-2 items-center"
+    <button
+      className="flex gap-2 border-2 iphone5:w-[90px] xl:w-[120px] justify-center p-1 rounded-[16px] custom-shadow hover:shadow-none hover:bg-[#fff] hover:bg-opacity-10 items-center select-none transition duration-300 ease-in-out"
       onClick={() => (window.location.href = "/memory/" + props.timestamp)}
     >
-      <ImgComponent name="Brain" type="icons-button" />
-      <div className="text-sm xl:text-base">Remind</div>
-    </div>
+      <MulticolorComponent
+        name="Logo"
+        baseColor="#fff"
+        selectedColor=""
+        isSelected={false}
+        classParameters="h-[34px] w-[24px]"
+      />
+      <div className="font-Mada text-white text-[18px]">Remind</div>
+    </button>
   );
 }

@@ -1,4 +1,3 @@
-
 import MulticolorSvgData from "./MulticolorData";
 
 interface MulticolorComponentProps {
