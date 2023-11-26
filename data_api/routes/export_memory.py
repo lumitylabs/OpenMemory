@@ -52,7 +52,10 @@ async def export_memory(memory_id: int, background_tasks: BackgroundTasks, db: A
         image_dest_path = f"{export_dir}/{screencapture.path}"
 
         os.makedirs(os.path.dirname(image_dest_path), exist_ok=True)  # Cria subdiretórios, se necessário
-        shutil.copy2(image_src_path, image_dest_path)
+        try:
+            shutil.copy2(image_src_path, image_dest_path)
+        except:
+            continue
 
     # Create a zip file
     zip_path = f"{export_dir}.zip"

@@ -1,0 +1,33 @@
+#title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    -webkit-app-region: drag;
+    background-color: #333;
+    color: white;
+    padding: 8px;
+  }
+  
+  #window-controls {
+    -webkit-app-region: no-drag;
+    display: flex;
+    align-items: center;
+  }
+  
+  .button {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  
+  #close-btn {
+    background-color: red;
+  }
+  
+  #minimize-btn {
+    background-color: yellow;
+  }

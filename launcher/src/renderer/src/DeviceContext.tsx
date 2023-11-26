@@ -9,8 +9,12 @@ const {
   startWebServer,
   onProcessDataUpdate,
   onWebServerUpdate,
+  onDataApiMessageUpdate,
   removeProcessDataUpdateListener,
-  removeWebServerUpdateListener
+  removeWebServerUpdateListener,
+  removeDataApiMessageUpdateListener,
+  onToggleCapture,
+  removeToggleCaptureListener
 } = window.electron
 
 interface DeviceContextType {
@@ -21,6 +25,8 @@ interface DeviceContextType {
   startWebServer: () => void
   processDataUpdate: String
   webServerUpdate: String
+  dataServerUpdate: String
+  isCapturing: boolean
 }
 
 export const DeviceContext = createContext<DeviceContextType>({
@@ -37,14 +43,30 @@ export const DeviceContext = createContext<DeviceContextType>({
   startWebServer: () => {
     throw new Error('processData function must be overridden')
   },
+  isCapturing: false,
   processDataUpdate: '',
-  webServerUpdate: ''
+  webServerUpdate: '',
+  dataServerUpdate: ''
 })
 
 export const DeviceProvider = ({ children }) => {
+  const [isCapturing, setIsCapturing] = useState(false)
   const [deviceStatus, setDeviceStatus] = useState({})
   const [processDataUpdate, setProcessDataUpdate] = useState('')
   const [webServerUpdate, setWebServerUpdate] = useState('')
+  const [dataServerUpdate, setDataServerUpdate] = useState('')
+
+  useEffect(() => {
+    const toggleCapture = () => {
+      setIsCapturing(prev => !prev);
+    }
+
+    onToggleCapture(toggleCapture);
+
+    return () => {
+      removeToggleCaptureListener();
+    }
+  }, [])
 
   useEffect(() => {
     const updateStatus = (_, device, status) => {
@@ -82,6 +104,18 @@ export const DeviceProvider = ({ children }) => {
     }
   }, [])
 
+  useEffect(() => {
+    const updateStatus = (_, status) => {
+      setDataServerUpdate(status)
+    }
+
+    onDataApiMessageUpdate(updateStatus)
+
+    return () => { 
+      removeDataApiMessageUpdateListener()
+    }
+  }, [])
+
   return (
     <DeviceContext.Provider
       value={{
@@ -91,7 +125,9 @@ export const DeviceProvider = ({ children }) => {
         processData,
         startWebServer,
         processDataUpdate,
-        webServerUpdate
+        webServerUpdate,
+        dataServerUpdate,
+        isCapturing
       }}
     >
       {children}

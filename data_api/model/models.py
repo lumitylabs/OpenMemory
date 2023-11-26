@@ -60,6 +60,9 @@ class ScreenCapture(BaseMixin,Base):
     timestamp = Column(Float, primary_key=True, index=True)
     memory_id = Column(Integer, ForeignKey('memory.id'))
     path = Column(String)
+    start_date = Column(String)
+    end_date = Column(String)
+    transcription = Column(String)
     processes = Column(String)
     memory = relationship("Memory")
 

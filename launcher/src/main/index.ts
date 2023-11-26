@@ -1,30 +1,55 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, globalShortcut } from 'electron'
 
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { runDevice } from './runDevice';
 import { ipcMain } from 'electron';
 import { startPythonProcess, stopPythonProcess } from './PythonProcess';
 import { processData } from './processData';
 import { runWebServer } from './runWebServer';
-
+import { runDataServer } from './startDataServer';
+var isWebServerRunning = false
 export var deviceCapture = {};
 export var deviceStatus = {};
 export let mainWindow: BrowserWindow;
 export const devices = ['record_microfone', 'record_system', 'record_screenshot'];
 export let python_env = "python_embedding/python.exe"
+var processes = <any>[];
+
+export function addProcess(process:any){
+  processes.push(process);
+}
+
+export function getServerRunning(){
+  return isWebServerRunning;
+}
+export function setServerRunning(value:boolean){
+  isWebServerRunning = value;
+}
+
+function stopServer() {
+  for (let i = 0; i < processes.length; i++) {
+    try{
+      processes[i].kill('SIGINT');
+    }
+    catch{
+      
+    }
+  }
+}
 
 function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 350,
-    height: 400,
+    height: 520,
     show: false,
     resizable: false,
     maximizable: false,
     fullscreenable: false,
     autoHideMenuBar: true,
+    icon: icon,
+    frame: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       contextIsolation: true,
@@ -33,6 +58,19 @@ function createWindow(): void {
     }
   })
   
+  ipcMain.on('minimize-app', () => {
+    console.log("minimize-app")
+    mainWindow.minimize();
+  });
+
+  ipcMain.on('toggle-capture', () => {
+    mainWindow.webContents.send('toggle-capture')
+  });
+  
+  ipcMain.on('close-app', () => {
+    mainWindow.close();
+  });
+
   ipcMain.on('start-device', (event, device, path) => {
     mainWindow.setTitle("DONE")
     startPythonProcess(device, path);
@@ -50,19 +88,21 @@ function createWindow(): void {
     processData();
   });
 
+  ipcMain.on('start-data-server', () => {
+    runDataServer();
+  });
+
   ipcMain.on('start-web-server', () => {
     runWebServer();
   });
 
 
-  mainWindow.on('ready-to-show', () => {
-    runDevice('record_microfone', '../client/sensors/microphone_audio_capture.py');
-    runDevice('record_system', '../client/sensors/system_audio_capture.py');
-    runDevice('record_screenshot', '../client/sensors/screenshot_capture.py');
-    
+  
 
-    mainWindow.show()
+  mainWindow.on('ready-to-show', () => {
     
+    mainWindow.show()
+    runDataServer();
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -106,15 +146,14 @@ app.whenReady().then(() => {
 })
 
 app.whenReady().then(() => {
-
-  
-
 });
 
-
+app.on('before-quit', stopServer);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    globalShortcut.unregisterAll()
+    stopServer();
     app.quit()
   }
 })

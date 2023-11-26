@@ -1,13 +1,14 @@
 import sys
 import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+if script_dir not in sys.path:
+    sys.path.append(script_dir)
 from database_manager import DatabaseManager
 from langchain.vectorstores import Chroma
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 import chromadb
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-if script_dir not in sys.path:
-    sys.path.append(script_dir)
+
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 persist_directory = os.path.join(current_directory, "chroma")

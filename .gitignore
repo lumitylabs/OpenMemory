@@ -9,6 +9,8 @@
 **/*.pyc
 **/*.7z
 **/*.zip
+**/config.json
+**/data_config.json
 /client/temp/
 /client/data/
 /client/config.json

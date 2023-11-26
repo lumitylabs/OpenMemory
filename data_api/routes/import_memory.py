@@ -9,6 +9,8 @@ import shutil
 import aiofiles
 import asyncio
 
+from routes.processors.process_vector_database import process_vector_database
+
 app = APIRouter()
 
 @app.post("/import_memory/")
@@ -56,6 +58,7 @@ async def import_memory(file: UploadFile = File(...), db: AsyncSession = Depends
             raw_idea_data.pop('memory_id', None)
             raw_idea_data.pop('id', None)
             raw_idea = RawIdeas(**raw_idea_data, memory_id=new_memory_id)
+            raw_idea.processed = False
             session.add(raw_idea)
 
         # Importe os dados para a tabela ScreenCapture
@@ -65,13 +68,10 @@ async def import_memory(file: UploadFile = File(...), db: AsyncSession = Depends
 
             file_extension = os.path.splitext(original_path)[1]
             timestamp = screencapture_data.get("timestamp")
-            new_file_name = f"{new_memory_id}_{timestamp}{file_extension}"
-
-            # Final path for the file
-            final_path = os.path.join('..', 'client', 'data', 'screencapture', new_file_name)
+            new_file_name = f"{new_memory_id}/{timestamp}{file_extension}"
             
             screencapture = ScreenCapture(**screencapture_data)
-            screencapture.path = final_path
+            screencapture.path = new_file_name
             screencapture.memory_id = new_memory_id
             session.add(screencapture)
 
@@ -89,6 +89,7 @@ async def import_memory(file: UploadFile = File(...), db: AsyncSession = Depends
     # Limpeza: remova o diretório temporário
     os.remove(zip_path)
     shutil.rmtree(temp_dir)
+    process_vector_database(new_memory_id)
 
     return {"message": "Memory imported successfully", "new_memory_id": new_memory_id}
 
