@@ -5,15 +5,14 @@ import { CalendarButton } from "./CalendarButton";
 import { SearchButton } from "./SearchButton";
 
 export const FullSearchBar = (props: any) => {
-  const [searchValue, setSearchValue] = React.useState("");
   const [isSearchActive, setIsSearchActive] = React.useState(false);
 
   const handleSearch = () => {
-    props.handleSearch(searchValue);
+    props.handleSearch(props.search);
   };
 
   const handleSetSearch = (value: string) => {
-    setSearchValue(value);
+    props.setSearch(value);
     setIsSearchActive(value.length > 0);
   };
 

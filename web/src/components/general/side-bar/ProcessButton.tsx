@@ -34,7 +34,7 @@ const ProcessButton: React.FC<ProcessButtonProps> = ({ onClick }) => {
       } flex w-[160px] border tracking-tight justify-center items-center text-white font-Muda font-semibold text-[18px] py-2 rounded-[12px] transition duration-300 ease-in-out focus:outline-none shadow-lg`}
     >
       {isActive ? loadingSVG : ""}
-      {isActive ? "Loading..." : "Process All"}
+      {isActive ? "Processing..." : "Process All"}
     </button>
   );
 };
