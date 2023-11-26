@@ -21,6 +21,8 @@ if (process.contextIsolated) {
       onWebServerUpdate: (callback) => ipcRenderer.on('web-server-update', callback),
       onDataApiMessageUpdate: (callback) => ipcRenderer.on('data-api-message', callback),
       onToggleCapture: (callback) => ipcRenderer.on('toggle-capture', callback),
+      onQuitApplication: (callback) => ipcRenderer.on('quit-application', callback),
+      removeQuitApplicationListener: () => ipcRenderer.removeAllListeners('quit-application'),
       removeToggleCaptureListener: () => ipcRenderer.removeAllListeners('toggle-capture'),
       removeStatusUpdateListener: () => ipcRenderer.removeAllListeners('status-update'),
       removeProcessDataUpdateListener: () => ipcRenderer.removeAllListeners('process-data-update'),
@@ -30,7 +32,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('api', {
       send: (channel: string, data: any) => {
         console.log(channel, data)
-        let validChannels = ['minimize-app', 'close-app', 'toggle-capture'];
+        let validChannels = ['minimize-app', 'close-app'];
         if (validChannels.includes(channel)) {
           ipcRenderer.send(channel, data);
         }

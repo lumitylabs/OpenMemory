@@ -29,11 +29,19 @@ import routes.set_sensor
 import routes.select_memory
 import routes.load_config
 import routes.processors.process_vector_database
-
+import module_globals
 app = FastAPI()
 origins = [
     "*",
 ]
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    print("Shutting down fastAPI server...")
+    for process in module_globals.processes.values():
+        process.terminate() 
+        process.wait() 
+
 
 app.add_middleware(
     CORSMiddleware,

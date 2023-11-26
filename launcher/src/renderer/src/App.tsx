@@ -1,6 +1,6 @@
 import './index.css'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import MulticolorComponent from './components/manager/MulticolorComponent'
 import { DeviceContext } from './DeviceContext'
 import { useContext } from 'react'
@@ -123,7 +123,7 @@ const Application = () => {
   const [memoryName, setMemoryName] = useState('Default Memory')
   const [processing, setProcessing] = useState(false)
   const [capturing, setCapturing] = useState(false)
-  const isFirstRender = useRef(true);
+
 
   useEffect(() => {
     axios.get('http://localhost:8000/load_config').then((response) => {
