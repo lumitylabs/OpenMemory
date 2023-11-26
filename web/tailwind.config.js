@@ -5,10 +5,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        NotoSans: ['"Noto Sans"', ...defaultTheme.fontFamily.sans],
-        NotoSansDisplay: ['"Noto Sans Display"', ...defaultTheme.fontFamily.sans],
         Sarabun: ['"Sarabun"', ...defaultTheme.fontFamily.sans],
-        Saira: ['"Saira"', ...defaultTheme.fontFamily.sans],
+        Mada: ['"Mada"', ...defaultTheme.fontFamily.sans],
 
       },
       screens: {

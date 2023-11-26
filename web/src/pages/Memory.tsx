@@ -1,12 +1,10 @@
-
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import ChatUI from "../components/general/ChatUI";
 import { Tags } from "../components/memory/Tags";
 import { Reminders } from "../components/memory/Reminders";
 import useMemoryData from "../controllers/useMemoryData";
 import { getUnifiedData } from "../hooks/getUnifiedData";
-import { UnifiedData } from "../components/memory/log/UnifiedData";
+import { UnifiedData } from "../components/memory/capture/UnifiedData";
 import { IMG_BASE } from "../repository/routes";
 
 function Memory() {
@@ -68,11 +66,8 @@ function Memory() {
             </div>
           </div>
           <div className="xl:ml-20">
-          <UnifiedData data={unifiedData} imgBase={IMG_BASE} />
+            <UnifiedData data={unifiedData} imgBase={IMG_BASE} />
           </div>
-        </div>
-        <div className="fixed right-0 top-0 h-screen md:inline-block hidden overflow-y-auto md:w-1/4">
-          <ChatUI></ChatUI>
         </div>
       </div>
     </div>

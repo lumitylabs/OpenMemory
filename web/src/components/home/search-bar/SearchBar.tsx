@@ -1,18 +1,27 @@
-import MulticolorComponent from "../../general/manager/MulticolorComponent";
+import MulticolorComponent from "../../general/manager/svg-manager/MulticolorComponent";
 
 export function SearchBar(props: any) {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      props.handleSearch();
+    }
+  };
+
   return (
     <div className="flex gap-4 iphone5:w-[250px] 2xl:w-[600px]">
       <MulticolorComponent
         name="Search"
-        baseColor="#E4E4E4"
+        baseColor="#444444"
         selectedColor="#E4E4E4"
         isSelected={false}
-        classParameters="w-6 h-6" />
+        classParameters="w-6 h-6"
+      />
       <input
-        className="bg-[#363636] resize-none outline-0 text-[#E4E4E4] w-full"
-        placeholder="Search in memories..."
-        onChange={(e) => props.setSearch(e.target.value)} />
+        className="bg-[#000] resize-none outline-0 font-Mada font-semibold text-[18px] placeholder:text-[#444444] text-[#fff] w-full"
+        placeholder="Ask your memory..."
+        onChange={(e) => props.setSearch(e.target.value)}
+        onKeyDown={handleKeyDown} // Adiciona o manipulador de eventos onKeyDown aqui
+      />
     </div>
   );
 }

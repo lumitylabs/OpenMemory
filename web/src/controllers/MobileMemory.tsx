@@ -1,8 +1,12 @@
 import { InfoMemoryCard } from "../components/home/info-memory-card/InfoMemoryCard";
-import MulticolorComponent from "../components/general/manager/MulticolorComponent";
+import MulticolorComponent from "../components/general/manager/svg-manager/MulticolorComponent";
 
-function MobileMemory(props: { imgBase: string; memory: any; setShowInfo: any; showInfo: any; }) {
- 
+function MobileMemory(props: {
+  imgBase: string;
+  memory: any;
+  setShowInfo: any;
+  showInfo: any;
+}) {
   const toggleShowInfo = () => {
     props.setShowInfo(!props.showInfo);
   };
@@ -33,7 +37,9 @@ function MobileMemory(props: { imgBase: string; memory: any; setShowInfo: any; s
           <div className="w-[1px] h-[15px] bg-[#444444]"></div>
           {infoMemory}
         </div>
-      ): ""}
+      ) : (
+        ""
+      )}
     </div>
   );
 }
