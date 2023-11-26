@@ -16,7 +16,7 @@ async def start_sensor(sensor_name: str, memory_id: int):
         raise HTTPException(status_code=400, detail="Sensor already running")
 
     path = f"../client/sensors/{sensor_name}.py"
-    proc = subprocess.Popen([sys.executable, path])
+    proc = subprocess.Popen([sys.executable, path, '--memory_id', str(memory_id)])
     win32job.AssignProcessToJobObject(module_globals.job, win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS, False, proc.pid))
     module_globals.processes[sensor_name] = proc
     return {"message": f"Sensor {sensor_name} started with memory_id {memory_id}"}

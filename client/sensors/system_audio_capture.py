@@ -29,7 +29,7 @@ def get_default_wasapi_device(p_audio: pyaudio.PyAudio):
 if __name__ == "__main__":
     # Set up the argument parser
     parser = argparse.ArgumentParser(description="Audio Capture Script")
-    parser.add_argument("--memory_id", type=str, help="Memory ID for audio capture", default="default_id")
+    parser.add_argument("--memory_id", type=str, help="Memory ID for audio capture", default="0")
     args = parser.parse_args()
 
     p = pyaudio.PyAudio()
