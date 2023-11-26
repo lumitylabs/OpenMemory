@@ -1,5 +1,5 @@
-import Calendar from "../../../../assets/icons/Calendar";
-import Search from "../../../../assets/icons/Search";
+import Calendar from "../../../../assets/svg/Calendar";
+import Search from "../../../../assets/svg/Search";
 import Aspas from "../../../../assets/icons/Aspas";
 import ShowLessArrow from "../../../../assets/icons/ShowLessArrow";
 import ShowMoreArrow from "../../../../assets/icons/ShowMoreArrow";
@@ -14,8 +14,10 @@ import Stop from "../../../../assets/svg/Stop";
 import Sensors from "../../../../assets/svg/Sensors";
 import Process from "../../../../assets/svg/Process";
 import Consult from "../../../../assets/svg/Consult";
+import ArrowDown from "../../../../assets/svg/ArrowDown";
 
 const MulticolorData: any = {
+  ArrowDown: ArrowDown,
   Stop: Stop,
   Consult: Consult,
   Process: Process,

@@ -9,13 +9,6 @@ export function SearchBar(props: any) {
 
   return (
     <div className="flex gap-4 iphone5:w-[250px] 2xl:w-[600px]">
-      <MulticolorComponent
-        name="Search"
-        baseColor="#444444"
-        selectedColor="#E4E4E4"
-        isSelected={false}
-        classParameters="w-6 h-6"
-      />
       <input
         className="bg-[#000] resize-none outline-0 font-Mada font-semibold text-[18px] placeholder:text-[#444444] text-[#fff] w-full"
         placeholder="Ask your memory..."

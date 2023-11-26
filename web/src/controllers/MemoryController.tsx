@@ -26,7 +26,8 @@ function MemoryController() {
   const [hasMore, setHasMore] = useState(true);
   const [filteredTimestamps, setFilteredTimestamps] = useState<number[]>([]);
   const stringProcesses = ["All Memories"];
-  const [selectedProcess, setSelectedProcess] = useState<string>("all");
+  const [selectedProcess, setSelectedProcess] =
+    useState<string>("All Memories");
   const [search, setSearch] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1600);
@@ -119,6 +120,7 @@ function MemoryController() {
 
       <FullSearchBar
         setSearch={setSearch}
+        search={search}
         stringProcesses={stringProcesses}
         selectedProcess={selectedProcess}
         setSelectedProcess={setSelectedProcess}
@@ -151,12 +153,12 @@ function MemoryController() {
             <div className="inline-flex items-center gap-3 text-2xl font-Mada font-semibold  tracking-tight">
               <ImgComponent name="BlueBrain" type="brain-logo"></ImgComponent>
               <div className="fade-in-wrapper">
-                <div className="font-Muda bg-clip-text text-transparent bg-gradient-to-l from-[#CA76FF] to-[#23BDFF]">
+                <div className="font-Muda bg-clip-text text-transparent bg-gradient-to-l from-[#CA76FF] to-[#23BDFF]  select-none">
                   Generative AI Memory
                 </div>
               </div>
             </div>
-            <div className="text-[#B3B3B3] 2xl:w-[1000px] lg:w-[500px] iphone5:w-[300px] w-[190px] mt-3 overflow-y-auto overflow-scroll-y scrollbar-hide max-h-[300px]">
+            <div className="flex 2xl:w-[1000px] lg:w-[500px] iphone5:w-[300px] w-[190px] mt-3 overflow-y-auto overflow-scroll-y scrollbar-hide max-h-[300px]">
               <GenerativeAnswer text={generativeAnswer}></GenerativeAnswer>
             </div>
           </div>

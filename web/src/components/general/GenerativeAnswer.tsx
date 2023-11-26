@@ -28,9 +28,9 @@ export const GenerativeAnswer = (props: { text: string }) => {
   }, [props.text, currentLineIndex, currentWordIndex]);
 
   return (
-    <div>
+    <div className="flex">
       {lines.slice(0, currentLineIndex + 1).map((line: any, lineIndex: any) => (
-        <React.Fragment key={lineIndex}>
+        <div key={lineIndex}>
           {line
             .slice(
               0,
@@ -39,15 +39,15 @@ export const GenerativeAnswer = (props: { text: string }) => {
                 : line.length
             )
             .map((word: any, wordIndex: any) => (
-              <span
+              <div
                 key={wordIndex}
-                className="word-animation font-Muda font-semibold text-[16px]"
+                className="word-animation font-Muda font-semibold text-[16px] -z-10"
               >
                 {word}&nbsp;
-              </span>
+              </div>
             ))}
           {lineIndex < currentLineIndex && <br />}
-        </React.Fragment>
+        </div>
       ))}
     </div>
   );
