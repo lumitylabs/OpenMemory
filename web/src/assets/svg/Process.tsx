@@ -3,7 +3,7 @@ type ProcessSvgProps = {
   classParameters: string;
 };
 
-const ProcessSvg: React.FC<ProcessSvgProps> = ({ fill, classParameters }) => (
+const ProcessSvg: React.FC<ProcessSvgProps> = ({ classParameters }) => (
   <svg
     width="32"
     height="32"

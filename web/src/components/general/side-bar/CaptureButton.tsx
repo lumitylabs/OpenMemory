@@ -1,16 +1,24 @@
 import React, { useState } from "react";
 import MulticolorComponent from "../manager/svg-manager/MulticolorComponent";
+import { useStartCapture } from "../../../hooks/useStartCapture";
+import { useStopCapture } from "../../../hooks/useStopCapture";
 
 interface CaptureButtonProps {
   onClick?: () => void;
+  isActive: boolean;
+  setIsActive: (active: boolean) => void;
 }
 
-const CaptureButton: React.FC<CaptureButtonProps> = ({ onClick }) => {
-  const [isActive, setIsActive] = useState<boolean>(false);
+const CaptureButton: React.FC<CaptureButtonProps> = ({ onClick, isActive, setIsActive }) => {
 
   const handleButtonClick = () => {
     setIsActive(!isActive);
     onClick?.();
+    if (!isActive) {
+      useStartCapture();
+    } else {
+      useStopCapture();
+    }
   };
 
   const captureSVG = (

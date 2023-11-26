@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MulticolorComponent from "../../general/manager/svg-manager/MulticolorComponent";
 import { CardDescription } from "./CardDescription";
 import { CardHeader } from "./CardHeader";

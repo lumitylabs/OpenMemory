@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import MulticolorComponent from "../manager/svg-manager/MulticolorComponent";
+import { useSelectMemory } from "../../../hooks/useSelectMemory";
+
+interface Memory {
+  id: string;
+  name: string;
+}
 
 interface MemoryListProps {
-  memories: string[];
+  memories: Memory[];
+  selectedMemory: Memory | null;
 }
 
 const OptionsMenu = React.forwardRef<
@@ -27,11 +34,19 @@ const OptionsMenu = React.forwardRef<
   </div>
 ));
 
-const MemoryList: React.FC<MemoryListProps> = ({ memories }) => {
+const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory }) => {
   const [selected, setSelected] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState<number | null>(null);
   const menuRef = useRef<(HTMLDivElement | null)[]>([]);
-
+  const selectMemory = (memoryId:any, index:number) => {
+    handleMemorySelect(index);
+    useSelectMemory({'memory_id': memoryId})
+      .then(() => {
+      })
+      .catch((error) => {
+        console.error("Error selecting memory:", error);
+      });
+  };
   const handleClickOutside = useCallback((event: MouseEvent) => {
     if (
       !menuRef.current.some((ref) => ref && ref.contains(event.target as Node))
@@ -39,6 +54,15 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories }) => {
       setMenuOpen(null);
     }
   }, []);
+
+  useEffect(() => {
+
+    if (selectedMemory) {
+      const selectedIndex = memories.findIndex(memory => memory.id == selectedMemory.id);
+
+      setSelected(selectedIndex);
+    }
+  }, [memories, selectedMemory]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -61,16 +85,16 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories }) => {
   return (
     <div className="flex flex-col w-full gap-2 pt-5">
       {memories.map((memory) => {
-        const index = memories.indexOf(memory); // Prefer unique id if available
+        const index = memories.indexOf(memory);
         return (
           <div
-            key={memory} // Using memory as the key, but ensure it's unique
+            key={memory.id} 
             className={`group flex px-4 py-2 items-center justify-between rounded-[9px] ${
               selected === index
                 ? "bg-white bg-opacity-10"
                 : "hover:bg-white hover:bg-opacity-10 transition duration-300 ease-in-out"
             } cursor-pointer`}
-            onClick={() => handleMemorySelect(index)}
+            onClick={() => selectMemory(memory.id, index)} 
           >
             <div className="flex items-center">
               <span className="h-[6px] w-[6px] bg-green-500 rounded-full mr-2"></span>
@@ -81,13 +105,16 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories }) => {
                     : "text-[#B0D0DE] group-hover:text-white"
                 }`}
               >
-                {memory}
+                {memory.name}
               </span>
             </div>
             <div className="relative">
               <button
                 className="text-white"
-                onClick={(event) => handleMoreClick(index, event)}
+                onClick={(event) => {
+                  event.stopPropagation(); 
+                  handleMoreClick(index, event);
+                }}
               >
                 <MulticolorComponent
                   name="More"
@@ -101,7 +128,7 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories }) => {
                 <OptionsMenu
                   ref={(el) => (menuRef.current[index] = el)}
                   options={["Process", "Export", "Delete"]}
-                  memory={memory}
+                  memory={memory.name} // Passando o nome da memória
                 />
               )}
             </div>
@@ -110,6 +137,7 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories }) => {
       })}
     </div>
   );
+  
 };
 
 export default MemoryList;
