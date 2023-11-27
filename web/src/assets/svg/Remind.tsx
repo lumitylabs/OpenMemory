@@ -5,18 +5,28 @@ type RemindSvgProps = {
 
 const RemindSvg: React.FC<RemindSvgProps> = ({ fill, classParameters }) => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
+    width="54px"
+    height="54px"
     viewBox="0 0 24 24"
-    stroke-width="1.5"
-    stroke={fill}
-    className={classParameters}
+    stroke-width="1"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    color={fill}
   >
     <path
+      d="M9.5 14.5L3 21"
+      stroke={fill}
+      stroke-width="1"
       stroke-linecap="round"
       stroke-linejoin="round"
-      d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"
-    />
+    ></path>
+    <path
+      d="M5.00007 9.48528L14.1925 18.6777L15.8895 16.9806L15.4974 13.1944L21.0065 8.5211L15.1568 2.67141L10.4834 8.18034L6.69713 7.78823L5.00007 9.48528Z"
+      stroke={fill}
+      stroke-width="1"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    ></path>
   </svg>
 );
 

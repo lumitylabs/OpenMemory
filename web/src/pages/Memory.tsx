@@ -69,16 +69,9 @@ function Memory() {
                 </div>
               </div>
 
-              <div className="bg-[#060E11] w-[250px] p-9 mt-9 rounded-2xl flex justify-between flex-wrap xl:flex-nowrap">
-                <div className="xl:w-[240px]">
-                  <div className="flex items-center">
-                    <MulticolorComponent
-                      name={"Remind"}
-                      baseColor={"#498CA9"}
-                      selectedColor={""}
-                      isSelected={false}
-                      classParameters={"w-[27px] h-[27px]"}
-                    ></MulticolorComponent>
+              <div className="bg-[#060E11]  w-[250px] p-9 mt-9 rounded-2xl flex justify-between flex-wrap xl:flex-nowrap">
+                <div className="flex flex-col w-full">
+                  <div className="flex items-center select-none">
                     <p className="font-Mada font-semibold text-[27px] text-[#498CA9]">
                       Reminders
                     </p>
@@ -88,7 +81,7 @@ function Memory() {
               </div>
             </div>
           </div>
-          <div className="">
+          <div>
             <h1 className="ml-[80px] mt-[9px] mb-[36px] font-Mada font-extrabold flex w-full text-[60px] text-[#333232] select-none">
               Captures
             </h1>
