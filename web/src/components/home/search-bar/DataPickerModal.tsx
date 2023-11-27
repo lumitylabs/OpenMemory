@@ -2,10 +2,10 @@ import { DateRange, DateRangePicker } from "react-date-range";
 
 export function DataPickerModal(props: any) {
   return (
-    <div className="z-20">
+    <div className="">
       {props.showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded-lg flex flex-col items-end">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-4 rounded-lg flex flex-col items-end ">
             {props.isLargeScreen ? (
               <DateRangePicker
                 onChange={(item) => props.setState([item.selection])}

@@ -41,8 +41,7 @@ export const relativeTime = (timestamp:number) => {
   export const formatDate = (date:any) => {
     const day = date.getDate();
     const month = monthNames[date.getMonth()];
-    const year = date.getFullYear().toString().slice(-2);
-    return `${day} ${month} ${year}`;
+    return `${day} ${month}`;
   };
 
   const monthNames = [

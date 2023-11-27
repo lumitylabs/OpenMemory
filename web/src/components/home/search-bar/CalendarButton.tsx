@@ -1,3 +1,4 @@
+import { formatDate } from "../../../utils/utils";
 import MulticolorComponent from "../../general/manager/svg-manager/MulticolorComponent";
 
 export function CalendarButton(props: any) {
@@ -14,7 +15,7 @@ export function CalendarButton(props: any) {
           isSelected={false}
           classParameters="w-[26px] h-[26px]"
         />
-        {/* {formatDate(props.state.startDate)} - {formatDate(props.state.endDate)} */}
+         <div className="text-sm flex flex-nowrap w-[100px]">{formatDate(props.state.startDate)} - {formatDate(props.state.endDate)}</div>
       </button>
     </div>
   );
