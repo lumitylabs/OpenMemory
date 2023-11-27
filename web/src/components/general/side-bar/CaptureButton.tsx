@@ -9,8 +9,11 @@ interface CaptureButtonProps {
   setIsActive: (active: boolean) => void;
 }
 
-const CaptureButton: React.FC<CaptureButtonProps> = ({ onClick, isActive, setIsActive }) => {
-
+const CaptureButton: React.FC<CaptureButtonProps> = ({
+  onClick,
+  isActive,
+  setIsActive,
+}) => {
   const handleButtonClick = () => {
     setIsActive(!isActive);
     onClick?.();
@@ -49,7 +52,7 @@ const CaptureButton: React.FC<CaptureButtonProps> = ({ onClick, isActive, setIsA
         isActive
           ? "bg-[#4AB7E5] border-[#4AB7E5] hover:bg-[#50BFEE] hover:border-[#50BFEE]"
           : "bg-[#D458C8] border-[#D458C8] hover:bg-[#d16bc7] hover:border-[#d16bc7]"
-      } flex w-[160px] border tracking-tight justify-center items-center text-white font-Muda font-semibold text-[18px] py-2 rounded-[12px] transition duration-300 ease-in-out focus:outline-none shadow-lg`}
+      } flex w-[160px] border tracking-tight justify-center items-center text-white font-Mada font-semibold text-[18px] py-2 rounded-[12px] transition duration-300 ease-in-out focus:outline-none shadow-lg`}
     >
       {isActive ? stopSVG : captureSVG}
       {isActive ? "Stop" : "Capture"}

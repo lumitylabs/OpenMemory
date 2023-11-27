@@ -3,7 +3,7 @@ import { LogImage } from "./LogImage";
 import { LogSystemAudio } from "./LogSystemAudio";
 
 export const ChatHeader = () => (
-  <div className="  mt-4 flex">
+  <div className="mt-4 flex">
     <div className="w-full xl:w-[1000px] h-[1px] bg-[#444444] xl:ml-[84px] ml-[30px]">
       <div className="font-Sarabun text-[4rem] absolute xl:-mt-11 -mt-10 -ml-8 xl:-ml-9 text-[#4A4A4A] select-none">
         “

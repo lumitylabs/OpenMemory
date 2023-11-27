@@ -41,8 +41,9 @@ export const GenerativeAnswer = (props: { text: string }) => {
             .map((word: any, wordIndex: any) => (
               <div
                 key={wordIndex}
-                className="word-animation font-Muda font-semibold text-[16px] -z-10"
-              >{word}&nbsp;
+                className="word-animation font-Mada font-semibold text-[16px] -z-10"
+              >
+                {word}&nbsp;
               </div>
             ))}
           {lineIndex < currentLineIndex && <br />}
