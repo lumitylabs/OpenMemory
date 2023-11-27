@@ -152,7 +152,8 @@ const Sidebar: React.FC = () => {
         <SideLogo />
         <div className="flex w-full gap-2">
           <SideSearchInput />
-          <AddMemoriesButton />
+          <AddMemoriesButton refreshMemories={refreshMemories} />
+
           <ImportSideButton />
         </div>
       </div>

@@ -2,10 +2,25 @@
 import { useState } from "react";
 import MulticolorComponent from "../manager/svg-manager/MulticolorComponent";
 import { Modal } from "../Modal";
+import { useCreateMemory } from "../../../hooks/useCreateMemory";
 
-export function AddMemoriesButton() {
+interface AddMemoriesButtonProps {
+  refreshMemories: () => void;
+}
+
+export function AddMemoriesButton({ refreshMemories }: AddMemoriesButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  
+  const handleCreateMemory = (memoryName:string) => {
+    useCreateMemory(memoryName)
+      .then(() => {
+        refreshMemories();
+      })
+      .catch((error) => {
+        console.error("Error creating memory:", error);
+      });
+    setIsModalOpen(false); // Close the modal
+  };
   return (
     <>
       <div
@@ -20,7 +35,7 @@ export function AddMemoriesButton() {
           classParameters="h-[27px] w-[27px] m-2"
         />
       </div>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onCreate={handleCreateMemory} />
     </>
   );
 }

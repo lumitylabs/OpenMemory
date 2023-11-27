@@ -103,7 +103,8 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory, refre
           if (memory.id !== '0') {
             useDeleteMemory(memory.id).then(() => {
               refreshMemories();
-              useSelectMemory('id_da_memória_padrão'); 
+              handleMemorySelect(0);
+              useSelectMemory({"memory_id":0}); 
             });
           }
           setMenuOpen(null); 
