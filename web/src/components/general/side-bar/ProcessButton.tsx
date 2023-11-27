@@ -1,5 +1,4 @@
 import React from "react";
-import MulticolorComponent from "../manager/svg-manager/MulticolorComponent";
 import { useProcessAll } from "../../../hooks/useProcessAll";
 import { SpinAnimation } from "../utils";
 
@@ -21,16 +20,6 @@ const ProcessButton: React.FC<ProcessButtonProps> = ({
       useProcessAll();
     }
   };
-
-  const loadingSVG = (
-    <MulticolorComponent
-      name="Stop"
-      baseColor="#fff"
-      selectedColor="#fff"
-      isSelected={false}
-      classParameters="h-[27px] w-[27px]"
-    />
-  );
 
   return (
     <button

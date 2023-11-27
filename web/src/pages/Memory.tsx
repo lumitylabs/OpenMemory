@@ -6,6 +6,7 @@ import { getUnifiedData } from "../hooks/getUnifiedData";
 import { UnifiedData } from "../components/memory/capture/UnifiedData";
 import { IMG_BASE } from "../repository/routes";
 import Sidebar from "../components/general/side-bar/Sidebar";
+import MulticolorComponent from "../components/general/manager/svg-manager/MulticolorComponent";
 
 function Memory() {
   const { memoryid } = useParams();
@@ -41,15 +42,17 @@ function Memory() {
         <div className="flex flex-col font-NotoSansDisplay">
           <div className=" text-[#636363]">
             <div
-              className="cursor-pointer select-none mt-9"
+              className="select-none mt-9"
               onClick={() => {
                 window.location.href = "/";
               }}
             >
-              Return to Memories
+              <p className="w-[145px] font-Mada font-semibold cursor-pointer hover:text-[#fff] transition duration-300 ease-in-out ">
+                Return to Memories
+              </p>
             </div>
             <div className="flex gap-9 mb-10">
-              <div className="bg-[#000] w-min border border-[#444444] p-9 mt-9 rounded-[36px] flex justify-between flex-wrap xl:flex-nowrap">
+              <div className="ml-[80px] bg-[#000] w-min border border-[#444444] p-9 mt-9 rounded-[36px] flex justify-between flex-wrap xl:flex-nowrap">
                 <div className="w-[650px]">
                   <div className="text-[#909090] font-Mada font-semibold tracking-tight">
                     {formatDate(timestamp)}
@@ -57,7 +60,7 @@ function Memory() {
                   <div className="text-[#fff] font-Mada text-3xl font-semibold tracking-tight">
                     {title}
                   </div>
-                  <div className="mt-3 text-[#797979] font-Mada font-semibold tracking-tight">
+                  <div className="mt-3 text-[#A4A4A4] text-[18px] font-Mada font-semibold tracking-tight">
                     {description}
                   </div>
                   <div className="mt-6">
@@ -66,14 +69,22 @@ function Memory() {
                 </div>
               </div>
 
-              <div className="bg-[#000] w-min border border-[#444444] p-9 mt-9 rounded-2xl flex justify-between flex-wrap xl:flex-nowrap">
-                <div className="xl:w-[240px]">
+              <div className="bg-[#060E11]  w-[250px] p-9 mt-9 rounded-2xl flex justify-between flex-wrap xl:flex-nowrap">
+                <div className="flex flex-col w-full">
+                  <div className="flex items-center select-none">
+                    <p className="font-Mada font-semibold text-[27px] text-[#498CA9]">
+                      Reminders
+                    </p>
+                  </div>
                   <Reminders reminders={updatedReminders} />
                 </div>
               </div>
             </div>
           </div>
-          <div className="">
+          <div>
+            <h1 className="ml-[80px] mt-[9px] mb-[36px] font-Mada font-extrabold flex w-full text-[60px] text-[#333232] select-none">
+              Captures
+            </h1>
             <UnifiedData data={unifiedData} imgBase={IMG_BASE} />
           </div>
         </div>

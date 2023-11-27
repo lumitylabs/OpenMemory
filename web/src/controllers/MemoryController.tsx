@@ -84,15 +84,19 @@ const MemoryController: React.FC<MemoryControllerProps> = ({ onForceReload }) =>
 
   useEffect(() => {
     const fetchData = async () => {
-      await loadFilteredMemories(filteredTimestamps, deduplicateArray, setMemories);
-  
+      await loadFilteredMemories(
+        filteredTimestamps,
+        deduplicateArray,
+        setMemories
+      );
+
       if (filteredTimestamps.length > 0) {
         setGenerativeAnswer("Loading...");
         const res = await generativeSearch(filteredTimestamps, search);
         setGenerativeAnswer(res);
       }
     };
-  
+
     fetchData();
   }, [filteredTimestamps]);
 
@@ -179,11 +183,11 @@ const MemoryController: React.FC<MemoryControllerProps> = ({ onForceReload }) =>
               >
                 <ImgComponent name="BlueBrain" type="brain-logo" />
               </motion.div>
-              <div className="font-Muda bg-clip-text text-transparent bg-gradient-to-l from-[#CA76FF] to-[#23BDFF] looping-gradient">
+              <div className="font-Mada bg-clip-text text-transparent bg-gradient-to-l from-[#CA76FF] to-[#23BDFF] looping-gradient">
                 Generating...
               </div>
             </div>
-            <div className="font-Muda font-semibold text-[#B3B3B3] 2xl:w-[1000px] lg:w-[500px] iphone5:w-[300px] w-[190px] mt-3 overflow-y-auto overflow-scroll-y max-h-[300px]">
+            <div className="font-Mada font-semibold text-[#B3B3B3] 2xl:w-[1000px] lg:w-[500px] iphone5:w-[300px] w-[190px] mt-3 overflow-y-auto overflow-scroll-y max-h-[300px]">
               {generativeAnswer}
             </div>
           </div>
@@ -192,7 +196,7 @@ const MemoryController: React.FC<MemoryControllerProps> = ({ onForceReload }) =>
             <div className="inline-flex items-center gap-3 text-2xl font-Mada font-semibold  tracking-tight">
               <ImgComponent name="BlueBrain" type="brain-logo"></ImgComponent>
               <div className="fade-in-wrapper">
-                <div className="font-Muda bg-clip-text text-transparent bg-gradient-to-l from-[#CA76FF] to-[#23BDFF]  select-none">
+                <div className="font-Mada bg-clip-text text-transparent bg-gradient-to-l from-[#CA76FF] to-[#23BDFF]  select-none">
                   Generative AI Memory
                 </div>
               </div>
@@ -220,7 +224,7 @@ const MemoryController: React.FC<MemoryControllerProps> = ({ onForceReload }) =>
         hasMore={hasMore}
         loader={<h4>Loading...</h4>}
         endMessage={
-          <p className="flex font-Muda font-semibold justify-center text-[#333333] ml-12 select-none">
+          <p className="flex font-Mada font-semibold justify-center text-[#333333] ml-12 select-none">
             <span>Yay! You have seen it all.</span>
           </p>
         }
