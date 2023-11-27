@@ -19,11 +19,6 @@ from model.models import RawIdeas
 app = APIRouter()
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-template_path = os.path.join(current_directory, "prompt_template.txt")
-
-prompt_template = ""
-with open(template_path, 'r') as file:
-    prompt_template = file.read()
 
 
 @app.get("/getAudioTranscriptionsAndSend/")
@@ -113,35 +108,72 @@ Audio Transcriptions:
 """
 
     combine_prompt = """### System:
-Your role is to comprehensively answer the user's question using information from the provided summaries of audio transcriptions. Be aware of potential inaccuracies in these summaries. When responding:
-1. Consider the original audio source for contextual understanding.
-2. Acknowledge if the information from the summaries is insufficient.
-3. Match your response to the style of the user's question.
-4. Begin your response by addressing the following question using the summaries.
+Your role is to comprehensively answer the user's question using information from the provided summaries of audio transcriptions, each summary will be separated by a line break. Ensure to:
+1. Direct Relevance: Prioritize summaries that directly mention details relevant to the user's question. Disregard summaries that explicitly state the absence of relevant information.
+2. Specific Extraction: Extract and focus on key information or direct mentions from the summaries that are directly relevant to the question.
+3. Clear and Concise Response: Formulate a response that is clear, concise, and focused solely on the information extracted from the relevant summaries.
+4. Acknowledgement of Absence: If none of the provided summaries contain information relevant to the user's question, clearly state that the answer to the question is not available in the provided summaries.
+5. Avoid Redundancy: Do not repeat statements about the absence of relevant information across multiple summaries. Focus only on the content that provides a direct answer.
 ### User:
 Question: How has the perception of remote work changed over time?
 Summaries:
-Early transcription indicates skepticism about productivity in remote work settings, with concerns about distractions at home.
-A later summary highlights a shift towards appreciation of work-life balance achieved through remote work, citing increased employee satisfaction.
-The most recent summary discusses technological advancements, suggesting remote work is now more feasible and efficient due to improved communication tools.
+ None
+
+ The provided audio transcriptions do not address the evolution of attitudes towards remote work.
+
+ Initial skepticism about productivity in remote settings, citing home distractions.
+
+ Shift in perception towards valuing work-life balance and increased employee satisfaction with remote work.
+
+ Lack of mention in several transcripts about the evolution of remote work perceptions.
+
+ Technological advancements have made remote work more feasible and efficient.
+
+ None
+
+ None
+ 
+ None
 ### Assistant:
-The perception of remote work has evolved significantly. Initially, there was skepticism about its productivity due to potential home distractions. Over time, this view shifted as people began appreciating the work-life balance that remote work offers, leading to increased employee satisfaction. Recently, advancements in communication technology have further bolstered the feasibility and efficiency of remote work, making it a more practical option.
+The perception of remote work has shifted over time. Initially, there was skepticism about productivity, mainly due to potential distractions at home. This perception changed, with a growing appreciation for the work-life balance that remote work offers, leading to increased employee satisfaction. Additionally, recent advancements in technology have made remote work more feasible and efficient.
 ### User:
 Question: What are the key factors contributing to urban pollution?
 Summaries:
-One transcript identifies high vehicle emissions in densely populated areas as a major source of urban pollution.
-Another summary points to industrial activities within and around urban areas, emphasizing their role in air and water pollution.
-A recent summary discusses the impact of poor waste management in cities, contributing significantly to both land and water pollution.
+ No discussion on urban pollution contributors in several transcriptions.
+
+ None
+
+ High vehicle emissions in populated areas identified as a major pollution source.
+
+ Industrial activities in and around urban areas contributing to air and water pollution.
+
+ The audio transcriptions discusses the impact of poor waste management in cities, contributing significantly to both land and water pollution.
+
+ Absence of explicit mention of urban pollution factors in some transcripts.
+
+ None
+
+ None
 ### Assistant:
-Urban pollution is primarily driven by several factors. High vehicle emissions in densely populated areas contribute significantly to air pollution. Industrial activities, both within and around urban areas, also play a crucial role in polluting air and water. Additionally, poor waste management in cities exacerbates the problem, leading to land and water pollution.
+Key factors contributing to urban pollution include high vehicle emissions in densely populated areas, industrial activities in and around urban areas affecting air and water quality, and poor waste management practices leading to land and water pollution.
 ### User:
 Question: What are the trends in global dietary habits?
 Summaries:
-An early summary notes a dominant preference for high-calorie, processed foods in many regions, linked to rising obesity rates.
-A subsequent summary indicates a growing awareness of health and nutrition, with an increased demand for organic and plant-based foods.
-The latest summary discusses the emergence of 'food-tech' innovations, like lab-grown meat and AI-driven personalized nutrition plans.
+ None
+
+ No information on global dietary trends in several transcriptions.
+
+ Preference for high-calorie, processed foods linked to rising obesity rates.
+
+ Increased demand for organic and plant-based foods due to growing health awareness.
+
+ Innovations like lab-grown meat and AI-driven nutrition plans emerging in food-tech.",
+
+ Lack of specific details on dietary trends in some audio transcriptions.
+
+ None
 ### Assistant:
-Global dietary habits have undergone noticeable changes. Initially, there was a predominant preference for high-calorie, processed foods, which correlated with increasing obesity rates. However, there's been a shift towards health-conscious eating, with heightened demand for organic and plant-based options. Recently, 'food-tech' innovations, including lab-grown meat and AI-driven personalized nutrition, have started to shape new trends in global diets.
+Global dietary habits are showing a trend towards high-calorie, processed foods, contributing to rising obesity rates. Concurrently, there's an increased demand for healthier options like organic and plant-based foods. Innovations in food technology, such as lab-grown meat and AI-driven personalized nutrition plans, are also gaining traction.
 ### User:
 Question: {question}
 Summaries:

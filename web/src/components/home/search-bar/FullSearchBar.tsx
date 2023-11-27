@@ -30,9 +30,9 @@ export const FullSearchBar = (props: any) => {
         ></SearchButton>
       </div>
       <SelectProcess
-        stringProcesses={props.stringProcesses}
-        selectedProcess={props.selectedProcess}
-        setSelectedProcess={props.setSelectedProcess}
+        memoriesList={props.memoriesList}
+        selectedMemoryId={props.selectedMemoryId}
+        setSelectedMemoryId={props.setSelectedMemoryId}
       ></SelectProcess>
       <div className="flex gap-3 lg:gap-4">
         <CalendarButton

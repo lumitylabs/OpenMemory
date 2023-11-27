@@ -15,6 +15,7 @@ import { generativeSearch } from "../hooks/generativeSearch";
 import { motion } from "framer-motion";
 import { GenerativeAnswer } from "../components/general/GenerativeAnswer";
 import { MemoryCard } from "./MemoryCard";
+import { useMemories } from "../hooks/useMemories";
 
 // Constants
 const INITIAL_FETCH_COUNT = 20;
@@ -25,6 +26,8 @@ function MemoryController() {
   const [searchDone, setSearchDone] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [filteredTimestamps, setFilteredTimestamps] = useState<number[]>([]);
+  const [memoriesList, setMemoriesList] = useState<any>([]);
+  const [selectedMemoryId, setSelectedMemoryId] = useState(-1);
   const stringProcesses = ["All Memories"];
   const [selectedProcess, setSelectedProcess] =
     useState<string>("All Memories");
@@ -45,7 +48,8 @@ function MemoryController() {
       search,
       state,
       selectedProcess,
-      setFilteredTimestamps
+      setFilteredTimestamps,
+      selectedMemoryId
     );
     setSearchDone(true);
   };
@@ -69,21 +73,23 @@ function MemoryController() {
       setMemories,
       MAX_MEMORIES_COUNT,
       setHasMore,
-      filteredTimestamps
+      filteredTimestamps,
+      selectedMemoryId
     );
   };
 
   useEffect(() => {
-    loadFilteredMemories(filteredTimestamps, deduplicateArray, setMemories);
-  }, [filteredTimestamps]);
-
-  useEffect(() => {
-    if (filteredTimestamps.length > 0) {
-      setGenerativeAnswer("Loading...");
-      generativeSearch(filteredTimestamps, search).then((res) => {
+    const fetchData = async () => {
+      await loadFilteredMemories(filteredTimestamps, deduplicateArray, setMemories);
+  
+      if (filteredTimestamps.length > 0) {
+        setGenerativeAnswer("Loading...");
+        const res = await generativeSearch(filteredTimestamps, search);
         setGenerativeAnswer(res);
-      });
-    }
+      }
+    };
+  
+    fetchData();
   }, [filteredTimestamps]);
 
   useEffect(() => {
@@ -103,6 +109,16 @@ function MemoryController() {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
+  }, []);
+
+  useEffect(() => {
+    useMemories()
+      .then((data) => {
+        setMemoriesList([{ id: "-1", name: "All Memories" }, ...data]);
+      })
+      .catch((error) => {
+        console.error("Error loading memories:", error);
+      });
   }, []);
 
   var imgBase = "http://localhost:8000/screencaptures/";
@@ -127,6 +143,9 @@ function MemoryController() {
         setShowModal={setShowModal}
         state={state[0]}
         handleSearch={handleSearch}
+        memoriesList={memoriesList}
+        selectedMemoryId={selectedMemoryId}
+        setSelectedMemoryId={setSelectedMemoryId}
       ></FullSearchBar>
 
       {generativeAnswer !== null ? (
