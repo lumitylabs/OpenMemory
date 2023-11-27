@@ -2,6 +2,7 @@ import win32job
 
 processes = {}
 is_capturing = False
+is_processing = False
 
 job = win32job.CreateJobObject(None, "")
 extended_info = win32job.QueryInformationJobObject(job, win32job.JobObjectExtendedLimitInformation)

@@ -30,6 +30,8 @@ import routes.select_memory
 import routes.load_config
 import routes.processors.process_vector_database
 import routes.sensors.get_capture_state
+import routes.sensors.get_is_processing
+import routes.websockets
 import module_globals
 app = FastAPI()
 origins = [
@@ -70,9 +72,11 @@ app.include_router(routes.sensors.running_sensors.app)
 app.include_router(routes.sensors.start_capture.app)
 app.include_router(routes.sensors.stop_capture.app)
 app.include_router(routes.sensors.get_capture_state.app)
+app.include_router(routes.sensors.get_is_processing.app)
 app.include_router(routes.processors.process_all.app)
 app.include_router(routes.processors.process_memory.app)
 app.include_router(routes.processors.process_vector_database.app)
 app.include_router(routes.set_sensor.app)
 app.include_router(routes.select_memory.app)
 app.include_router(routes.load_config.app)
+app.include_router(routes.websockets.router)

@@ -4,6 +4,7 @@ from model.databases import AsyncSessionLocal, get_db
 
 from model.update_config import update_config
 from routes.memories import fetch_memories, list_memories
+from routes.websockets import notify_websockets
 
 
 app = APIRouter()
@@ -22,4 +23,5 @@ async def select_memory(data: MemoryData, db: AsyncSessionLocal = Depends(get_db
         return {"message": f"Memory {data.memory_id} not found"}
 
     update_config("selected_memory", {"id": data.memory_id, "name": memory_name})
+    await notify_websockets({"function":"select_memory", "id": data.memory_id, "name": memory_name})
     return {"message": f"Memory {data.memory_id} selected"}

@@ -1,25 +1,43 @@
-import subprocess
+import asyncio
 import sys
-import time
 from fastapi import APIRouter
+
+from routes.websockets import notify_websockets
 app = APIRouter()
+import module_globals
+
+async def run_subprocess(command):
+    process = await asyncio.create_subprocess_shell(
+        command,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout, stderr = await process.communicate()
+    if process.returncode != 0:
+        error = stderr.decode().strip() if stderr else 'Subprocess error'
+        print(f"Error in {command}: {error}")
+    return stdout.decode().strip() if stdout else 'No output'
 
 @app.post("/process_all")
 async def process_all():
-
+    module_globals.is_processing = True
+    await notify_websockets({"function":"processing_start"})
     server_cmd = f"{sys.executable} ../llm_api/start_server.py"
-    server = subprocess.Popen(server_cmd)
-    time.sleep(5)
+    server = await asyncio.create_subprocess_shell(server_cmd)
+
+    await asyncio.sleep(5)
 
     command1 = f"{sys.executable} ../client/sensors/audio_processor.py"
-    subprocess.Popen(command1, shell=True).wait()  # Espera o script finalizar
+    await run_subprocess(command1)
 
     command2 = f"{sys.executable} ../client/model/summary_text.py"
-    subprocess.Popen(command2, shell=True).wait()  # Espera o script finalizar
+    await run_subprocess(command2)
 
-    # Inicia o segundo script após o primeiro finalizar
     command3 = f"{sys.executable} ../client/model/vector_database_manager_langchain.py"
-    subprocess.Popen(command3, shell=True).wait()
+    await run_subprocess(command3)
+
+    module_globals.is_processing = False
+    await notify_websockets({"function":"processing_done"})
 
     server.terminate()
 

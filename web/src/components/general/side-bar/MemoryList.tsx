@@ -97,7 +97,7 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory }) => 
             onClick={() => selectMemory(memory.id, index)} 
           >
             <div className="flex items-center">
-              <span className="h-[6px] w-[6px] bg-green-500 rounded-full mr-2"></span>
+              <span className={`h-[6px] w-[6px] ${selected === index ? "bg-green-500" : ""} rounded-full mr-2`}></span>
               <span
                 className={`font-Mada font-semibold text-[18px] tracking-tight ${
                   selected === index

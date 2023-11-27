@@ -40,11 +40,14 @@ const Switch = ({ isOn, handleToggle, name }) => {
   )
 }
 
-const SensorsWidget = () => {
-  const [micActive, setMicActive] = useState(false)
-  const [systemAudioActive, setSystemAudioActive] = useState(false)
-  const [screenCaptureActive, setScreenCaptureActive] = useState(false)
-
+const SensorsWidget = ({ 
+  micActive, 
+  setMicActive, 
+  systemAudioActive, 
+  setSystemAudioActive, 
+  screenCaptureActive, 
+  setScreenCaptureActive 
+}) => {
   useEffect(() => {
     axios.get('http://localhost:8000/load_config').then((response) => {
       const sensors = response.data.sensors
@@ -81,8 +84,8 @@ const SensorsWidget = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
 function ToggleCapture() {
   return (
@@ -123,6 +126,55 @@ const Application = () => {
   const [memoryName, setMemoryName] = useState('Default Memory')
   const [processing, setProcessing] = useState(false)
   const [capturing, setCapturing] = useState(false)
+  const [micActive, setMicActive] = useState(false);
+  const [systemAudioActive, setSystemAudioActive] = useState(false);
+  const [screenCaptureActive, setScreenCaptureActive] = useState(false);
+
+  useEffect(() => {
+    const ws = new WebSocket("ws://127.0.0.1:8000/ws");
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      
+      switch (data.function) {
+        case "select_memory":
+          setMemoryName(data.name);
+          break;
+        case "processing_start":
+          setProcessing(true);
+          break;
+        case "processing_done":
+          setProcessing(false);
+          break;
+        case "start_capture":
+          setCapturing(true);
+          break;
+        case "stop_capture":
+          setCapturing(false);
+          break;
+        case "set_sensor":
+          const sensorNameMap = {
+            system_audio_capture: "systemAudioActive",
+            microphone_audio_capture: "micActive",
+            screenshot_capture: "screenCaptureActive",
+          };
+          const stateKey = sensorNameMap[data.sensor_name];
+
+          if (stateKey) {
+            if (stateKey === "micActive") setMicActive(data.state);
+            else if (stateKey === "systemAudioActive") setSystemAudioActive(data.state);
+            else if (stateKey === "screenCaptureActive") setScreenCaptureActive(data.state);
+          } else {
+            console.warn("Received unknown sensor name:", data.sensor_name);
+          }
+          break;
+        default:
+          break;
+      }
+    };
+
+    return () => ws.close();
+  }, []);
 
 
   useEffect(() => {
@@ -218,7 +270,14 @@ const Application = () => {
         </div>
         <div className="mt-7 ml-2 mr-2 select-none">
           <ToggleCapture />
-          <SensorsWidget />
+          <SensorsWidget
+          micActive={micActive}
+          systemAudioActive={systemAudioActive}
+          screenCaptureActive={screenCaptureActive}
+
+          setMicActive={setMicActive}
+          setSystemAudioActive={setSystemAudioActive}
+          setScreenCaptureActive={setScreenCaptureActive}/>
         </div>
       </div>
       <div className="flex justify-center mt-8 ">

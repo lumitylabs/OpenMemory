@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import MulticolorComponent from "../manager/svg-manager/MulticolorComponent";
+import { useProcessAll } from "../../../hooks/useProcessAll";
 
 interface ProcessButtonProps {
   onClick?: () => void;
+  isActive: boolean;
+  setIsActive: (value: boolean) => void;
 }
 
-const ProcessButton: React.FC<ProcessButtonProps> = ({ onClick }) => {
-  const [isActive, setIsActive] = useState<boolean>(false);
-
+const ProcessButton: React.FC<ProcessButtonProps> = ({
+  onClick,
+  isActive,
+  setIsActive,
+}) => {
   const handleButtonClick = () => {
-    setIsActive(!isActive);
     onClick?.();
+    if (!isActive) {
+      setIsActive(true);
+      useProcessAll();
+    }
   };
 
   const loadingSVG = (

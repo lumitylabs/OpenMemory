@@ -32,7 +32,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('api', {
       send: (channel: string, data: any) => {
         console.log(channel, data)
-        let validChannels = ['minimize-app', 'close-app'];
+        let validChannels = ['minimize-app', 'close-app', 'toggle-capture'];
         if (validChannels.includes(channel)) {
           ipcRenderer.send(channel, data);
         }

@@ -13,6 +13,7 @@ import { useMemories } from "../../../hooks/useMemories";
 import { useLoadConfig } from "../../../hooks/useLoadConfig";
 import { useSetSensor } from "../../../hooks/useSetSensor";
 import { useGetCaptureState } from "../../../hooks/useGetCaptureState";
+import { useGetIsProcessing } from "../../../hooks/useGetIsProcessing";
 
 type SwitchStateKeys = "microphone" | "systemAudio" | "captureScreens";
 
@@ -50,6 +51,7 @@ const Sidebar: React.FC = () => {
   const [memories, setMemories] = useState([]);
   const [selectedMemory, setSelectedMemory] = useState(null);
   const [isCapturing, setIsCapturing] = useState<boolean>(false);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   useEffect(() => {
     useMemories()
@@ -82,6 +84,52 @@ const Sidebar: React.FC = () => {
       .then((captureState) => {
         setIsCapturing(captureState['state'])
       })
+
+      useGetIsProcessing()
+      .then((processingState) => {
+        setIsProcessing(processingState['state'])
+      })
+
+  }, []);
+
+  useEffect(() => {
+    const ws:any = new WebSocket("ws://127.0.0.1:8000/ws");
+    ws.onmessage = (event:any) => {
+      const data = JSON.parse(event.data);
+      if (data.function == "processing_start") {
+        setIsProcessing(true);
+      }
+      if (data.function == "processing_done") {
+        setIsProcessing(false);
+      }
+      if (data.function == "start_capture") {
+        setIsCapturing(true);
+      }
+      if (data.function == "stop_capture") {
+        setIsCapturing(false);
+      }
+      if (data.function === "set_sensor") {
+        const sensorNameMap:any = {
+          system_audio_capture: "systemAudio",
+          microphone_audio_capture: "microphone",
+          screenshot_capture: "captureScreens",
+        };
+        const stateKey = sensorNameMap[data.sensor_name];
+    
+        if (stateKey) {
+          setSwitchStates((prev) => {
+            const newState = { ...prev, [stateKey]: data.state };
+            return newState;
+          });
+        } else {
+          console.warn("Received unknown sensor name:", data.sensor_name);
+        }
+      }
+    };
+
+    return () => {
+      ws.close();
+    };
   }, []);
 
 
@@ -124,7 +172,7 @@ const Sidebar: React.FC = () => {
       <Divider classParameters="border-white border-opacity-10 my-9" />
 
       <div className="flex justify-end gap-5">
-        <ProcessButton></ProcessButton>
+        <ProcessButton isActive={isProcessing} setIsActive={setIsProcessing}></ProcessButton>
         <CaptureButton isActive={isCapturing} setIsActive={setIsCapturing}></CaptureButton>
       </div>
     </div>

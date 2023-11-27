@@ -2,6 +2,8 @@ from fastapi import HTTPException
 import module_globals
 from routes.sensors.stop_sensor import stop_sensor
 from fastapi import APIRouter
+
+from routes.websockets import notify_websockets
 app = APIRouter()
 
 @app.post("/stop_capture")
@@ -13,4 +15,5 @@ async def stop_capture():
         await stop_sensor(sensor_name)
     
     module_globals.is_capturing = False
+    await notify_websockets({"function":"stop_capture"})
     return {"message": "All sensors stopped"}

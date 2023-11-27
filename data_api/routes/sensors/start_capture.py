@@ -4,6 +4,7 @@ from routes.sensors.start_sensor import start_sensor
 
 from fastapi import APIRouter
 import module_globals
+from routes.websockets import notify_websockets
 
 app = APIRouter()
 
@@ -18,4 +19,5 @@ async def start_capture():
     
     module_globals.is_capturing = True
     print(module_globals.is_capturing)
+    await notify_websockets({"function":"start_capture"})
     return {"message": "All sensors started"}

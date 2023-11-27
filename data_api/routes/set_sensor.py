@@ -7,6 +7,8 @@ from routes.load_config import load_config
 from routes.sensors.start_sensor import start_sensor
 from routes.sensors.stop_sensor import stop_sensor
 from fastapi import APIRouter
+
+from routes.websockets import notify_websockets
 app = APIRouter()
 
 class SensorData(BaseModel):
@@ -28,5 +30,5 @@ async def set_sensor(data: SensorData):
             await start_sensor(data.sensor_name,config['selected_memory']['id'])
         else:
             await stop_sensor(data.sensor_name)
-
+    await notify_websockets({"function":"set_sensor", "sensor_name": data.sensor_name, "state": data.state})
     return {"message": f"Sensor {data.sensor_name} configuration updated"}
