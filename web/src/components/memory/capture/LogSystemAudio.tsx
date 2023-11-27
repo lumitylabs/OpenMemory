@@ -3,7 +3,7 @@ import MulticolorComponent from "../../general/manager/svg-manager/MulticolorCom
 
 export function LogSystemAudio(props: any) {
   return (
-    <div className="text-[#A4A4A4] flex items-center mb-10 gap-6 flex-wrap xl:flex-nowrap">
+    <div className="text-[#A4A4A4] w-fit flex items-center mb-10 gap-6 flex-wrap xl:flex-nowrap">
       <div className="text-[#444444] w-[60px]  ml-[30px] xl:ml-[0px]">
         {props.item.timestamp
           ? convertTimestampToHoursMinutes(Number(props.item.timestamp))
