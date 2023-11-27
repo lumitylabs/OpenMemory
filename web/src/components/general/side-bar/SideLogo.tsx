@@ -2,7 +2,10 @@ import MulticolorComponent from "../manager/svg-manager/MulticolorComponent";
 
 export function SideLogo() {
   return (
-    <div className="flex items-center gap-2 cursor-pointer select-none">
+    <div
+      onClick={() => (window.location.href = "/")}
+      className="flex w-min items-center gap-2 cursor-pointer select-none"
+    >
       <MulticolorComponent
         name="Logo"
         baseColor="#fff"

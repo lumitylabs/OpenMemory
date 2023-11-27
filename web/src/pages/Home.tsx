@@ -8,7 +8,7 @@ function Home() {
         <Sidebar />
       </div>
 
-      <div className="flex ml-[400px] w-full justify-center">
+      <div className="flex ml-[450px] w-full justify-center">
         <MemoryController />
       </div>
     </div>
