@@ -53,6 +53,17 @@ const Sidebar: React.FC = () => {
   const [isCapturing, setIsCapturing] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
+  function refreshMemories() {
+    useMemories()
+      .then((data) => {
+        setMemories(data);
+      })
+      .catch((error) => {
+        console.error("Error loading memories:", error);
+      });
+  }
+
+
   useEffect(() => {
     useMemories()
       .then((data) => {
@@ -145,7 +156,7 @@ const Sidebar: React.FC = () => {
           <ImportSideButton />
         </div>
       </div>
-      <MemoryList memories={memories} selectedMemory={selectedMemory} />
+      <MemoryList memories={memories} selectedMemory={selectedMemory} refreshMemories={refreshMemories}/>
       <Divider classParameters="border-white border-opacity-10 mt-5 mb-9" />
       <div className="flex flex-col gap-5">
         <ToggleCapture />

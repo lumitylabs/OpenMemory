@@ -38,6 +38,6 @@ async def process_all():
     module_globals.is_processing = False
     await notify_websockets({"function":"processing_done"})
 
-    server.terminate()
+    await server.terminate()
 
     return {"message": "Processed all and started vector database manager"}

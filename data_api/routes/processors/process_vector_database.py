@@ -15,6 +15,6 @@ async def process_vector_database(memory_id: int):
     command3 = f"{sys.executable} ../client/model/vector_database_manager_langchain.py"
     subprocess.Popen(command3, shell=True).wait()
 
-    server.terminate()
+    await server.terminate()
 
     return {"message": f"Processed memory ID {memory_id} and started vector database manager"}

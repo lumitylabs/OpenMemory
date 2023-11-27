@@ -38,6 +38,6 @@ async def process_memory(memory_id: int):
 
     module_globals.is_processing = False
     await notify_websockets({"function":"processing_done"})
-    server.terminate()
+    await server.terminate()
 
     return {"message": f"Processed memory ID {memory_id} and started vector database manager"}

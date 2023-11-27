@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import MulticolorComponent from "../manager/svg-manager/MulticolorComponent";
 import { useSelectMemory } from "../../../hooks/useSelectMemory";
+import { useDeleteMemory } from "../../../hooks/useDeleteMemory";
+import { useProcessMemory } from "../../../hooks/useProcessMemory";
 
 interface Memory {
   id: string;
@@ -10,12 +12,13 @@ interface Memory {
 interface MemoryListProps {
   memories: Memory[];
   selectedMemory: Memory | null;
+  refreshMemories: () => void;
 }
 
 const OptionsMenu = React.forwardRef<
   HTMLDivElement,
-  { options: string[]; memory: string }
->(({ options, memory }, ref) => (
+  { options: string[]; memory: Memory; onProcess: () => void; onDelete: () => void }
+>(({ options, memory, onProcess, onDelete }, ref) => (
   <div
     className="absolute right-0 mt-2 w-[126px] bg-white shadow-lg rounded-md py-2 z-10 "
     ref={ref}
@@ -23,10 +26,16 @@ const OptionsMenu = React.forwardRef<
     {options.map((option) => (
       <div
         key={option}
-        className={`px-4 py-1 hover:bg-[#fff0fe]  font-Mada font-medium tracking-tight ${
+        className={`px-4 py-1 hover:bg-[#fff0fe] font-Mada font-medium tracking-tight ${
           option === "Delete" ? "text-red-400" : "text-[#3b444d]"
         } cursor-pointer`}
-        onClick={() => console.log(option, memory)}
+        onClick={() => {
+          if (option === "Process") {
+            onProcess();
+          } else if (option === "Delete") {
+            onDelete();
+          }
+        }}
       >
         {option}
       </div>
@@ -34,7 +43,7 @@ const OptionsMenu = React.forwardRef<
   </div>
 ));
 
-const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory }) => {
+const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory, refreshMemories }) => {
   const [selected, setSelected] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState<number | null>(null);
   const menuRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -82,10 +91,27 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory }) => 
     [menuOpen]
   );
 
+
   return (
     <div className="flex flex-col w-full gap-2 pt-5">
-      {memories.map((memory) => {
-        const index = memories.indexOf(memory);
+      {memories.map((memory, index) => {
+        const onProcess = () => {
+          useProcessMemory(memory.id);
+          setMenuOpen(null); 
+        };
+        const onDelete = () => {
+          if (memory.id !== '0') {
+            useDeleteMemory(memory.id).then(() => {
+              refreshMemories();
+              useSelectMemory('id_da_memória_padrão'); 
+            });
+          }
+          setMenuOpen(null); 
+        };
+        const options = ["Process", "Export"];
+        if (memory.id !== '0') { 
+          options.push("Delete");
+        }
         return (
           <div
             key={memory.id} 
@@ -125,11 +151,13 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory }) => 
                 />
               </button>
               {menuOpen === index && (
-                <OptionsMenu
-                  ref={(el) => (menuRef.current[index] = el)}
-                  options={["Process", "Export", "Delete"]}
-                  memory={memory.name} // Passando o nome da memória
-                />
+            <OptionsMenu
+              ref={(el) => (menuRef.current[index] = el)}
+              options={options}
+              memory={memory}
+              onProcess={onProcess}
+              onDelete={onDelete}
+            />
               )}
             </div>
           </div>
