@@ -29,7 +29,8 @@ async def import_memory(file: UploadFile = File(...), db: AsyncSession = Depends
         data = json.load(json_file)
 
     async with db as session:
-        new_memory = Memory(name="Imported Memory")
+        memory_name = os.path.splitext(file.filename)[0]
+        new_memory = Memory(name=memory_name)
         session.add(new_memory)
         await session.flush()  # Flush to ensure id is populated
         new_memory_id = new_memory.id
@@ -89,7 +90,7 @@ async def import_memory(file: UploadFile = File(...), db: AsyncSession = Depends
     # Limpeza: remova o diretório temporário
     os.remove(zip_path)
     shutil.rmtree(temp_dir)
-    process_vector_database(new_memory_id)
+    await process_vector_database(new_memory_id)
 
     return {"message": "Memory imported successfully", "new_memory_id": new_memory_id}
 

@@ -3,6 +3,8 @@ import MulticolorComponent from "../manager/svg-manager/MulticolorComponent";
 import { useSelectMemory } from "../../../hooks/useSelectMemory";
 import { useDeleteMemory } from "../../../hooks/useDeleteMemory";
 import { useProcessMemory } from "../../../hooks/useProcessMemory";
+import { useExportMemory } from "../../../hooks/useExportMemory";
+import { SpinAnimation } from "../utils";
 
 interface Memory {
   id: string;
@@ -13,12 +15,20 @@ interface MemoryListProps {
   memories: Memory[];
   selectedMemory: Memory | null;
   refreshMemories: () => void;
+  isImporting: boolean;
 }
+
+
 
 const OptionsMenu = React.forwardRef<
   HTMLDivElement,
-  { options: string[]; memory: Memory; onProcess: () => void; onDelete: () => void }
->(({ options, memory, onProcess, onDelete }, ref) => (
+  {
+    options: string[];
+    onProcess: () => void;
+    onExport: () => void;
+    onDelete: () => void;
+  }
+>(({ options, onProcess, onExport, onDelete }, ref) => (
   <div
     className="absolute right-0 mt-2 w-[126px] bg-white shadow-lg rounded-md py-2 z-10 "
     ref={ref}
@@ -32,6 +42,8 @@ const OptionsMenu = React.forwardRef<
         onClick={() => {
           if (option === "Process") {
             onProcess();
+          } else if (option === "Export") {
+            onExport();
           } else if (option === "Delete") {
             onDelete();
           }
@@ -43,15 +55,30 @@ const OptionsMenu = React.forwardRef<
   </div>
 ));
 
-const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory, refreshMemories }) => {
+function createDownloadLink(blob: any, fileName: any) {
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  a.remove();
+}
+
+const MemoryList: React.FC<MemoryListProps> = ({
+  memories,
+  selectedMemory,
+  refreshMemories,
+  isImporting,
+}) => {
   const [selected, setSelected] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState<number | null>(null);
   const menuRef = useRef<(HTMLDivElement | null)[]>([]);
-  const selectMemory = (memoryId:any, index:number) => {
+  const selectMemory = (memoryId: any, index: number) => {
     handleMemorySelect(index);
-    useSelectMemory({'memory_id': memoryId})
-      .then(() => {
-      })
+    useSelectMemory({ memory_id: memoryId })
+      .then(() => {})
       .catch((error) => {
         console.error("Error selecting memory:", error);
       });
@@ -65,9 +92,10 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory, refre
   }, []);
 
   useEffect(() => {
-
     if (selectedMemory) {
-      const selectedIndex = memories.findIndex(memory => memory.id == selectedMemory.id);
+      const selectedIndex = memories.findIndex(
+        (memory) => memory.id == selectedMemory.id
+      );
 
       setSelected(selectedIndex);
     }
@@ -91,40 +119,54 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory, refre
     [menuOpen]
   );
 
+  const onExport = async (memory: Memory) => {
+    useExportMemory(Number(memory.id))
+      .then((blob) => {
+        createDownloadLink(blob, memory.name + ".zip");
+      })
+      .catch((error) => {
+        console.error("Error exporting memory:", error);
+      });
+    setMenuOpen(null);
+  };
 
   return (
     <div className="flex flex-col w-full gap-2 pt-5">
       {memories.map((memory, index) => {
         const onProcess = () => {
           useProcessMemory(memory.id);
-          setMenuOpen(null); 
+          setMenuOpen(null);
         };
         const onDelete = () => {
-          if (memory.id !== '0') {
+          if (memory.id !== "0") {
             useDeleteMemory(memory.id).then(() => {
               refreshMemories();
               handleMemorySelect(0);
-              useSelectMemory({"memory_id":0}); 
+              useSelectMemory({ memory_id: 0 });
             });
           }
-          setMenuOpen(null); 
+          setMenuOpen(null);
         };
         const options = ["Process", "Export"];
-        if (memory.id !== '0') { 
+        if (memory.id !== "0") {
           options.push("Delete");
         }
         return (
           <div
-            key={memory.id} 
+            key={memory.id}
             className={`group flex px-4 py-2 items-center justify-between rounded-[9px] ${
               selected === index
                 ? "bg-white bg-opacity-10"
                 : "hover:bg-white hover:bg-opacity-10 transition duration-300 ease-in-out"
             } cursor-pointer`}
-            onClick={() => selectMemory(memory.id, index)} 
+            onClick={() => selectMemory(memory.id, index)}
           >
             <div className="flex items-center">
-              <span className={`h-[6px] w-[6px] ${selected === index ? "bg-green-500" : ""} rounded-full mr-2`}></span>
+              <span
+                className={`h-[6px] w-[6px] ${
+                  selected === index ? "bg-green-500" : ""
+                } rounded-full mr-2`}
+              ></span>
               <span
                 className={`font-Mada font-semibold text-[18px] tracking-tight ${
                   selected === index
@@ -139,7 +181,7 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory, refre
               <button
                 className="text-white"
                 onClick={(event) => {
-                  event.stopPropagation(); 
+                  event.stopPropagation();
                   handleMoreClick(index, event);
                 }}
               >
@@ -151,22 +193,34 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory, refre
                   classParameters="h-[27px] w-[27px]"
                 />
               </button>
+
               {menuOpen === index && (
-            <OptionsMenu
-              ref={(el) => (menuRef.current[index] = el)}
-              options={options}
-              memory={memory}
-              onProcess={onProcess}
-              onDelete={onDelete}
-            />
+                <OptionsMenu
+                  ref={(el) => (menuRef.current[index] = el)}
+                  options={options}
+                  onProcess={onProcess}
+                  onExport={() => onExport(memory)}
+                  onDelete={onDelete}
+                />
               )}
             </div>
           </div>
         );
       })}
+      {isImporting && (
+        <div className="flex items-center justify-between px-4 py-2 rounded-[9px]">
+          <div className="flex items-center">
+            <span className={`h-[6px] w-[6px] rounded-full mr-2`}></span>{" "}
+
+            <span className="font-Mada font-semibold text-[18px] tracking-tight text-[#B0D0DE]">
+              Importing...
+            </span>
+          </div>
+          <SpinAnimation height={18} width={18} />
+        </div>
+      )}
     </div>
   );
-  
 };
 
 export default MemoryList;

@@ -21,7 +21,11 @@ import { useMemories } from "../hooks/useMemories";
 const INITIAL_FETCH_COUNT = 20;
 const MAX_MEMORIES_COUNT = 200;
 
-function MemoryController() {
+interface MemoryControllerProps {
+  onForceReload: (reloadFunction: () => void) => void;
+}
+
+const MemoryController: React.FC<MemoryControllerProps> = ({ onForceReload }) => {
   const [memories, setMemories] = useState<any>([]);
   const [searchDone, setSearchDone] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -120,6 +124,22 @@ function MemoryController() {
         console.error("Error loading memories:", error);
       });
   }, []);
+
+  const reloadMemories = () => {
+    useMemories()
+      .then((data) => {
+        setMemoriesList([{ id: "-1", name: "All Memories" }, ...data]);
+      })
+      .catch((error) => {
+        console.error("Error loading memories:", error);
+      });
+  };
+
+  useEffect(() => {
+    if (onForceReload) {
+      onForceReload(reloadMemories);
+    }
+  }, [onForceReload]);
 
   var imgBase = "http://localhost:8000/screencaptures/";
 
