@@ -1,7 +1,6 @@
 import asyncio
 import sys
 from fastapi import APIRouter
-
 from routes.websockets import notify_websockets
 app = APIRouter()
 import module_globals

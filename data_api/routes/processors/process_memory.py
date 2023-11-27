@@ -1,7 +1,6 @@
 import asyncio
 import sys
 from fastapi import APIRouter
-
 from routes.websockets import notify_websockets
 app = APIRouter()
 import module_globals
@@ -20,6 +19,7 @@ async def run_subprocess(command):
 
 @app.post("/process_memory/{memory_id}")
 async def process_memory(memory_id: int):
+    
     module_globals.is_processing = True
     await notify_websockets({"function":"processing_start"})
     server_cmd = f"{sys.executable} ../llm_api/start_server.py"

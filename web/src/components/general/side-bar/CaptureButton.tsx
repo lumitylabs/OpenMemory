@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import MulticolorComponent from "../manager/svg-manager/MulticolorComponent";
 import { useStartCapture } from "../../../hooks/useStartCapture";
 import { useStopCapture } from "../../../hooks/useStopCapture";

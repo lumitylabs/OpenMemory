@@ -1,4 +1,3 @@
-import MulticolorComponent from "../../general/manager/svg-manager/MulticolorComponent";
 
 export function SearchBar(props: any) {
   const handleKeyDown = (e: React.KeyboardEvent) => {

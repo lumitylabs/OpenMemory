@@ -1,5 +1,11 @@
 import sys
 import os
+import asyncio
+from asyncio import windows_events
+
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(windows_events.WindowsProactorEventLoopPolicy())
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
 if script_dir not in sys.path:
     sys.path.append(script_dir)

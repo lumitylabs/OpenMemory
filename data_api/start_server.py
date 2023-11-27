@@ -25,7 +25,7 @@ def signal_handler(server, sig, frame):
     loop.close()
 
 if __name__ == "__main__":
-    config = uvicorn.Config("server:app", host="127.0.0.1", port=8000, reload=True)
+    config = uvicorn.Config("server:app", host="127.0.0.1", port=8000, reload=False)
     server = uvicorn.Server(config)
 
     # Bind the signal handlers
@@ -37,4 +37,4 @@ if __name__ == "__main__":
         server.run()
     except KeyboardInterrupt:
         # Trigger FastAPI shutdown event
-        asyncio.run(shutdown_server())
+        asyncio.run_until_complete(shutdown_server())
