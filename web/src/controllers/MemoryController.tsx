@@ -16,6 +16,7 @@ import { motion } from "framer-motion";
 import { GenerativeAnswer } from "../components/general/GenerativeAnswer";
 import { MemoryCard } from "./MemoryCard";
 import { useMemories } from "../hooks/useMemories";
+import { EmptyHome } from "../components/home/EmptyHome";
 
 // Constants
 const INITIAL_FETCH_COUNT = 20;
@@ -150,7 +151,7 @@ const MemoryController: React.FC<MemoryControllerProps> = ({
   var imgBase = "http://localhost:8000/screencaptures/";
 
   return (
-    <div className="overflow-auto p-9">
+    <div className="overflow-auto p-9 flex flex-col">
       {/* Modal para seleção de data */}
       <DataPickerModal
         showModal={showModal}
@@ -212,36 +213,44 @@ const MemoryController: React.FC<MemoryControllerProps> = ({
         ""
       )}
 
-      <h1 className="font-Mada font-extrabold flex w-full text-[60px] text-[#333232] select-none">
-        {searchDone ? "Related Idea" : "Latest Ideas"}
-      </h1>
-
-      <InfiniteScroll
-        dataLength={memories.length}
-        next={
-          filteredTimestamps.length > 0
-            ? requestMoreFilteredMemories
-            : fetchMoreData
-        }
-        hasMore={hasMore}
-        loader={<h4>Loading...</h4>}
-        endMessage={
-          <p className="flex font-Mada font-semibold justify-center text-[#333333] ml-12 select-none">
-            <span>Yay! You have seen it all.</span>
-          </p>
-        }
-      >
-        {memories.map((memory: any, idx: any) => (
-          <div className="flex items-center mb-12" key={idx}>
-            <MemoryCard
-              isLargeScreen={isLargeScreen}
-              imgBase={imgBase}
-              memory={memory}
-              idx={idx}
-            ></MemoryCard>
-          </div>
-        ))}
-      </InfiniteScroll>
+      {memories.length === 0 ? (
+        <div className="flex justify-center items-center h-[calc(80vh)]">
+          <EmptyHome></EmptyHome>
+        </div>
+      ) : (
+        <div>
+          {" "}
+          <h1 className="font-Mada font-extrabold flex w-full text-[60px] text-[#333232] select-none">
+            {searchDone ? "Related Idea" : "Latest Ideas"}
+          </h1>
+          <InfiniteScroll
+            dataLength={memories.length}
+            next={
+              filteredTimestamps.length > 0
+                ? requestMoreFilteredMemories
+                : fetchMoreData
+            }
+            hasMore={hasMore}
+            loader={<h4>Loading...</h4>}
+            endMessage={
+              <p className="flex font-Mada font-semibold justify-center text-[#333333] ml-12 select-none">
+                <span>Yay! You have seen it all.</span>
+              </p>
+            }
+          >
+            {memories.map((memory: any, idx: any) => (
+              <div className="flex items-center mb-12" key={idx}>
+                <MemoryCard
+                  isLargeScreen={isLargeScreen}
+                  imgBase={imgBase}
+                  memory={memory}
+                  idx={idx}
+                ></MemoryCard>
+              </div>
+            ))}
+          </InfiniteScroll>
+        </div>
+      )}
     </div>
   );
 };

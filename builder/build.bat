@@ -1,4 +1,3 @@
-@echo off
 setlocal
 
 :: Definindo diretórios
@@ -41,6 +40,7 @@ copy .\addons\serve.py .\build\web
 robocopy "%SOURCE_DIR%/client" "%DEST_DIR%/client" /E /XD temp data model\chroma /XF *.gguf *.db *.db-journal *.sqlite-journal *.sqlite3-journal *.wal *.shm *.pyc config.json last_processed_record.json last_synced_record.json
 robocopy "%SOURCE_DIR%/data_api" "%DEST_DIR%/data_api" /E /XF *.gguf *.db *.db-journal *.sqlite-journal *.sqlite3-journal *.wal *.shm *.pyc
 robocopy "%SOURCE_DIR%/llm_api" "%DEST_DIR%/llm_api" /E /XF *.gguf *.db *.db-journal *.sqlite-journal *.sqlite3-journal *.wal *.shm *.pyc
+if not exist "%SOURCE_DIR%/client/data/screencapture" mkdir "%SOURCE_DIR%/client/data/screencapture"
 
 :: Baixando e extraindo Python Embeddable
 curl -L %PYTHON_URL% -o python_embed.zip

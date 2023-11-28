@@ -15,7 +15,7 @@ async def get_db():
         yield session
 
 def load_vector_database():
-    global langchain_chroma
+    global langchain_chroma, embedding_function
     persist_directory = '../client/model/chroma'
     persistent_client = chromadb.PersistentClient(persist_directory)
     collection_name = "raw_ideas"

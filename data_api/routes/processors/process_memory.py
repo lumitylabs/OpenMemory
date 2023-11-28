@@ -1,6 +1,7 @@
 import asyncio
 import sys
 from fastapi import APIRouter
+from model.databases import load_vector_database
 from routes.websockets import notify_websockets
 app = APIRouter()
 import module_globals
@@ -23,6 +24,9 @@ async def process_memory(memory_id: int):
     module_globals.is_processing = True
     await notify_websockets({"function":"processing_start"})
 
+    server_cmd = [sys.executable, "../llm_api/start_server.py"]
+    server = await asyncio.create_subprocess_exec(*server_cmd)
+
     await asyncio.sleep(5)
 
     command = f"{sys.executable} ../client/sensors/audio_processor.py --memory_id {memory_id}"
@@ -37,5 +41,19 @@ async def process_memory(memory_id: int):
     module_globals.is_processing = False
     await notify_websockets({"function":"processing_done"})
 
+    await load_vector_database()
+    
+    server.terminate()
+    try:
+        await asyncio.wait_for(server.wait(), timeout=10)
+    except asyncio.TimeoutError:
+        server.kill()
+
+    module_globals.is_processing = False
+    
+
+
+    
+    await notify_websockets({"function": "processing_done"})
 
     return {"message": f"Processed memory ID {memory_id} and started vector database manager"}

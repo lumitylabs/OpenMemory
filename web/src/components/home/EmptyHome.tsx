@@ -2,7 +2,7 @@ import MulticolorComponent from "../general/manager/svg-manager/MulticolorCompon
 
 export function EmptyHome() {
   return (
-    <div className="flex flex-col justify-center gap-9">
+    <div className="flex flex-col justify-center gap-14">
       <div className="flex items-center gap-4">
         <MulticolorComponent
           name="Sensors"
