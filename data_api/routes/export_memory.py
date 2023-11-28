@@ -2,6 +2,7 @@ import shutil
 import zipfile
 import os
 import json
+from datetime import datetime
 from fastapi import APIRouter, HTTPException, BackgroundTasks, Depends, File, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -11,8 +12,10 @@ from model.models import Activity, AudioTranscriptions, RawIdeas, ScreenCapture
 
 app = APIRouter()
 
-@app.get("/export_memory/")
+@app.post("/export_memory/{memory_id}")
 async def export_memory(memory_id: int, background_tasks: BackgroundTasks, db: AsyncSessionLocal = Depends(get_db)):
+
+
     async with db as session:
         # Query for activities
         activities_result = await session.execute(select(Activity).filter(Activity.memory_id == memory_id))
@@ -57,7 +60,6 @@ async def export_memory(memory_id: int, background_tasks: BackgroundTasks, db: A
         except:
             continue
 
-    # Create a zip file
     zip_path = f"{export_dir}.zip"
     with zipfile.ZipFile(zip_path, 'w') as zipf:
         for root, dirs, files in os.walk(export_dir):
@@ -75,4 +77,4 @@ async def export_memory(memory_id: int, background_tasks: BackgroundTasks, db: A
     # Schedule the clean up of the exported directory after the response is completed
     background_tasks.add_task(shutil.rmtree, export_dir)
 
-    return zip_path
+    return FileResponse(path=zip_path, filename=f"export_{memory_id}.zip", background=background_tasks.add_task(shutil.rmtree, export_dir))

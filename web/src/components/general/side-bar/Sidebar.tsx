@@ -14,10 +14,15 @@ import { useLoadConfig } from "../../../hooks/useLoadConfig";
 import { useSetSensor } from "../../../hooks/useSetSensor";
 import { useGetCaptureState } from "../../../hooks/useGetCaptureState";
 import { useGetIsProcessing } from "../../../hooks/useGetIsProcessing";
+import { useImportMemory } from "../../../hooks/useImportMemory";
 
 type SwitchStateKeys = "microphone" | "systemAudio" | "captureScreens";
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  forceReloadMemories: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ forceReloadMemories }) => {
   const [switchStates, setSwitchStates] = useState<{
     [key in SwitchStateKeys]: boolean;
   }>({
@@ -51,11 +56,13 @@ const Sidebar: React.FC = () => {
   const [selectedMemory, setSelectedMemory] = useState(null);
   const [isCapturing, setIsCapturing] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [isImporting, setIsImporting] = useState(false);
 
   function refreshMemories() {
     useMemories()
       .then((data) => {
         setMemories(data);
+        forceReloadMemories();
       })
       .catch((error) => {
         console.error("Error loading memories:", error);
@@ -141,6 +148,20 @@ const Sidebar: React.FC = () => {
     };
   }, []);
 
+  const handleFileSelected = async (file: any) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setIsImporting(true);
+      await useImportMemory(formData);
+      setIsImporting(false);
+      refreshMemories();
+    } catch (error) {
+      console.error("Error importing memory:", error);
+    }
+  };
+
   return (
     <div className="fixed top-0 left-0 h-screen w-[450px] p-9 bg-gradient-to-r from-[#458CAA] to-[#AF92AC] overflow-y-auto z-10">
       <div className="flex flex-col gap-9">
@@ -149,13 +170,14 @@ const Sidebar: React.FC = () => {
           <SideSearchInput />
           <AddMemoriesButton refreshMemories={refreshMemories} />
 
-          <ImportSideButton />
+          <ImportSideButton onFileSelected={handleFileSelected} />
         </div>
       </div>
       <MemoryList
         memories={memories}
         selectedMemory={selectedMemory}
         refreshMemories={refreshMemories}
+        isImporting={isImporting}
       />
       <Divider classParameters="border-white border-opacity-10 mt-5 mb-9" />
       <div className="flex flex-col gap-5">

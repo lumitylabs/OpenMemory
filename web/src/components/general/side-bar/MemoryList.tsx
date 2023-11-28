@@ -3,6 +3,8 @@ import MulticolorComponent from "../manager/svg-manager/MulticolorComponent";
 import { useSelectMemory } from "../../../hooks/useSelectMemory";
 import { useDeleteMemory } from "../../../hooks/useDeleteMemory";
 import { useProcessMemory } from "../../../hooks/useProcessMemory";
+import { useExportMemory } from "../../../hooks/useExportMemory";
+import { SpinAnimation } from "../utils";
 
 interface Memory {
   id: string;
@@ -13,17 +15,18 @@ interface MemoryListProps {
   memories: Memory[];
   selectedMemory: Memory | null;
   refreshMemories: () => void;
+  isImporting: boolean;
 }
 
 const OptionsMenu = React.forwardRef<
   HTMLDivElement,
   {
     options: string[];
-    memory: Memory;
     onProcess: () => void;
+    onExport: () => void;
     onDelete: () => void;
   }
->(({ options, onProcess, onDelete }, ref) => (
+>(({ options, onProcess, onExport, onDelete }, ref) => (
   <div
     className="absolute right-0 mt-2 w-[126px] bg-white shadow-lg rounded-md py-2 z-10 "
     ref={ref}
@@ -37,6 +40,8 @@ const OptionsMenu = React.forwardRef<
         onClick={() => {
           if (option === "Process") {
             onProcess();
+          } else if (option === "Export") {
+            onExport();
           } else if (option === "Delete") {
             onDelete();
           }
@@ -48,10 +53,22 @@ const OptionsMenu = React.forwardRef<
   </div>
 ));
 
+function createDownloadLink(blob: any, fileName: any) {
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  a.remove();
+}
+
 const MemoryList: React.FC<MemoryListProps> = ({
   memories,
   selectedMemory,
   refreshMemories,
+  isImporting,
 }) => {
   const [selected, setSelected] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState<number | null>(null);
@@ -99,6 +116,17 @@ const MemoryList: React.FC<MemoryListProps> = ({
     },
     [menuOpen]
   );
+
+  const onExport = async (memory: Memory) => {
+    useExportMemory(Number(memory.id))
+      .then((blob) => {
+        createDownloadLink(blob, memory.name + ".zip");
+      })
+      .catch((error) => {
+        console.error("Error exporting memory:", error);
+      });
+    setMenuOpen(null);
+  };
 
   return (
     <div className="flex flex-col w-full gap-2 pt-5">
@@ -163,12 +191,13 @@ const MemoryList: React.FC<MemoryListProps> = ({
                   classParameters="h-[27px] w-[27px]"
                 />
               </button>
+
               {menuOpen === index && (
                 <OptionsMenu
                   ref={(el) => (menuRef.current[index] = el)}
                   options={options}
-                  memory={memory}
                   onProcess={onProcess}
+                  onExport={() => onExport(memory)}
                   onDelete={onDelete}
                 />
               )}
@@ -176,6 +205,17 @@ const MemoryList: React.FC<MemoryListProps> = ({
           </div>
         );
       })}
+      {isImporting && (
+        <div className="flex items-center justify-between px-4 py-2 rounded-[9px]">
+          <div className="flex items-center">
+            <span className={`h-[6px] w-[6px] rounded-full mr-2`}></span>{" "}
+            <span className="font-Mada font-semibold text-[18px] tracking-tight text-[#B0D0DE]">
+              Importing...
+            </span>
+          </div>
+          <SpinAnimation height={18} width={18} />
+        </div>
+      )}
     </div>
   );
 };

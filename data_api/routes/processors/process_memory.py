@@ -22,8 +22,6 @@ async def process_memory(memory_id: int):
     
     module_globals.is_processing = True
     await notify_websockets({"function":"processing_start"})
-    server_cmd = f"{sys.executable} ../llm_api/start_server.py"
-    server = await asyncio.create_subprocess_shell(server_cmd)
 
     await asyncio.sleep(5)
 
@@ -38,6 +36,6 @@ async def process_memory(memory_id: int):
 
     module_globals.is_processing = False
     await notify_websockets({"function":"processing_done"})
-    await server.terminate()
+
 
     return {"message": f"Processed memory ID {memory_id} and started vector database manager"}
