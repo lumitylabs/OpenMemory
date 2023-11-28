@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from model.databases import AsyncSessionLocal, get_db
 from sqlalchemy import desc
-from model.models import Activity, ScreenCapture
+from model.models import Activity, RawIdeas, ScreenCapture
 from fastapi import Depends
 from sqlalchemy.orm import Session
 app = APIRouter()
@@ -32,6 +32,10 @@ async def read_filtered_audio_transcriptions(skip: int = 0, limit: int = 20, fil
             prev_activity = prev_result.scalars().first()
             next_activity = next_result.scalars().first()
 
+            raw_ideas_query = await session.execute(select(RawIdeas).filter(RawIdeas.start_timestamp == prev_activity.timestamp, RawIdeas.memory_id == prev_activity.memory_id))
+            raw_idea = raw_ideas_query.scalars().first()
+            idea_content = raw_idea.content if raw_idea else None
+
             if prev_activity and (not next_activity or next_activity.timestamp > ft):
                 # Query for ScreenCapture
                 screencap_stmt = select(ScreenCapture).filter(ScreenCapture.timestamp >= prev_activity.timestamp)
@@ -44,7 +48,7 @@ async def read_filtered_audio_transcriptions(skip: int = 0, limit: int = 20, fil
 
                 results.append({
                     "id": prev_activity.id,
-                    "memory_id": prev_activity.memory_id,  # Include memory_id in the response
+                    "memory_id": prev_activity.memory_id,
                     "title": prev_activity.title,
                     "description": prev_activity.description,
                     "tags": prev_activity.tags,
@@ -52,7 +56,8 @@ async def read_filtered_audio_transcriptions(skip: int = 0, limit: int = 20, fil
                     "date_str": prev_activity.date_str,
                     "time_str": prev_activity.time_str,
                     "timestamp": prev_activity.timestamp,
-                    "image_path": image_path
+                    "image_path": image_path,
+                    "raw_idea_content": idea_content
                 })
     
     paginated_results = results[skip: skip + limit]
