@@ -18,8 +18,6 @@ interface MemoryListProps {
   isImporting: boolean;
 }
 
-
-
 const OptionsMenu = React.forwardRef<
   HTMLDivElement,
   {
@@ -156,7 +154,7 @@ const MemoryList: React.FC<MemoryListProps> = ({
             key={memory.id}
             className={`group flex px-4 py-2 items-center justify-between rounded-[9px] ${
               selected === index
-                ? "bg-white bg-opacity-10"
+                ? "bg-white bg-opacity-20"
                 : "hover:bg-white hover:bg-opacity-10 transition duration-300 ease-in-out"
             } cursor-pointer`}
             onClick={() => selectMemory(memory.id, index)}
@@ -211,7 +209,6 @@ const MemoryList: React.FC<MemoryListProps> = ({
         <div className="flex items-center justify-between px-4 py-2 rounded-[9px]">
           <div className="flex items-center">
             <span className={`h-[6px] w-[6px] rounded-full mr-2`}></span>{" "}
-
             <span className="font-Mada font-semibold text-[18px] tracking-tight text-[#B0D0DE]">
               Importing...
             </span>
