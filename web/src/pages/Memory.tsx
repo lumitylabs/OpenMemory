@@ -72,7 +72,7 @@ function Memory() {
                 </div>
               </div>
 
-              <div className=" border border-[#444444]  w-[250px] p-9 mt-9 rounded-2xl flex justify-between flex-wrap xl:flex-nowrap ">
+              <div className=" border border-[#444444]  w-[250px] p-9 mt-9 rounded-[36px] flex justify-between flex-wrap xl:flex-nowrap ">
                 <div className="flex flex-col w-full">
                   <div className="flex items-center select-none">
                     <p className="font-Mada font-semibold text-[27px] text-[#fff]">

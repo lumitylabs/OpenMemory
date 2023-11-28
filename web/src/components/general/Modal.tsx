@@ -35,21 +35,28 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onCreate }) => {
         }
       }}
     >
-      <div className="bg-white p-4 rounded-lg shadow-lg">
-        <h2 className="text-lg font-semibold mb-4">New Memory</h2>
+      <div className="flex p-9 flex-col bg-white rounded-[27px] shadow-lg">
+        <h2 className="font-Mada font-semibold text-[27px] tracking-tight mb-4">
+          New Memory
+        </h2>
         <input
           type="text"
-          placeholder="Memory Name..."
-          className="mb-4 p-2 w-full border rounded"
+          placeholder="Memory Name"
+          className="flex w-[300px] p-2 border rounded-[9px] font-Mada font-semibold placeholder:font-medium tracking-tight border-[#b3b3b3] focus:outline-none focus:shadow-sm focus:border-[#000] transition duration-300 ease-in-out"
           value={memoryName}
           onChange={(e) => setMemoryName(e.target.value)}
         />
-        <button
-          className="bg-pink-500 text-white p-2 rounded"
-          onClick={handleCreateClick}
-        >
-          Create
-        </button>
+        <div className="flex justify-end mt-9">
+          <button
+            className="flex justify-center bg-[#D458C8] hover:bg-[#db5ecf] shadow-md w-[100px] p-2 rounded-[9px] transition duration-300 ease-in-out"
+            onClick={handleCreateClick}
+          >
+            <span className="font-Mada font-semibold tracking-tight text-white">
+              {" "}
+              Create
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   );
