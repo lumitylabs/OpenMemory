@@ -18,7 +18,7 @@ export function InfoMemoryCard(props: any) {
         <div className="flex flex-col gap-3">
           <div className="flex justify-between">
             <QuotationMarks></QuotationMarks>
-            <InfoMemorySubject></InfoMemorySubject>
+            <InfoMemorySubject tags={props.memory.tags}></InfoMemorySubject>
           </div>
           <div className="h-[1px] bg-[#444444]"></div>
           <InfoMemoryCardDescription
