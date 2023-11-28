@@ -36,9 +36,11 @@ function Memory() {
   const unifiedData = getUnifiedData(data);
   return (
     <div className="flex flex-col ml-[450px]">
-      <Sidebar forceReloadMemories={function (): void {
-        throw new Error("Function not implemented.");
-      } }></Sidebar>
+      <Sidebar
+        forceReloadMemories={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+      ></Sidebar>
       <div className="flex justify-center">
         <div className="flex flex-col font-NotoSansDisplay">
           <div className=" text-[#636363]">
@@ -70,10 +72,10 @@ function Memory() {
                 </div>
               </div>
 
-              <div className="bg-[#060E11]  w-[250px] p-9 mt-9 rounded-2xl flex justify-between flex-wrap xl:flex-nowrap">
+              <div className=" border border-[#444444]  w-[250px] p-9 mt-9 rounded-2xl flex justify-between flex-wrap xl:flex-nowrap ">
                 <div className="flex flex-col w-full">
                   <div className="flex items-center select-none">
-                    <p className="font-Mada font-semibold text-[27px] text-[#498CA9]">
+                    <p className="font-Mada font-semibold text-[27px] text-[#fff]">
                       Reminders
                     </p>
                   </div>

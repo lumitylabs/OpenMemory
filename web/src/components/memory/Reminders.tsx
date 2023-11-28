@@ -6,7 +6,7 @@ export const Reminders = ({ reminders }: { reminders: string[] }) =>
       {reminders.map((rem: string, idx: number) => (
         <span
           key={idx}
-          className="text-[#498CA9] font-Mada font-semibold mt-2 overflow-hidden whitespace-normal"
+          className="text-[#A4A4A4] font-Mada font-semibold mt-2 overflow-hidden whitespace-normal"
         >
           • {rem}
         </span>
@@ -14,17 +14,17 @@ export const Reminders = ({ reminders }: { reminders: string[] }) =>
     </div>
   ) : (
     <div className="flex h-full justify-center items-center">
-      <div className="flex flex-col text-[#2d5869] justify-center ">
+      <div className="flex flex-col justify-center select-none ">
         <div className="flex h-full w-full justify-center">
           <MulticolorComponent
             name={"Remind"}
-            baseColor={"#2d5869"}
+            baseColor={"#333232"}
             selectedColor={""}
             isSelected={false}
             classParameters={"w-[27px] h-[27px]"}
           ></MulticolorComponent>
         </div>
-        <span className=" font-Mada font-semibold text-[#2d5869]">
+        <span className="font-Mada font-semibold text-[#333232]">
           No reminders here
         </span>
       </div>

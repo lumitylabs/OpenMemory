@@ -5,6 +5,7 @@ import { useDeleteMemory } from "../../../hooks/useDeleteMemory";
 import { useProcessMemory } from "../../../hooks/useProcessMemory";
 import { useExportMemory } from "../../../hooks/useExportMemory";
 import { SpinAnimation } from "../utils";
+import { truncateString } from "../../../utils/utils";
 
 interface Memory {
   id: string;
@@ -170,9 +171,10 @@ const MemoryList: React.FC<MemoryListProps> = ({
                   selected === index
                     ? "text-white"
                     : "text-[#B0D0DE] group-hover:text-white"
-                }`}
+                } truncate max-w-[243px]`}
               >
-                {memory.name}
+                {truncateString(memory.name, 30)}{" "}
+                {/* Aqui aplicamos a função de truncar */}
               </span>
             </div>
             <div className="relative">
