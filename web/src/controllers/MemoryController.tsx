@@ -25,7 +25,9 @@ interface MemoryControllerProps {
   onForceReload: (reloadFunction: () => void) => void;
 }
 
-const MemoryController: React.FC<MemoryControllerProps> = ({ onForceReload }) => {
+const MemoryController: React.FC<MemoryControllerProps> = ({
+  onForceReload,
+}) => {
   const [memories, setMemories] = useState<any>([]);
   const [searchDone, setSearchDone] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -242,5 +244,5 @@ const MemoryController: React.FC<MemoryControllerProps> = ({ onForceReload }) =>
       </InfiniteScroll>
     </div>
   );
-}
+};
 export default MemoryController;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import MulticolorComponent from "../../general/manager/svg-manager/MulticolorComponent";
 import { truncateString } from "../../../utils/utils";
 
@@ -13,25 +13,46 @@ export function SelectProcess(props: {
   setSelectedMemoryId: (id: number) => void;
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleSelect = (memory: Memory) => {
     props.setSelectedMemoryId(memory.id === "-1" ? -1 : parseInt(memory.id));
     setDropdownOpen(false);
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const displayText =
+    props.memoriesList.find(
+      (m: Memory) => m.id === props.selectedMemoryId.toString()
+    )?.name || "All Memories";
+
   const truncatedText = (text: string) => truncateString(text, 14);
 
   return (
-    <div className="relative text-[#E4E4E4] bg-black w-[220px] rounded-[18px] border border-[#444444] hover:bg-[#121212] cursor-pointer select-none">
+    <div
+      ref={dropdownRef}
+      className="relative text-[#E4E4E4] bg-black w-[220px] rounded-[18px] border border-[#444444] hover:bg-[#121212] cursor-pointer select-none"
+    >
       <div
-        className="flex items-center min-w-[190px] max-w-[190px]  px-4 py-3 pr-8 rounded-[18px] outline-none font-semibold truncate"
+        className="flex items-center min-w-[190px] max-w-[190px] px-4 py-3 pr-8 rounded-[18px] outline-none font-semibold truncate"
         onClick={() => setDropdownOpen(!dropdownOpen)}
       >
-        {truncatedText(
-          props.memoriesList.find(
-            (m: Memory) => m.id === props.selectedMemoryId.toString()
-          )?.name || "Select an option"
-        )}
+        {truncatedText(displayText)}
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[red]">
           <MulticolorComponent
             name="ArrowDown"

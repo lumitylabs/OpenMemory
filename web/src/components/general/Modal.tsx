@@ -36,7 +36,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onCreate }) => {
       }}
     >
       <div className="flex p-9 flex-col bg-white rounded-[27px] shadow-lg">
-        <h2 className="font-Mada font-semibold text-[27px] tracking-tight mb-4">
+        <h2 className="font-Mada font-semibold text-[27px] tracking-tight mb-4 select-none">
           New Memory
         </h2>
         <input
