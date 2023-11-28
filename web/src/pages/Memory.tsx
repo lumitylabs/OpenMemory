@@ -36,7 +36,9 @@ function Memory() {
   const unifiedData = getUnifiedData(data);
   return (
     <div className="flex flex-col ml-[450px]">
-      <Sidebar></Sidebar>
+      <Sidebar forceReloadMemories={function (): void {
+        throw new Error("Function not implemented.");
+      } }></Sidebar>
       <div className="flex justify-center">
         <div className="flex flex-col font-NotoSansDisplay">
           <div className=" text-[#636363]">
