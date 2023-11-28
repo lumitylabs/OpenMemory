@@ -17,8 +17,13 @@ interface MemoryListProps {
 
 const OptionsMenu = React.forwardRef<
   HTMLDivElement,
-  { options: string[]; memory: Memory; onProcess: () => void; onDelete: () => void }
->(({ options, memory, onProcess, onDelete }, ref) => (
+  {
+    options: string[];
+    memory: Memory;
+    onProcess: () => void;
+    onDelete: () => void;
+  }
+>(({ options, onProcess, onDelete }, ref) => (
   <div
     className="absolute right-0 mt-2 w-[126px] bg-white shadow-lg rounded-md py-2 z-10 "
     ref={ref}
@@ -43,15 +48,18 @@ const OptionsMenu = React.forwardRef<
   </div>
 ));
 
-const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory, refreshMemories }) => {
+const MemoryList: React.FC<MemoryListProps> = ({
+  memories,
+  selectedMemory,
+  refreshMemories,
+}) => {
   const [selected, setSelected] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState<number | null>(null);
   const menuRef = useRef<(HTMLDivElement | null)[]>([]);
-  const selectMemory = (memoryId:any, index:number) => {
+  const selectMemory = (memoryId: any, index: number) => {
     handleMemorySelect(index);
-    useSelectMemory({'memory_id': memoryId})
-      .then(() => {
-      })
+    useSelectMemory({ memory_id: memoryId })
+      .then(() => {})
       .catch((error) => {
         console.error("Error selecting memory:", error);
       });
@@ -65,9 +73,10 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory, refre
   }, []);
 
   useEffect(() => {
-
     if (selectedMemory) {
-      const selectedIndex = memories.findIndex(memory => memory.id == selectedMemory.id);
+      const selectedIndex = memories.findIndex(
+        (memory) => memory.id == selectedMemory.id
+      );
 
       setSelected(selectedIndex);
     }
@@ -91,40 +100,43 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory, refre
     [menuOpen]
   );
 
-
   return (
     <div className="flex flex-col w-full gap-2 pt-5">
       {memories.map((memory, index) => {
         const onProcess = () => {
           useProcessMemory(memory.id);
-          setMenuOpen(null); 
+          setMenuOpen(null);
         };
         const onDelete = () => {
-          if (memory.id !== '0') {
+          if (memory.id !== "0") {
             useDeleteMemory(memory.id).then(() => {
               refreshMemories();
               handleMemorySelect(0);
-              useSelectMemory({"memory_id":0}); 
+              useSelectMemory({ memory_id: 0 });
             });
           }
-          setMenuOpen(null); 
+          setMenuOpen(null);
         };
         const options = ["Process", "Export"];
-        if (memory.id !== '0') { 
+        if (memory.id !== "0") {
           options.push("Delete");
         }
         return (
           <div
-            key={memory.id} 
+            key={memory.id}
             className={`group flex px-4 py-2 items-center justify-between rounded-[9px] ${
               selected === index
-                ? "bg-white bg-opacity-10"
+                ? "bg-white bg-opacity-20"
                 : "hover:bg-white hover:bg-opacity-10 transition duration-300 ease-in-out"
             } cursor-pointer`}
-            onClick={() => selectMemory(memory.id, index)} 
+            onClick={() => selectMemory(memory.id, index)}
           >
             <div className="flex items-center">
-              <span className={`h-[6px] w-[6px] ${selected === index ? "bg-green-500" : ""} rounded-full mr-2`}></span>
+              <span
+                className={`h-[6px] w-[6px] ${
+                  selected === index ? "bg-green-500" : ""
+                } rounded-full mr-2`}
+              ></span>
               <span
                 className={`font-Mada font-semibold text-[18px] tracking-tight ${
                   selected === index
@@ -139,7 +151,7 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory, refre
               <button
                 className="text-white"
                 onClick={(event) => {
-                  event.stopPropagation(); 
+                  event.stopPropagation();
                   handleMoreClick(index, event);
                 }}
               >
@@ -152,13 +164,13 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory, refre
                 />
               </button>
               {menuOpen === index && (
-            <OptionsMenu
-              ref={(el) => (menuRef.current[index] = el)}
-              options={options}
-              memory={memory}
-              onProcess={onProcess}
-              onDelete={onDelete}
-            />
+                <OptionsMenu
+                  ref={(el) => (menuRef.current[index] = el)}
+                  options={options}
+                  memory={memory}
+                  onProcess={onProcess}
+                  onDelete={onDelete}
+                />
               )}
             </div>
           </div>
@@ -166,7 +178,6 @@ const MemoryList: React.FC<MemoryListProps> = ({ memories, selectedMemory, refre
       })}
     </div>
   );
-  
 };
 
 export default MemoryList;

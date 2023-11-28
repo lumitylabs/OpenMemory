@@ -37,16 +37,15 @@ const Sidebar: React.FC = () => {
       };
       const sensorName = sensorNameMap[id];
 
-      useSetSensor({ "sensor_name": sensorName, "state": newState[id] })
-        .catch((error) => {
+      useSetSensor({ sensor_name: sensorName, state: newState[id] }).catch(
+        (error) => {
           console.error("Error setting sensor state:", error);
-        });
+        }
+      );
 
       return newState;
     });
   };
-
-
 
   const [memories, setMemories] = useState([]);
   const [selectedMemory, setSelectedMemory] = useState(null);
@@ -63,7 +62,6 @@ const Sidebar: React.FC = () => {
       });
   }
 
-
   useEffect(() => {
     useMemories()
       .then((data) => {
@@ -73,39 +71,39 @@ const Sidebar: React.FC = () => {
         console.error("Error loading memories:", error);
       });
 
-      useLoadConfig()
+    useLoadConfig()
       .then((config) => {
         setSelectedMemory(config.selected_memory);
-        const switchMapping:any = {
+        const switchMapping: any = {
           systemAudio: "system_audio_capture",
           microphone: "microphone_audio_capture",
           captureScreens: "screenshot_capture",
         };
-        const newSwitchStates = Object.keys(switchMapping).reduce((acc:any, key:any) => {
-          acc[key] = config.sensors[switchMapping[key]];
-          return acc;
-        }, {});
+        const newSwitchStates = Object.keys(switchMapping).reduce(
+          (acc: any, key: any) => {
+            acc[key] = config.sensors[switchMapping[key]];
+            return acc;
+          },
+          {}
+        );
         setSwitchStates(newSwitchStates);
       })
       .catch((error) => {
         console.error("Error loading config:", error);
       });
 
-      useGetCaptureState()
-      .then((captureState) => {
-        setIsCapturing(captureState['state'])
-      })
+    useGetCaptureState().then((captureState) => {
+      setIsCapturing(captureState["state"]);
+    });
 
-      useGetIsProcessing()
-      .then((processingState) => {
-        setIsProcessing(processingState['state'])
-      })
-
+    useGetIsProcessing().then((processingState) => {
+      setIsProcessing(processingState["state"]);
+    });
   }, []);
 
   useEffect(() => {
-    const ws:any = new WebSocket("ws://127.0.0.1:8000/ws");
-    ws.onmessage = (event:any) => {
+    const ws: any = new WebSocket("ws://127.0.0.1:8000/ws");
+    ws.onmessage = (event: any) => {
       const data = JSON.parse(event.data);
       if (data.function == "processing_start") {
         setIsProcessing(true);
@@ -120,13 +118,13 @@ const Sidebar: React.FC = () => {
         setIsCapturing(false);
       }
       if (data.function === "set_sensor") {
-        const sensorNameMap:any = {
+        const sensorNameMap: any = {
           system_audio_capture: "systemAudio",
           microphone_audio_capture: "microphone",
           screenshot_capture: "captureScreens",
         };
         const stateKey = sensorNameMap[data.sensor_name];
-    
+
         if (stateKey) {
           setSwitchStates((prev) => {
             const newState = { ...prev, [stateKey]: data.state };
@@ -143,9 +141,6 @@ const Sidebar: React.FC = () => {
     };
   }, []);
 
-
-  
-
   return (
     <div className="fixed top-0 left-0 h-screen w-[450px] p-9 bg-gradient-to-r from-[#458CAA] to-[#AF92AC] overflow-y-auto z-10">
       <div className="flex flex-col gap-9">
@@ -157,7 +152,11 @@ const Sidebar: React.FC = () => {
           <ImportSideButton />
         </div>
       </div>
-      <MemoryList memories={memories} selectedMemory={selectedMemory} refreshMemories={refreshMemories}/>
+      <MemoryList
+        memories={memories}
+        selectedMemory={selectedMemory}
+        refreshMemories={refreshMemories}
+      />
       <Divider classParameters="border-white border-opacity-10 mt-5 mb-9" />
       <div className="flex flex-col gap-5">
         <ToggleCapture />
@@ -184,8 +183,14 @@ const Sidebar: React.FC = () => {
       <Divider classParameters="border-white border-opacity-10 my-9" />
 
       <div className="flex justify-end gap-5">
-        <ProcessButton isActive={isProcessing} setIsActive={setIsProcessing}></ProcessButton>
-        <CaptureButton isActive={isCapturing} setIsActive={setIsCapturing}></CaptureButton>
+        <ProcessButton
+          isActive={isProcessing}
+          setIsActive={setIsProcessing}
+        ></ProcessButton>
+        <CaptureButton
+          isActive={isCapturing}
+          setIsActive={setIsCapturing}
+        ></CaptureButton>
       </div>
     </div>
   );

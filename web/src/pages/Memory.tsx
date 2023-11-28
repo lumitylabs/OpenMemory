@@ -6,7 +6,6 @@ import { getUnifiedData } from "../hooks/getUnifiedData";
 import { UnifiedData } from "../components/memory/capture/UnifiedData";
 import { IMG_BASE } from "../repository/routes";
 import Sidebar from "../components/general/side-bar/Sidebar";
-import MulticolorComponent from "../components/general/manager/svg-manager/MulticolorComponent";
 
 function Memory() {
   const { memoryid } = useParams();

@@ -15,7 +15,10 @@ export function CalendarButton(props: any) {
           isSelected={false}
           classParameters="w-[26px] h-[26px]"
         />
-         <div className="text-sm flex flex-nowrap w-[100px]">{formatDate(props.state.startDate)} - {formatDate(props.state.endDate)}</div>
+        <div className="font-semibold font-Mada flex flex-nowrap w-[100px]">
+          {formatDate(props.state.startDate)} -{" "}
+          {formatDate(props.state.endDate)}
+        </div>
       </button>
     </div>
   );
