@@ -1,6 +1,5 @@
 from fastapi import APIRouter
-from model.databases import langchain_chroma
-
+import model.databases
 app = APIRouter()
 
 
@@ -20,6 +19,6 @@ async def vector_search(search: str, start_time: int, end_time: int, process: st
     # if process != "all":
     #     where_clause.append({"$or": [{"process_1": {"$eq": process}}, {"process_2": {"$eq": process}}, {"process_3": {"$eq": process}}]})
 
-    retriever = langchain_chroma.as_retriever(search_type="mmr", search_kwargs={"filter": {"$and": where_clause}, "k": 10, "fetch_k": 50})
+    retriever = model.databases.langchain_chroma.as_retriever(search_type="mmr", search_kwargs={"filter": {"$and": where_clause}, "k": 10, "fetch_k": 50})
     results = retriever.get_relevant_documents(search)
     return results

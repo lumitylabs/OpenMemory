@@ -22,7 +22,7 @@ export function InfoMemoryCard(props: any) {
           </div>
           <div className="h-[1px] bg-[#444444]"></div>
           <InfoMemoryCardDescription
-            description={props.memory.description}
+            description={props.memory.raw_idea_content}
           ></InfoMemoryCardDescription>
           <div className="h-[1px] bg-[#444444]"></div>
           <div className="relative flex justify-center iphone5:justify-end mt-2 ">

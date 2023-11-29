@@ -4,7 +4,8 @@ from model.models import RawIdeas
 import os
 from datetime import datetime
 from fastapi import APIRouter, Query
-from model.databases import AsyncSessionLocal, get_db, embedding_function
+from model.databases import AsyncSessionLocal, get_db
+import model.databases
 from sqlalchemy import and_
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
@@ -59,7 +60,7 @@ async def get_audio_transcriptions_and_send(timestamps: str, question: str, memo
 
     dataframe = DocArrayInMemorySearch.from_documents(
         documents,
-        embedding_function
+        model.databases.embedding_function
     )
 
     # docs = dataframe.similarity_search(question)
@@ -206,21 +207,5 @@ Summaries:
                                      "question_prompt": question_prompt_template, "combine_prompt": combine_prompt_template})
 
     result = qa.run(question)
-#     question_formatted = f"""### System:
-#     You are an assistant that helps users answer questions with bright insights
-# ### User:
-# {question}
-# ### Assistant:
-# """
-#     ai_answer = llm(question_formatted)
 
-#     response = f"""Based on your ideas:
-# {result}
-
-# Response without context:
-# {ai_answer}
-# """
     return result.replace("\n ", "\n")
-
-    # response = requests.post('http://127.0.0.1:8004/inference', data={"data": textwrap.dedent(prompt)})
-    # return response.text
