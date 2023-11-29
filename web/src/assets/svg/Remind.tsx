@@ -3,7 +3,7 @@ type RemindSvgProps = {
   classParameters: string;
 };
 
-const RemindSvg: React.FC<RemindSvgProps> = ({ fill, classParameters }) => (
+const RemindSvg: React.FC<RemindSvgProps> = ({ fill }) => (
   <svg
     width="54px"
     height="54px"
