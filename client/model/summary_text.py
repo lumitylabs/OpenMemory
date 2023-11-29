@@ -111,7 +111,7 @@ def process_aggregated_content(aggregated_content, db_manager, date_str, time_st
             ids_to_update.clear()
             return
         except Exception as e:
-            print(e)
+            #print(e)
             ids_to_update.clear()
             continue
 
