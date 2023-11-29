@@ -178,6 +178,7 @@ const Sidebar: React.FC<SidebarProps> = ({ forceReloadMemories }) => {
         selectedMemory={selectedMemory}
         refreshMemories={refreshMemories}
         isImporting={isImporting}
+        isCapturing={isCapturing}
       />
       <Divider classParameters="border-white border-opacity-10 mt-5 mb-9" />
       <div className="flex flex-col gap-5">

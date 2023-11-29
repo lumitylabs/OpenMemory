@@ -17,6 +17,7 @@ interface MemoryListProps {
   selectedMemory: Memory | null;
   refreshMemories: () => void;
   isImporting: boolean;
+  isCapturing: boolean;
 }
 
 const OptionsMenu = React.forwardRef<
@@ -70,6 +71,7 @@ const MemoryList: React.FC<MemoryListProps> = ({
   selectedMemory,
   refreshMemories,
   isImporting,
+  isCapturing
 }) => {
   const [selected, setSelected] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState<number | null>(null);
@@ -163,7 +165,7 @@ const MemoryList: React.FC<MemoryListProps> = ({
             <div className="flex items-center">
               <span
                 className={`h-[6px] w-[6px] ${
-                  selected === index ? "bg-green-500" : ""
+                  selected === index && isCapturing ? "bg-green-500" : ""
                 } rounded-full mr-2`}
               ></span>
               <span

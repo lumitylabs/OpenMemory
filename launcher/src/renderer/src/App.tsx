@@ -110,7 +110,7 @@ function Title() {
         isSelected
         classParameters=""
       />
-      Open Memory
+      OpenMemory
     </div>
   )
 }
@@ -255,17 +255,25 @@ const Application = () => {
             )}
           </div>
           <div
-            className="text-[16px] p-2 pl-8 pr-8 bg-[#D458C8] rounded-2xl inline-flex gap-2 items-center text-center select-none cursor-pointer"
+            className={`text-[16px] p-2 pl-8 pr-8 ${capturing ? "bg-[#50BFEE]":"bg-[#D458C8]"} rounded-2xl inline-flex gap-2 items-center text-center select-none cursor-pointer w-[140px]`}
             onClick={handleCapture}
           >
-            <MulticolorComponent
-              name="Playlogo"
-              baseColor=""
-              selectedColor=""
+            
+           <div className='inline-flex items-center gap-3 text-center'> {capturing ? <MulticolorComponent
+              name="Stop"
+              baseColor="white"
+              selectedColor="white"
               isSelected
               classParameters=""
-            />
-            {capturing ? 'Stop' : 'Capture'}
+            /> : <MulticolorComponent
+            name="Playlogo"
+            baseColor=""
+            selectedColor=""
+            isSelected
+            classParameters=""
+          />}
+            
+            <div className='flex items-center'>{capturing ? 'Stop' : 'Capture'}</div></div>
           </div>
         </div>
         <div className="mt-7 ml-2 mr-2 select-none">
