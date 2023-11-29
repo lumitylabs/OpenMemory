@@ -7,8 +7,8 @@ SET OpenMemoryExe=openmemory.exe
 SET OpenMemoryExePath=%CD%\%OpenMemoryExe%
 SET OpenMemoryLinkPath=%CD%\..\openmemory.lnk
 SET OpenMemoryDesktopLinkPath=%USERPROFILE%\Desktop\openmemory.lnk
-SET OpenChatModelFile=..\llm_api\model\neural-chat-7b-v3-1.Q4_K_M.gguf
-SET OpenChatModelURL=https://huggingface.co/TheBloke/neural-chat-7B-v3-1-GGUF/resolve/main/neural-chat-7b-v3-1.Q4_K_M.gguf?download=true
+SET OpenChatModelFile=..\llm_api\model\model.gguf
+SET OpenChatModelURL=https://huggingface.co/TheBloke/Starling-LM-7B-alpha-GGUF/resolve/main/starling-lm-7b-alpha.Q4_K_M.gguf?download=true
 
 :: Check if Python is installed
 IF NOT EXIST "%PythonExecutable%" (

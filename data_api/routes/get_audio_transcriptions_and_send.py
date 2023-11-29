@@ -64,55 +64,37 @@ async def get_audio_transcriptions_and_send(timestamps: str, question: str, memo
 
     retriever = dataframe.as_retriever(search_kwargs={"k": 5})
 
-    question_prompt = """### System:
-Your task is to extract and utilize relevant information from provided audio transcriptions to answer the user's question.
+    question_prompt = """Your task is to extract and utilize relevant information from provided audio transcriptions to answer the user's question.
 Keep in mind:
 1. The source of the audio, as it provides important context.
 2. Possible errors or inaccuracies in the transcriptions due to the transcription process.
 3. Use direct quotes from the transcriptions when relevant.
-4. If no pertinent information is available in the transcriptions, respond with "None".
-### User:
-Question: What was the topic of our discussion related to technology?
+4. If no pertinent information is available in the transcriptions, respond with "None".<|end_of_turn|>GPT4 User: Question: What was the topic of our discussion related to technology?
 Audio Transcriptions:
 [Memory at October 31, 2023 01:39] Audio from microphone: I think the future of AI is fascinating, especially in healthcare.
 Audio from microphone: Did you hear about the new blockchain project? It's quite revolutionary.
 Audio from microphone: Let's discuss the latest trends in full stack development next time."
-Audio from microphone: I'm really interested in the ethical implications of AI.
-### Assistant:
-Your discussion covered several technology-related topics, including the future of AI in healthcare, a new blockchain project, and trends in full stack development. There was also a mention of the ethical implications of AI.
-### User:
-Question: Can you summarize our conversation about web development tools?
+Audio from microphone: I'm really interested in the ethical implications of AI.<|end_of_turn|>GPT4 Assistant: Your discussion covered several technology-related topics, including the future of AI in healthcare, a new blockchain project, and trends in full stack development. There was also a mention of the ethical implications of AI.<|end_of_turn|>GPT4 User: Question: Can you summarize our conversation about web development tools?
 Audio Transcriptions:
 [Memory at November 02, 2023 10:15] Audio from microphone: "I find the use of Python in data analysis quite impressive."
 Audio from microphone: "React is a powerful tool for front-end development, isn't it?"
 Audio from microphone: "Have you explored using TailwindCSS for styling? It's quite efficient."
-Audio from microphone: "Node.js has really changed the landscape of backend development."
-### Assistant:In your conversation about web development tools, Python was mentioned in the context of data analysis, React as a tool for front-end development, the efficiency of TailwindCSS for styling, and the impact of Node.js on backend development.
-### User:
-Question: Do que falamos sobre inovações tecnológicas recentemente?
+Audio from microphone: "Node.js has really changed the landscape of backend development."<|end_of_turn|>GPT4 Assistant: In your conversation about web development tools, Python was mentioned in the context of data analysis, React as a tool for front-end development, the efficiency of TailwindCSS for styling, and the impact of Node.js on backend development.<|end_of_turn|>GPT4 User: Question: Do que falamos sobre inovações tecnológicas recentemente?
 Audio Transcriptions:
 [Memória em 03 de Novembro de 2023 14:22] Áudio do microfone: A inteligência artificial pode realmente transformar a maneira como interagimos com dispositivos.
 Áudio do microfone: Você viu o último projeto de blockchain? Parece promissor.
 Áudio do microfone: O desenvolvimento full stack está se tornando cada vez mais integrado.
-Áudio do microfone: Estilos com TailwindCSS parecem mais limpos e organizados.
-### Assistant:
-Na conversa recente, vocês falaram sobre como a inteligência artificial pode transformar a interação com dispositivos, um projeto de blockchain promissor, a integração no desenvolvimento full stack, e a organização e limpeza dos estilos com TailwindCSS.
-### User:
-Question: {question}
+Áudio do microfone: Estilos com TailwindCSS parecem mais limpos e organizados.<|end_of_turn|>GPT4 Assistant: Na conversa recente, vocês falaram sobre como a inteligência artificial pode transformar a interação com dispositivos, um projeto de blockchain promissor, a integração no desenvolvimento full stack, e a organização e limpeza dos estilos com TailwindCSS.<|end_of_turn|>GPT4 User: Question: {question}
 Audio Transcriptions:
-{context}
-### Assistant:
-"""
+{context}<|end_of_turn|>GPT4 Assistant:"""
 
-    combine_prompt = """### System:
-Your role is to comprehensively answer the user's question using information from the provided summaries of audio transcriptions, each summary will be separated by a line break. Ensure to:
+    combine_prompt = """Your role is to comprehensively answer the user's question using information from the provided summaries of audio transcriptions, each summary will be separated by a line break. Ensure to:
 1. Direct Relevance: Prioritize summaries that directly mention details relevant to the user's question. Disregard summaries that explicitly state the absence of relevant information.
 2. Specific Extraction: Extract and focus on key information or direct mentions from the summaries that are directly relevant to the question.
 3. Clear and Concise Response: Formulate a response that is clear, concise, and focused solely on the information extracted from the relevant summaries.
 4. Acknowledgement of Absence: If none of the provided summaries contain information relevant to the user's question, clearly state that the answer to the question is not available in the provided summaries.
 5. Avoid Redundancy: Do not repeat statements about the absence of relevant information across multiple summaries. Focus only on the content that provides a direct answer.
-### User:
-Question: How has the perception of remote work changed over time?
+<|end_of_turn|>GPT4 User: Question: How has the perception of remote work changed over time?
 Summaries:
  None
 
@@ -130,11 +112,8 @@ Summaries:
 
  None
  
- None
-### Assistant:
-The perception of remote work has shifted over time. Initially, there was skepticism about productivity, mainly due to potential distractions at home. This perception changed, with a growing appreciation for the work-life balance that remote work offers, leading to increased employee satisfaction. Additionally, recent advancements in technology have made remote work more feasible and efficient.
-### User:
-Question: What are the key factors contributing to urban pollution?
+ None<|end_of_turn|>GPT4 Assistant: The perception of remote work has shifted over time. Initially, there was skepticism about productivity, mainly due to potential distractions at home. This perception changed, with a growing appreciation for the work-life balance that remote work offers, leading to increased employee satisfaction. Additionally, recent advancements in technology have made remote work more feasible and efficient.
+<|end_of_turn|>GPT4 User: Question: What are the key factors contributing to urban pollution?
 Summaries:
  No discussion on urban pollution contributors in several transcriptions.
 
@@ -150,11 +129,8 @@ Summaries:
 
  None
 
- None
-### Assistant:
-Key factors contributing to urban pollution include high vehicle emissions in densely populated areas, industrial activities in and around urban areas affecting air and water quality, and poor waste management practices leading to land and water pollution.
-### User:
-Question: What are the trends in global dietary habits?
+ None<|end_of_turn|>GPT4 Assistant: Key factors contributing to urban pollution include high vehicle emissions in densely populated areas, industrial activities in and around urban areas affecting air and water quality, and poor waste management practices leading to land and water pollution.
+<|end_of_turn|>GPT4 User: Question: What are the trends in global dietary habits?
 Summaries:
  None
 
@@ -168,15 +144,10 @@ Summaries:
 
  Lack of specific details on dietary trends in some audio transcriptions.
 
- None
-### Assistant:
-Global dietary habits are showing a trend towards high-calorie, processed foods, contributing to rising obesity rates. Concurrently, there's an increased demand for healthier options like organic and plant-based foods. Innovations in food technology, such as lab-grown meat and AI-driven personalized nutrition plans, are also gaining traction.
-### User:
-Question: {question}
+ None<|end_of_turn|>GPT4 Assistant: Global dietary habits are showing a trend towards high-calorie, processed foods, contributing to rising obesity rates. Concurrently, there's an increased demand for healthier options like organic and plant-based foods. Innovations in food technology, such as lab-grown meat and AI-driven personalized nutrition plans, are also gaining traction.
+<|end_of_turn|>GPT4 User: Question: {question}
 Summaries:
-{summaries}
-### Assistant:
-"""
+{summaries}<|end_of_turn|>GPT4 Assistant:"""
 
 
     question_prompt_template = PromptTemplate(
@@ -189,7 +160,7 @@ Summaries:
     n_batch = 1024
 
     llm = LlamaCpp(
-        model_path="../llm_api/model/neural-chat-7b-v3-1.Q4_K_M.gguf",
+        model_path="../llm_api/model/model.gguf",
         n_gpu_layers=n_gpu_layers,
         n_batch=n_batch,
         temperature=0.7,

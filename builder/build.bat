@@ -16,10 +16,12 @@ if not exist "%DEST_DIR%" mkdir "%DEST_DIR%"
 call electron-packager "../launcher" openmemory --platform=win32 --arch=x64 --out "./build"
 
 :: Copiando arquivos necessários
-copy .\addons\install.bat .\build\openmemory-win32-x64\
+copy .\addons\install_CUDA_118.bat .\build\openmemory-win32-x64\
+copy .\addons\install_CUDA_121.bat .\build\openmemory-win32-x64\
 copy .\addons\requirements.txt .\build\openmemory-win32-x64\
 copy .\addons\config.json .\build\openmemory-win32-x64\
-copy .\addons\setup.bat .\build\
+copy .\addons\setup_CUDA_118.bat .\build\
+copy .\addons\setup_CUDA_121.bat .\build\
 
 :: Salvando o diretório atual
 set "CURRENT_DIR=%CD%"

@@ -19,7 +19,7 @@ from langchain.schema.runnable import RunnableLambda
 from langchain.text_splitter import TokenTextSplitter
 import os
 
-template = """### User:\n{question}### Assistant:\n"""
+template = """GPT4 User: {question}<|end_of_turn|>GPT4 Assistant: """
 prompt = PromptTemplate(template=template, input_variables=["question"])
 
 callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
@@ -28,7 +28,7 @@ n_batch = 512
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 llm_path = os.path.join(
-    current_directory, "model/neural-chat-7b-v3-1.Q4_K_M.gguf")
+    current_directory, "model/model.gguf")
 
 llm = LlamaCpp(
     model_path=llm_path,
@@ -137,23 +137,23 @@ def metadataSummary(data: Annotated[str, Form()]):
 
     formatted_strings = ""
     for item in samples:
-        formatted_string = f"### User:\n<text>{item['input']}</text>### Assistant:\n{item['output']}"
+        formatted_string = f"GPT4 User: <text>{item['input']}</text><|end_of_turn|>GPT4 Assistant: {item['output']}"
         formatted_strings += formatted_string
 
     formatted_strings_combine = ""
     for item in samples_combine:
-        formatted_string_combine = f"### User:\n<JSONLIST>{item['input']}</JSONLIST>### Assistant:\n{item['output']}"
+        formatted_string_combine = f"GPT4 User: <JSONLIST>{item['input']}</JSONLIST><|end_of_turn|>GPT4 Assistant: {item['output']}"
         formatted_strings_combine += formatted_string_combine
 
     # Prompt
     prompt = PromptTemplate(
-        template="### System:\nIt is critical that you follow the following instructions accurately. Format the user text highlighting key information from user input and maintaining the integrity and diversity of multifaceted content. Make sure the fill the fields using the right type and using the same language as the text. {format_instructions}.{formatted_strings}### User:\n<text>{query}</text>### Assistant:\n",
+        template="It is critical that you follow the following instructions accurately. Format the user text highlighting key information from user input and maintaining the integrity and diversity of multifaceted content. Make sure the fill the fields using the right type and using the same language as the text. {format_instructions}.{formatted_strings}<|end_of_turn|>GPT4 User: <text>{query}</text><|end_of_turn|>GPT4 Assistant:",
         input_variables=["query", "formatted_strings"],
         partial_variables={
             "format_instructions": extract_parser.get_format_instructions()},
     )
     prompt_combine = PromptTemplate(
-        template="### System:\nYour job is to summarize the JSONLIST provided by the user returing a new JSON scheema in the following format. {format_instructions}.{formatted_strings}### User:\n<JSONLIST>{query}</JSONLIST>### Assistant:\n",
+        template="Your job is to summarize the JSONLIST provided by the user returing a new JSON scheema in the following format. {format_instructions}.{formatted_strings}<|end_of_turn|>GPT4 User: <JSONLIST>{query}</JSONLIST><|end_of_turn|>GPT4 Assistant:",
         input_variables=["query"],
         partial_variables={
             "format_instructions": parser.get_format_instructions()},

@@ -14,6 +14,6 @@ async def vector_search(search: str, start_time: int, end_time: int, process: st
     if memory_id is not None:
         where_clause.append({"memory_id": {"$eq": memory_id}})
 
-    retriever = model.databases.langchain_chroma.as_retriever(search_type="mmr", search_kwargs={"filter": {"$and": where_clause}, "k": 10, "fetch_k": 50})
+    retriever = model.databases.manager.get_retriever(where_clause=where_clause)
     results = retriever.get_relevant_documents(search)
     return results

@@ -1,7 +1,7 @@
 import asyncio
 import sys
 from fastapi import APIRouter
-from model.databases import load_vector_database
+import model.databases
 from routes.websockets import notify_websockets
 app = APIRouter()
 import module_globals
@@ -41,13 +41,15 @@ async def process_all():
     module_globals.is_processing = False
     await notify_websockets({"function":"processing_done"})
 
-    await load_vector_database()
+    model.databases.manager.load_vector_db()
     
-    server.terminate()
-    try:
-        await asyncio.wait_for(server.wait(), timeout=10)
-    except asyncio.TimeoutError:
-        server.kill()
+    if server.returncode is None:
+        server.terminate()
+        try:
+            await asyncio.wait_for(server.wait(), timeout=10)
+        except asyncio.TimeoutError:
+            server.kill()
+
 
     module_globals.is_processing = False
     await notify_websockets({"function": "processing_done"})
