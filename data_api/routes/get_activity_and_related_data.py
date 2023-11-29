@@ -13,18 +13,15 @@ from sqlalchemy import and_
 @app.get("/getActivityAndRelatedData/")
 async def get_activity_and_related_data(timestamp: float, memory_id: int = Query(None), db: AsyncSession = Depends(get_db)):
     async with db as session:
-        # Construct the base query for Activity
         activity_stmt = select(Activity).filter(Activity.timestamp == timestamp)
         if memory_id is not None:
             activity_stmt = activity_stmt.filter(Activity.memory_id == memory_id)
 
-        # Get the activity
         result = await session.execute(activity_stmt)
         activity = result.scalars().first()
         if not activity:
             raise HTTPException(status_code=404, detail="Activity not found")
 
-        # Find the next activity's timestamp, considering memory_id if provided
         next_activity_stmt = select(Activity).filter(Activity.timestamp > timestamp)
         if memory_id is not None:
             next_activity_stmt = next_activity_stmt.filter(Activity.memory_id == memory_id)
@@ -32,7 +29,6 @@ async def get_activity_and_related_data(timestamp: float, memory_id: int = Query
         next_activity = result.scalars().first()
         next_timestamp = next_activity.timestamp if next_activity else float('inf')
         
-        # Queries for AudioTranscriptions and ScreenCapture
         audio_transcriptions_stmt = select(AudioTranscriptions).filter(
             and_(AudioTranscriptions.timestamp >= timestamp, AudioTranscriptions.timestamp < next_timestamp))
         if memory_id is not None:

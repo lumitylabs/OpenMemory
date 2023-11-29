@@ -101,7 +101,6 @@ class DatabaseManager:
                 CREATE INDEX IF NOT EXISTS idx_raw_ideas_processed ON raw_ideas (processed);
             """)
 
-    # Insert methods with memory_id
     def insert_memory(self, name):
         with self.conn:
             self.conn.execute("""
@@ -138,7 +137,6 @@ class DatabaseManager:
                 VALUES (?, ?, ?, ?, ?, ?, ?);
             """, (memory_id, timestamp, path, start_date, end_date, "", processes))
 
-    # Update screencapture
     def update_screencapture(self, prev_end_date, new_path, new_end_date):
         with self.conn:
             self.conn.execute("""

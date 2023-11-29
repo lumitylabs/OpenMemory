@@ -21,7 +21,6 @@ db_manager = DatabaseManager()
 
 
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
-# Initialize logging
 logging.basicConfig(level=logging.INFO)
 min_probability = 0.7
 class AudioProcessor:
@@ -35,17 +34,15 @@ class AudioProcessor:
         self.processed_files = set()
 
     def process_and_delete(self, types, memory_id=None):
-        # while True:
         try:
             for type in types:
                 folder_path = os.path.join(current_dir, f"../temp/audio/{type}")
                 processed_files = set()
-                if os.path.exists(folder_path):  # Check if folder exists
+                if os.path.exists(folder_path): 
                     new_files = [f for f in os.listdir(folder_path) if f.endswith(".npy") and f not in processed_files]
                     for filename in new_files:
                         file_path = os.path.join(folder_path, filename)
                         
-                        # Extract date_str, time_str, rate, channels, and proc from the filename
                         parts = filename.split('-')
                         date_str = parts[0][0:8]
                         date_time_obj = datetime.strptime(date_str, '%Y%m%d')
@@ -86,10 +83,8 @@ class AudioProcessor:
             n_std_thresh_stationary=5,
             use_torch=True)
         segments, info = self.model_whisper.transcribe(low_noise, vad_filter=True)
-        #print("prob:" + info.language_probability.__str__())
         if info.language_probability < min_probability:
             return ""
-        #text = "".join(word.word for segment in segments for word in segment.words)
         text = "".join(segment.text for segment in segments)
         return text
 

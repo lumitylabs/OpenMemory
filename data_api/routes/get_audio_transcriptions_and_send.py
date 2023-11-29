@@ -29,7 +29,6 @@ async def get_audio_transcriptions_and_send(timestamps: str, question: str, memo
 
     async with db as session:
         for timestamp in timestamps_int:
-            # Constructing the select statement for RawIdeas
             raw_ideas_stmt = select(RawIdeas).filter(RawIdeas.start_timestamp == timestamp)
 
             if memory_id is not None:
@@ -39,7 +38,7 @@ async def get_audio_transcriptions_and_send(timestamps: str, question: str, memo
             raw_idea = result.scalars().first()
 
             if raw_idea is not None:
-                content = raw_idea.content  # Now raw_idea should have a 'content' attribute
+                content = raw_idea.content
                 human_readable_timestamp = datetime.fromtimestamp(timestamp).strftime('%B %d, %Y %H:%M')
 
 
@@ -63,9 +62,6 @@ async def get_audio_transcriptions_and_send(timestamps: str, question: str, memo
         model.databases.embedding_function
     )
 
-    # docs = dataframe.similarity_search(question)
-    # len(docs)
-    # print(docs)
     retriever = dataframe.as_retriever(search_kwargs={"k": 5})
 
     question_prompt = """### System:

@@ -13,7 +13,6 @@ import numpy as np
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 import argparse
 
-# Análise de argumentos
 parser = argparse.ArgumentParser(description='Process summary text.')
 parser.add_argument('--memory_id', type=int, help='Memory ID to process', default=None)
 args = parser.parse_args()
@@ -106,7 +105,6 @@ def process_aggregated_content(aggregated_content, db_manager, date_str, time_st
             unix_end_timestamp = end_timestamp
             
             db_manager.insert_activity(memory_id, title, description, tags, reminders, date_str, time_str, unix_start_timestamp)
-            # Convertendo para timestamp Unix antes de salvar
             
             db_manager.insert_raw_idea(memory_id, aggregated_content, unix_start_timestamp, unix_end_timestamp)
             update_processed_records(db_manager, ids_to_update)

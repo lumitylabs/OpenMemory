@@ -17,7 +17,6 @@ async def read_filtered_audio_transcriptions(skip: int = 0, limit: int = 20, fil
 
     async with db as session:
         for ft in filter_timestamps:
-            # Construct queries for previous and next activities
             prev_activity_stmt = select(Activity).filter(Activity.timestamp <= ft)
             next_activity_stmt = select(Activity).filter(Activity.timestamp > ft)
 
@@ -25,7 +24,6 @@ async def read_filtered_audio_transcriptions(skip: int = 0, limit: int = 20, fil
                 prev_activity_stmt = prev_activity_stmt.filter(Activity.memory_id == memory_id)
                 next_activity_stmt = next_activity_stmt.filter(Activity.memory_id == memory_id)
 
-            # Execute queries
             prev_result = await session.execute(prev_activity_stmt.order_by(desc(Activity.timestamp)))
             next_result = await session.execute(next_activity_stmt.order_by(Activity.timestamp))
 
@@ -37,7 +35,6 @@ async def read_filtered_audio_transcriptions(skip: int = 0, limit: int = 20, fil
             idea_content = raw_idea.content if raw_idea else None
 
             if prev_activity and (not next_activity or next_activity.timestamp > ft):
-                # Query for ScreenCapture
                 screencap_stmt = select(ScreenCapture).filter(ScreenCapture.timestamp >= prev_activity.timestamp)
                 if memory_id is not None:
                     screencap_stmt = screencap_stmt.filter(ScreenCapture.memory_id == memory_id)

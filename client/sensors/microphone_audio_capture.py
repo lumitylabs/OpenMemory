@@ -1,6 +1,6 @@
 import sys
 import os
-import argparse  # Import argparse for command-line parsing
+import argparse  
 script_dir = os.path.dirname(os.path.abspath(__file__))
 if script_dir not in sys.path:
     sys.path.append(script_dir)
@@ -15,7 +15,6 @@ def get_default_input_device(p_audio: pyaudio.PyAudio):
         raise print("Default input device not found. Please check your microphone settings.")
 
 if __name__ == "__main__":
-    # Set up the argument parser
     parser = argparse.ArgumentParser(description="Audio Capture Script")
     parser.add_argument("--memory_id", type=str, help="Memory ID for audio capture", default="0")
     args = parser.parse_args()
@@ -23,6 +22,5 @@ if __name__ == "__main__":
     p = pyaudio.PyAudio()
     target_device = get_default_input_device(p)
 
-    # Pass the memory_id to AudioCapture
     audio_capture = AudioCapture(target_device=target_device, type="microfone", memory_id=args.memory_id)
     audio_capture.record()

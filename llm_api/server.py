@@ -37,10 +37,9 @@ llm = LlamaCpp(
     temperature=0.5,
     top_p=0.1,
     top_k=20,
-    # callback_manager=callback_manager,
     n_ctx=4096,
     max_tokens=500,
-    verbose=False,  # Verbose is required to pass to the callback manager
+    verbose=False, 
 )
 
 

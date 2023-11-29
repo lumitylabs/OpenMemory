@@ -50,8 +50,6 @@ class AudioCapture:
                 start_time = time.time()
                 audio_data = np.frombuffer(self.stream.read(self.buffer_size), dtype=np.int16).astype(np.float32)
                 current_volume = np.abs(audio_data).mean()
-                #if current_volume >= self.threshold:
-                #    print(f"Current Volume: {current_volume}")  # Debug print
 
                 if current_volume >= self.threshold and not self.recording:
                     self.recording = True

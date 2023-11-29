@@ -30,7 +30,6 @@ async def delete_memory(memory_id: int, db: AsyncSession = Depends(get_db)):
 
         folder_path = os.path.join('../client/data/screencapture', str(memory_id))
         if os.path.exists(folder_path) and os.path.isdir(folder_path):
-            # Excluir a pasta e seu conteúdo
             shutil.rmtree(folder_path)
 
         await session.execute(text("DELETE FROM audio_transcriptions WHERE memory_id = :memory_id"), {'memory_id': memory_id})

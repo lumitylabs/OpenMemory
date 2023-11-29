@@ -9,11 +9,9 @@ from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddi
 import chromadb
 
 
-
 current_directory = os.path.dirname(os.path.abspath(__file__))
 persist_directory = os.path.join(current_directory, "chroma")
 
-# Initialize ChromaDB client
 persistent_client = chromadb.PersistentClient(persist_directory)
 embedding_f = SentenceTransformerEmbeddings(model_name="intfloat/multilingual-e5-large", model_kwargs={'device': 'cuda'})
 
@@ -49,13 +47,10 @@ def update_chromadb_from_sqlite(db_manager):
             metadatas_raw.append(metadata)
             ids_raw.append(id)
 
-        # Add raw_ideas to ChromaDB
         langchain_chroma_ideas.from_texts(collection_name=collection_name_ideas, texts=documents_raw, embedding=embedding_f, metadatas=metadatas_raw, ids=[str(id) for id in ids_raw], persist_directory=persist_directory)
 
-        # Update processed state
         placeholders = ', '.join(['?'] * len(ids_raw))
         db_manager.conn.execute(f"UPDATE raw_ideas SET processed = TRUE WHERE id IN ({placeholders})", ids_raw)
 
-# Usage
 db_manager = DatabaseManager()
 update_chromadb_from_sqlite(db_manager)

@@ -32,29 +32,24 @@ async def import_memory(file: UploadFile = File(...), db: AsyncSession = Depends
         memory_name = os.path.splitext(file.filename)[0]
         new_memory = Memory(name=memory_name)
         session.add(new_memory)
-        await session.flush()  # Flush to ensure id is populated
+        await session.flush()
         new_memory_id = new_memory.id
         await session.commit()
         
         await session.refresh(new_memory)
 
-        # Importe os dados para as tabelas, ajustando os memory_id
         for activity_data in data["activities"]:
-            # Remove the existing memory_id from activity_data if it exists
             activity_data.pop('memory_id', None)
             activity_data.pop('id', None)
-            # Create the Activity instance with the new memory_id
             activity = Activity(**activity_data, memory_id=new_memory_id)
             session.add(activity)
 
-        # Importe os dados para a tabela AudioTranscriptions
         for audio_data in data["audio_transcriptions"]:
             audio_data.pop('memory_id', None)
             audio_data.pop('id', None)
             audio_transcription = AudioTranscriptions(**audio_data, memory_id=new_memory_id)
             session.add(audio_transcription)
 
-        # Importe os dados para a tabela RawIdeas
         for raw_idea_data in data["raw_ideas"]:
             raw_idea_data.pop('memory_id', None)
             raw_idea_data.pop('id', None)
@@ -62,7 +57,6 @@ async def import_memory(file: UploadFile = File(...), db: AsyncSession = Depends
             raw_idea.processed = False
             session.add(raw_idea)
 
-        # Importe os dados para a tabela ScreenCapture
         for screencapture_data in data["screencaptures"]:
             original_path = screencapture_data.get("path")
             screencapture_data.pop('id', None)
@@ -76,18 +70,14 @@ async def import_memory(file: UploadFile = File(...), db: AsyncSession = Depends
             screencapture.memory_id = new_memory_id
             session.add(screencapture)
 
-            # Source and final destination paths for the image
             image_src_path = os.path.join(temp_dir, original_path)
             image_dest_path = os.path.join('../client/data/screencapture', new_file_name)
 
-            # Create directory if it doesn't exist and move the file
             os.makedirs(os.path.dirname(image_dest_path), exist_ok=True)
             shutil.move(image_src_path, image_dest_path)
 
-        # After adding all data, commit the session
         await session.commit()
 
-    # Limpeza: remova o diretório temporário
     os.remove(zip_path)
     shutil.rmtree(temp_dir)
     await process_vector_database(new_memory_id)

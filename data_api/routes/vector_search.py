@@ -11,13 +11,8 @@ async def vector_search(search: str, start_time: int, end_time: int, process: st
         {"start_timestamp": {"$lte": end_time}}
     ]
 
-    # Add filter for memory_id if provided
     if memory_id is not None:
         where_clause.append({"memory_id": {"$eq": memory_id}})
-
-    # Uncomment and modify this part if you want to filter by process
-    # if process != "all":
-    #     where_clause.append({"$or": [{"process_1": {"$eq": process}}, {"process_2": {"$eq": process}}, {"process_3": {"$eq": process}}]})
 
     retriever = model.databases.langchain_chroma.as_retriever(search_type="mmr", search_kwargs={"filter": {"$and": where_clause}, "k": 10, "fetch_k": 50})
     results = retriever.get_relevant_documents(search)

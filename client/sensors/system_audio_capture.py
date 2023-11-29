@@ -3,7 +3,7 @@ import os
 script_dir = os.path.dirname(os.path.abspath(__file__))
 if script_dir not in sys.path:
     sys.path.append(script_dir)
-import argparse  # Import argparse for command-line parsing
+import argparse
 
 from intermediate_audio_capture import AudioCapture
 import pyaudiowpatch as pyaudio
@@ -27,7 +27,6 @@ def get_default_wasapi_device(p_audio: pyaudio.PyAudio):
             raise print("Default loopback output device not found.\n\nRun `python -m pyaudiowpatch` to check available devices")
 
 if __name__ == "__main__":
-    # Set up the argument parser
     parser = argparse.ArgumentParser(description="Audio Capture Script")
     parser.add_argument("--memory_id", type=str, help="Memory ID for audio capture", default="0")
     args = parser.parse_args()
@@ -35,6 +34,5 @@ if __name__ == "__main__":
     p = pyaudio.PyAudio()
     target_device = get_default_wasapi_device(p)
 
-    # Pass the memory_id to AudioCapture
     audio_capture = AudioCapture(target_device=target_device, type="system", memory_id=args.memory_id)
     audio_capture.record()
