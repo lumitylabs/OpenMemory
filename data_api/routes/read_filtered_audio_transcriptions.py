@@ -30,11 +30,12 @@ async def read_filtered_audio_transcriptions(skip: int = 0, limit: int = 20, fil
             prev_activity = prev_result.scalars().first()
             next_activity = next_result.scalars().first()
 
-            raw_ideas_query = await session.execute(select(RawIdeas).filter(RawIdeas.start_timestamp == prev_activity.timestamp, RawIdeas.memory_id == prev_activity.memory_id))
-            raw_idea = raw_ideas_query.scalars().first()
-            idea_content = raw_idea.content if raw_idea else None
+            
 
             if prev_activity and (not next_activity or next_activity.timestamp > ft):
+                raw_ideas_query = await session.execute(select(RawIdeas).filter(RawIdeas.start_timestamp == prev_activity.timestamp, RawIdeas.memory_id == prev_activity.memory_id))
+                raw_idea = raw_ideas_query.scalars().first()
+                idea_content = raw_idea.content if raw_idea else None
                 screencap_stmt = select(ScreenCapture).filter(ScreenCapture.timestamp >= prev_activity.timestamp)
                 if memory_id is not None:
                     screencap_stmt = screencap_stmt.filter(ScreenCapture.memory_id == memory_id)

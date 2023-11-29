@@ -20,11 +20,25 @@ IF NOT EXIST "%PythonExecutable%" (
 echo Installing required packages...
 "%PythonExecutable%" -m pip install llama-cpp-python --prefer-binary --extra-index-url=https://jllllll.github.io/llama-cpp-python-cuBLAS-wheels/AVX2/cu118
 "%PythonExecutable%" -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+:: Download the Sentence Transformers model
+"%PythonExecutable%" -m pip install sentence_transformers
+"%PythonExecutable%" -m pip install transformers
+echo Downloading Sentence Transformers model...
+echo import sentence_transformers > download_model.py
+echo model = sentence_transformers.SentenceTransformer('intfloat/multilingual-e5-large') >> download_model.py
+"%PythonExecutable%" download_model.py
+del download_model.py
+echo Downloading Faster Whisper Model...
+echo from faster_whisper import WhisperModel > download_hf_model.py
+echo model_size = "large-v2" >> download_hf_model.py
+echo model = WhisperModel(model_size, device="cuda", compute_type="float16") >> download_hf_model.py
+"%PythonExecutable%" download_hf_model.py
+del download_hf_model.py
 
 :run
-:: Check if OpenChat model file exists
+:: Check if model file exists
 IF NOT EXIST "%OpenChatModelFile%" (
-    echo OpenChat model file not found. Downloading...
+    echo model file not found. Downloading...
     call curl -Lk "%OpenChatModelURL%" > "%OpenChatModelFile%" || ( echo. && echo Openchat failed to download. && goto endScript )
 )
 

@@ -47,11 +47,6 @@ export const runDataServer = async () => {
       reject(err)
     })
 
-    setTimeout(() => {
-      if (!serverReady) {
-        mainWindow.close()
-        reject(new Error('Timeout: Server did not become ready'))
-      }
-    }, 30000) // 30 seconds timeout
+    
   })
 }

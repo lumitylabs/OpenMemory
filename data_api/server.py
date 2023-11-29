@@ -9,9 +9,10 @@ if sys.platform == 'win32':
 script_dir = os.path.dirname(os.path.abspath(__file__))
 if script_dir not in sys.path:
     sys.path.append(script_dir)
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import os
 import routes.read_audio_transcriptions
 import routes.get_activity_and_related_data
@@ -60,6 +61,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.mount("/screencaptures", StaticFiles(directory=os.path.abspath("../client/data/screencapture")), name="screencaptures")
+@app.get("/screencaptures/{file_path:path}")
+async def read_screencapture(file_path: str):
+    file_location = os.path.join(os.path.abspath("../client/data/screencapture"), file_path)
+    if not os.path.exists(file_location):
+        raise HTTPException(status_code=404, detail="File not found")
+    return FileResponse(file_location)
+
 
 app.include_router(routes.read_audio_transcriptions.app)
 app.include_router(routes.get_activity_and_related_data.app)

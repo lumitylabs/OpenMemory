@@ -72,21 +72,25 @@ class AudioProcessor:
             logging.error(f"An error occurred: {e}")
     
     def process_audio(self, audio_chunk, rate, channels):
-        audio_chunk = librosa.resample(audio_chunk, orig_sr=int(rate)*int(channels), target_sr=16000)
-        low_noise = nr.reduce_noise(y=audio_chunk, sr=16000,
-            prop_decrease=1, 
-            time_constant_s=6, 
-            freq_mask_smooth_hz=500, 
-            time_mask_smooth_ms=16, 
-            thresh_n_mult_nonstationary=5, 
-            sigmoid_slope_nonstationary=1, 
-            n_std_thresh_stationary=5,
-            use_torch=True)
-        segments, info = self.model_whisper.transcribe(low_noise, vad_filter=True)
-        if info.language_probability < min_probability:
-            return ""
-        text = "".join(segment.text for segment in segments)
-        return text
+        try:
+            audio_chunk = librosa.resample(audio_chunk, orig_sr=int(rate)*int(channels), target_sr=16000)
+            low_noise = nr.reduce_noise(y=audio_chunk, sr=16000,
+                prop_decrease=1, 
+                time_constant_s=6, 
+                freq_mask_smooth_hz=500, 
+                time_mask_smooth_ms=16, 
+                thresh_n_mult_nonstationary=5, 
+                sigmoid_slope_nonstationary=1, 
+                n_std_thresh_stationary=5,
+                use_torch=True)
+            segments, info = self.model_whisper.transcribe(low_noise, vad_filter=True)
+            if info.language_probability < min_probability:
+                return ""
+            text = "".join(segment.text for segment in segments)
+            return text
+        except:
+            print("whisper error, trying on cpu")
+            self.model_whisper = WhisperModel("large-v2", device="cpu",compute_type="float32")
 
     def save_to_db(self, mem_id, date_str, time_str, text, type, proc):
         db_manager.insert_audio_transcription(mem_id, date_str, time_str, type, text, proc)

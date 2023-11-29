@@ -117,6 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({ forceReloadMemories }) => {
       }
       if (data.function == "processing_done") {
         setIsProcessing(false);
+        refreshMemories();
       }
       if (data.function == "start_capture") {
         setIsCapturing(true);

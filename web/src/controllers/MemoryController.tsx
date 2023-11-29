@@ -140,6 +140,11 @@ const MemoryController: React.FC<MemoryControllerProps> = ({
       .catch((error) => {
         console.error("Error loading memories:", error);
       });
+      const loadData = async () => {
+        const newActivities = await fetchActivities(0, INITIAL_FETCH_COUNT);
+        setMemories(newActivities);
+      };
+      loadData();
   };
 
   useEffect(() => {
@@ -219,7 +224,6 @@ const MemoryController: React.FC<MemoryControllerProps> = ({
         </div>
       ) : (
         <div>
-          {" "}
           <h1 className="font-Mada font-extrabold flex w-full text-[60px] text-[#333232] select-none">
             {searchDone ? "Related Idea" : "Latest Ideas"}
           </h1>
