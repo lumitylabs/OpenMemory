@@ -28,18 +28,19 @@ OpenMemory uses sensors and computing resources to collect data from our activit
 ## 💻 Minimum Requeriments
 - Windows 10+ Operating System
 - Nvidia GPU 8GB VRAM
-- Pre-installed CUDA 11.8
+- Pre-installed CUDA 11.8 or 12.1
+###### **For using OpenMemory, it is highly recommended to use version 11.8 for optimal performance**
 
 ## 💿 Installation
 ### **Step 1 - Installing CUDA 11.8**  
-Check if you have _CUDA 11.8_ installed.  
-If you do not have it yet, **[click here](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Windows)** to download and install it.
+- Check if you have _CUDA 11.8_ installed.  
+- If you do not have it yet, **[click here](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Windows)** to download and install it.
 
 ### **Step 2 - Installing OpenMemory**  
-Download the _"release-v1"_ file **[click here](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Windows)**  
-Extract the file into a folder  
-Run _"setup_CUDA_118.bat"_ if you have installed CUDA version 11.8  
-##### _(The installation may take a few minutes, depending on your internet connection)_  
+- Download the _"release-v1"_ file **[click here](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Windows)**  
+- Extract the file into a folder  
+- Run _"setup_CUDA_118.bat"_ if you have installed CUDA version 11.8    
+###### The installation may take a few minutes, depending on your internet connection  
 
 ## 🔧 Technologies
 Typescript, React, JavaScript, Python, LLM, LangChain, SQLite, Tailwind, Electron, Chromadb.
@@ -55,7 +56,6 @@ Typescript, React, JavaScript, Python, LLM, LangChain, SQLite, Tailwind, Electro
 ## 🐞 Report Bug and Errors
 Most errors will be logged in the logs.log file, which can be found in the path _"openmemory-win32-x64/logs.log_"  
 If you found an error, you can ask for help creating a new issue.
-
 
 ## 📧 Contact
 Questions or suggestions, please feel free to contact us :)  
