@@ -3,7 +3,6 @@
 ###### Backdrop Build, Program - 2023  
 ### _Overcome memory limitations with OpenMemory_  |  [ Join our Discord](https://discord.gg/mQVY6vVj93)
 "Open Memory is like a perfect memory that helps you remember your activities and crucial work details. It organizes your experiences and knowledge, making it easier to learn and make decisions. Never forget what really matters."
-https://discord.gg/mQVY6vVj93
 
 ## 📖 Quick Index
 - [🔎 Why?](#-why)
