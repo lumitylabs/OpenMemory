@@ -6,9 +6,13 @@ import { SearchButton } from "./SearchButton";
 
 export const FullSearchBar = (props: any) => {
   const [isSearchActive, setIsSearchActive] = React.useState(false);
+  const [isSearching, setIsSearching] = React.useState(false);
 
-  const handleSearch = () => {
-    props.handleSearch(props.search);
+  const handleSearch = async () => {
+    if(isSearching) return;
+    setIsSearching(true);
+    await props.handleSearch(props.search);
+    setIsSearching(false);
   };
 
   const handleSetSearch = (value: string) => {
@@ -27,6 +31,7 @@ export const FullSearchBar = (props: any) => {
         <SearchButton
           handleSearch={handleSearch}
           isSearchActive={isSearchActive}
+          isSearching={isSearching}
         ></SearchButton>
       </div>
       <SelectProcess

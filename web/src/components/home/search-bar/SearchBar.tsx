@@ -12,7 +12,7 @@ export function SearchBar(props: any) {
         className="bg-[#000] resize-none outline-0 font-Mada font-semibold text-[18px] placeholder:text-[#444444] text-[#fff] w-full"
         placeholder="Ask your memory..."
         onChange={(e) => props.setSearch(e.target.value)}
-        onKeyDown={handleKeyDown} // Adiciona o manipulador de eventos onKeyDown aqui
+        onKeyDown={handleKeyDown} 
       />
     </div>
   );

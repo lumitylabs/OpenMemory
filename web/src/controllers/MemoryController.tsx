@@ -17,6 +17,7 @@ import { GenerativeAnswer } from "../components/general/GenerativeAnswer";
 import { MemoryCard } from "./MemoryCard";
 import { useMemories } from "../hooks/useMemories";
 import { EmptyHome } from "../components/home/EmptyHome";
+import { SpinAnimation } from "../components/general/utils";
 
 // Constants
 const INITIAL_FETCH_COUNT = 20;
@@ -29,6 +30,8 @@ interface MemoryControllerProps {
 const MemoryController: React.FC<MemoryControllerProps> = ({
   onForceReload,
 }) => {
+  const [isLoading, setIsLoading] = useState(true);
+
   const [memories, setMemories] = useState<any>([]);
   const [searchDone, setSearchDone] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -105,8 +108,10 @@ const MemoryController: React.FC<MemoryControllerProps> = ({
 
   useEffect(() => {
     const loadData = async () => {
+      setIsLoading(true);
       const newActivities = await fetchActivities(0, INITIAL_FETCH_COUNT);
       setMemories(newActivities);
+      setIsLoading(false);
     };
     loadData();
   }, []);
@@ -140,11 +145,11 @@ const MemoryController: React.FC<MemoryControllerProps> = ({
       .catch((error) => {
         console.error("Error loading memories:", error);
       });
-      const loadData = async () => {
-        const newActivities = await fetchActivities(0, INITIAL_FETCH_COUNT);
-        setMemories(newActivities);
-      };
-      loadData();
+    const loadData = async () => {
+      const newActivities = await fetchActivities(0, INITIAL_FETCH_COUNT);
+      setMemories(newActivities);
+    };
+    loadData();
   };
 
   useEffect(() => {
@@ -218,9 +223,13 @@ const MemoryController: React.FC<MemoryControllerProps> = ({
         ""
       )}
 
-      {memories.length === 0 ? (
+      {isLoading ? (
         <div className="flex justify-center items-center h-[calc(80vh)]">
-          <EmptyHome></EmptyHome>
+          <SpinAnimation height={24} width={24} />
+        </div>
+      ) : memories.length === 0 ? (
+        <div className="flex justify-center items-center h-[calc(80vh)]">
+          <EmptyHome />
         </div>
       ) : (
         <div>
