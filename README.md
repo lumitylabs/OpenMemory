@@ -37,7 +37,7 @@ OpenMemory uses sensors and computing resources to collect data from our activit
 - If you do not have it yet, **[click here](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Windows)** to download and install it.
 
 ### **Step 2 - Installing OpenMemory**  
-- Download the _"release-v1"_ file **[click here](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Windows)**  
+- Download the _"release-v1"_ file **[click here](https://github.com/lumitylabs/OpenMemory/releases/download/v1.0.0/release-v1.zip)**  
 - Extract the file into a folder  
 - Run _"setup_CUDA_118.bat"_ if you have installed CUDA version 11.8    
 ###### The installation may take a few minutes, depending on your internet connection  
