@@ -11,6 +11,7 @@
 - [🎥 Demo](#-demo)
 - [💻 Minimum Requeriments](#-minimum-requeriments)
 - [💿 Installation](#-installation)
+- [🧠 Memory Samples](#-memory-samples)
 - [🔧 Technologies](#-technologies)
 - [🚀 How can you help?](#-how-can-you-help)
 - [🐞 Report Bug and Errors](#-report-bug-and-errors)
@@ -23,7 +24,7 @@ In our daily lives, both at work and personally, we face an increasing volume of
 OpenMemory uses sensors and computing resources to collect data from our activities, organizing it efficiently into a memory system. With the support of artificial intelligence and an intuitive interface, Open Memory enables quick consultation and the generation of new insights from the stored information.
 
 ## 🎥 Demo
-[![Video Demo](https://i.imgur.com/LXudQ85.png)](https://www.youtube.com/watch?v=gflTpuVK_80)
+[![Video Demo](https://imgur.com/asUg6QI.png)](https://www.youtube.com/watch?v=gflTpuVK_80)
 
 ## 💻 Minimum Requeriments
 - Windows 10+ Operating System
@@ -41,6 +42,10 @@ OpenMemory uses sensors and computing resources to collect data from our activit
 - Extract the file into a folder  
 - Run _"setup_CUDA_118.bat"_ if you have installed CUDA version 11.8    
 ###### The installation may take a few minutes, depending on your internet connection  
+
+## 🧠 Memory Samples
+- Andrej building micrograd - **[Download](https://github.com/lumitylabs/OpenMemory/releases/download/v1.0.0/memory_andrej.zip)**
+- Backdrop talk - **[Download](https://github.com/lumitylabs/OpenMemory/releases/download/v1.0.0/memory_backdrop.zip)**
 
 ## 🔧 Technologies
 Typescript, React, JavaScript, Python, LLM, LangChain, SQLite, Tailwind, Electron, Chromadb.
