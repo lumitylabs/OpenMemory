@@ -44,8 +44,8 @@ OpenMemory uses sensors and computing resources to collect data from our activit
 ###### The installation may take a few minutes, depending on your internet connection  
 
 ## 🧠 Memory Samples
-- Andrej building micrograd - **[Download](https://github.com/lumitylabs/OpenMemory/releases/download/v1.0.0/memory_andrej.zip)**
-- Backdrop talk - **[Download](https://github.com/lumitylabs/OpenMemory/releases/download/v1.0.0/memory_backdrop.zip)**
+- Andrej building micrograd - **[download](https://github.com/lumitylabs/OpenMemory/releases/download/v1.0.0/memory_andrej.zip)**
+- Backdrop talk - **[download](https://github.com/lumitylabs/OpenMemory/releases/download/v1.0.0/memory_backdrop.zip)**
 
 ## 🔧 Technologies
 Typescript, React, JavaScript, Python, LLM, LangChain, SQLite, Tailwind, Electron, Chromadb.
