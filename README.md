@@ -23,7 +23,7 @@ In our daily lives, both at work and personally, we face an increasing volume of
 OpenMemory uses sensors and computing resources to collect data from our activities, organizing it efficiently into a memory system. With the support of artificial intelligence and an intuitive interface, Open Memory enables quick consultation and the generation of new insights from the stored information.
 
 ## 🎥 Demo
-[![Video Demo](https://i.imgur.com/AJI1boN.png)](#)
+[![Video Demo](https://i.imgur.com/LXudQ85.png)](https://www.youtube.com/watch?v=gflTpuVK_80)
 
 ## 💻 Minimum Requeriments
 - Windows 10+ Operating System
